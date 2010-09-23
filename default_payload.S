@@ -89,7 +89,7 @@ exploit_main:
 	// Copy the content of the originally removed function
 	li	%r3, RESIDENT_PAYLOAD_SIZE
 	li	%r4, 0x27
-	b	ABSOLUTE_MEM1(alloc)
+	bl	ABSOLUTE_MEM1(alloc)
 	mr	%r30, %r3
 	LOAD_LABEL (MEM_BASE2, %r4, %r31, 0)	// Load MEM_BASE2 in %r3
 	li	%r5, RESIDENT_PAYLOAD_SIZE
