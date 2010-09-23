@@ -17,6 +17,8 @@ all: $(PAYLOADS) $(HEADERS)
 
 $(B2HTARGET): $(B2HTARGET).c
 
+$(PAYLOADS): *.h.S
+
 %.o : %.S
 	$(PPU_CC) -c $< -o $@
 %.bin : %.o

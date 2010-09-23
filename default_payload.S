@@ -85,6 +85,7 @@ exploit_main:
 	std	%r0, 0xb0(%r1)
 	MEM_BASE (%r31)			// Load 0x8000000000000000 in %r31
 
+	/*
 	// Copy the content of the originally removed function
 	li	%r3, RESIDENT_PAYLOAD_SIZE
 	li	%r4, 0x27
@@ -93,17 +94,18 @@ exploit_main:
 	LOAD_LABEL (MEM_BASE2, %r4, %r31, 0)	// Load MEM_BASE2 in %r3
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	ABSOLUTE_MEM1(memcpy)
+	*/
 
-	LOAD_LABEL1 (%r4, %r31, RESIDENT_PAYLOAD_OFFSET)
-	LOAD_LABEL (MEM_BASE2, %r3, %r31, 0)	// Load MEM_BASE2 in %r3
 	// Copy functions that need to stay resident in memory to MEM_BASE2
+	LOAD_LABEL (MEM_BASE2, %r3, %r31, 0)	// Load MEM_BASE2 in %r3
 	LOAD_LABEL1 (%r4, %r31, RESIDENT_PAYLOAD_OFFSET)
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	ABSOLUTE_MEM1(memcpy)
-
+	
+/*
 	LOAD_LABEL2 (%r3, %r31, orig_sub_data)
 	std	%r30, 0(%r3)
-
+*/
 	// Add kernel module for device6
 	LOAD_LABEL2 (%r3, %r31, kernel_module_struct)
 	bl	ABSOLUTE_MEM1(add_kernel_module)
