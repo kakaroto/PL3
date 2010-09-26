@@ -71,7 +71,7 @@ payload_entry:
 	// vaddr = map_addr & ~0x8000000000000000
 	li	%r27, 1
 	rldicr	%r27, %r27, 63, 0;
-	oris	%r27, %r27, 0x70
+	oris	%r27, %r27, 0x1337
 	
 	mr	%r3, %r27
 	clrldi	%r3, %r3, 1	// clear high bit of memory to give real mem
@@ -173,18 +173,19 @@ l_send_lv2_dump:
 	// Copy the lv2 ram into the message
 	mr	%r3, %r28
 	addi	%r4, %r31, ADDR_IN_PAGE(message)
+	stw	%r28, 0(%r4)
+	addi	%r4, %r4, 4
 	li	%r5, 1024
 	bl	my_memcpy
-
+	
 	// Increment our lv2 pointer
 	addi	%r28, %r28, 1024
 
-	// Copy our block of data to the mapped dma
+	// Copy our block of data
 	addi	%r3, %r31, ADDR_IN_PAGE(dma_block)
 	mr	%r4, %r27
 	li	%r5, (dma_block_end - dma_block)
 	bl	my_memcpy
-	
 	
 	// Start DMA transfer
 	li	%r3, 1		// bus_id = 1
@@ -209,7 +210,7 @@ l_wait_completion:
 	li	%r3, 1
 	rldicr	%r3, %r3, 63, 0;
 	oris	%r3, %r3, 0x80
-	cmp	%r28, %r3
+	cmpd	%r28, %r3
 	beq	panic
 	b	l_send_lv2_dump
 	
@@ -242,7 +243,7 @@ gelic_desc:
 gelic_buf_addr:	
 	.long	0
 gelic_buf_size:	
-	.long	1042
+	.long	1046
 gelic_next_desc_addr:	
 	.long	0
 gelic_dmac_cmd_status:
@@ -275,7 +276,7 @@ pkt_vlan_vlan:
 pkt_vlan_subtype:
 	.short	0x1377
 message:
-	.space 1024
+	.space 1028
 .align 8
 dma_block_end:
 	
