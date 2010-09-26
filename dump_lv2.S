@@ -6,9 +6,6 @@
  * This software is distributed under the terms of the GNU General Public
  * License ("GPL") version 3, as published by the Free Software Foundation.
  *
- * This payload is a modified version of the original PSJailbreak's payload.
- * The people behing PSJailbrak are the original authors and copyright holders
- * of the code they wrote.
  */
 
 
