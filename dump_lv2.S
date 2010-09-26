@@ -274,7 +274,7 @@ pkt_vlan:
 pkt_vlan_vlan:
 	.short	0
 pkt_vlan_subtype:
-	.short	0x1377
+	.short	0x1337
 message:
 	.space 1028
 .align 8
