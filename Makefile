@@ -7,11 +7,13 @@ PPU_OBJCOPY = ppu-objcopy
 
 
 HEADERS = default_shellcode.h \
-	default_payload.h
+	default_payload.h \
+	dump_lv2.h
 
 PAYLOADS = default_shellcode.bin \
 	shellcode_panic.bin \
 	default_payload.bin \
+	dump_lv2.bin
 
 all: $(PAYLOADS) $(HEADERS)
 
