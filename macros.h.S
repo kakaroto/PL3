@@ -10,6 +10,7 @@
  *
  */
 
+#include "config.h"
 
 /* Common Symbols */
 #define memcpy 			0x7c01c

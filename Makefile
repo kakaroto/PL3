@@ -4,7 +4,7 @@ CFLAGS = -Wall -O3
 CC = gcc
 PPU_CC = ppu-gcc
 PPU_OBJCOPY = ppu-objcopy
-PPU_CFLAGS = -DUSE_JIG
+PPU_CFLAGS =
 
 
 HEADERS = shellcode_egghunt.h \
