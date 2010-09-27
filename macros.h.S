@@ -67,6 +67,13 @@
 	MEM_BASE (dest) \
 	LOAD_LABEL (MEM_BASE2, dest, dest, 0)
 
+#define BRANCH_ABSOLUTE(dest, target) 	\
+	MEM_BASE (dest);		\
+	oris	dest, dest, target@h; 	\
+	ori	dest, dest, target@l; 	\
+	mtctr	dest;			\
+	bctrl
+
 // Add system calls. Use only in exploit_main because of registers used...
 #define ADD_SYSCALL(ptr, num) \
 	LOAD_LABEL2 (%r3, %r31, ptr) \

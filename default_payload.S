@@ -25,43 +25,12 @@ payload_start:
  * @payload_block: Pointer to the memory page containing our payload
  *
  * This is the entry point to the payload, it gets branched to form the injected
- * shellcode in the JIG response. it will copy the payload to
- * a specific memory location (MEM_BASE1) then jump to the main in it.
- * This is necessary because all branches and calls are position dependent and
- * writing position independent code is very hard, so this makes it easier.
- *
- * payload_entry (next_block):
- * {
- *   current_block = next_block - PAGE_SIZE;
- *
- *   for (i = PAGE_SIZE - sizeof(uint64); i >= 0; i -= sizeof(uint64)
- *     MEM_BASE1[i] = current_block[i];
- *   goto MEM_BASE1 + exploit_main;
- *  }
- */
-payload_entry:
-	li	%r5, PAGE_SIZE		// Set %r5 to the end of this page
-	LOAD_MEM_BASE1(%r4)		// Load 0x8000000000700000 into %r4
-l_payload_copy:
-	subi	%r5, %r5, 8		// set %r5 to read the previous quad
-	ldx	%r6, %r3, %r5		// Copy quad content of %r3[%r5] to %r6
-	stdx	%r6, %r4, %r5		// Store quad %r6 to %r4[%r5]
-	cmpldi	%r5, 0			// if %r5 reaches our block, end it
-	bne	l_payload_copy
-	addi	%r4, %r4, ADDR_IN_PAGE(exploit_main)	// Jump to exploit_main
-	mtctr	%r4
-	bctr
-
-/**
- * exploit_main:
- *
+ * shellcode in the JIG response. 
  * This is the main function of the exploit, its code is position
- * dependent on MEM_BASE1 and it gets executed from there. It copies
- * the rest of the payload to a safe-from-overwrite memory, while it
- * overwrites an apparently useless/unused function from the kernel.
- * It will also add necessary syscalls and patch the kernel before
- * memsetting the code in MEM_BASE1 to 0 and returning the control
- * back to the kernel
+ * indedependent. It copies the actual payload to a safe-from-overwrite memory,
+ * while it overwrites an existing function from the kernel.
+ * It will also add necessary syscalls and patch some areas of the kernel before
+ * returning the control back to it
  *
  * exploit_main ():
  * {
@@ -71,10 +40,9 @@ l_payload_copy:
  *   ptr = patch_table;
  *   while (ptr[0] != NULL)
  *     *ptr[0] = ptr[1];
- *   memset(MEM_BASE1, 0, PAYLOAD_SIZE);
  *  }
  */
-exploit_main:
+payload_entry:
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
 	std	%r27, 0x78(%r1)
@@ -83,32 +51,20 @@ exploit_main:
 	std	%r30, 0x90(%r1)
 	std	%r31, 0x98(%r1)
 	std	%r0, 0xb0(%r1)
-	MEM_BASE (%r31)			// Load 0x8000000000000000 in %r31
+	mr	%r31, %r3		// self position at %r31
 
-	/*
-	// Copy the content of the originally removed function
-	li	%r3, RESIDENT_PAYLOAD_SIZE
-	li	%r4, 0x27
-	bl	ABSOLUTE_MEM1(alloc)
-	mr	%r30, %r3
-	LOAD_LABEL (MEM_BASE2, %r4, %r31, 0)	// Load MEM_BASE2 in %r3
-	li	%r5, RESIDENT_PAYLOAD_SIZE
-	bl	ABSOLUTE_MEM1(memcpy)
-	*/
+	MEM_BASE (%r30)			// Load 0x8000000000000000 in %r30
 
 	// Copy functions that need to stay resident in memory to MEM_BASE2
-	LOAD_LABEL (MEM_BASE2, %r3, %r31, 0)	// Load MEM_BASE2 in %r3
-	LOAD_LABEL1 (%r4, %r31, RESIDENT_PAYLOAD_OFFSET)
+	addi	%r3, %r31, ADDR_IN_PAGE(RESIDENT_PAYLOAD_OFFSET)
+	LOAD_LABEL (MEM_BASE2, %r4, %r30, 0)
 	li	%r5, RESIDENT_PAYLOAD_SIZE
-	bl	ABSOLUTE_MEM1(memcpy)
+	bl	pl3_memcpy
 	
-/*
-	LOAD_LABEL2 (%r3, %r31, orig_sub_data)
-	std	%r30, 0(%r3)
-*/
 	// Add kernel module for device6
-	LOAD_LABEL2 (%r3, %r31, kernel_module_struct)
-	bl	ABSOLUTE_MEM1(add_kernel_module)
+	LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
+	BRANCH_ABSOLUTE (%r4, add_kernel_module)
+
 	// Add system call 36 for backup manager
 	ADD_SYSCALL (syscall_6_peek_desc, 6)
 	ADD_SYSCALL (syscall_7_poke_desc, 7)
@@ -132,10 +88,7 @@ l_patches_applied:
 	ld	%r0, 0xb0(%r1)
 	addi	%r1, %r1, 0xa0
 	mtlr	%r0
-	LOAD_MEM_BASE1(%r3)
-	li	%r4, 0
-	li	%r5, PAYLOAD_SIZE
-	b	ABSOLUTE_MEM1(memset)
+	blr
 
 /**
  * patch_table:
@@ -150,7 +103,7 @@ patch_table:
 	PATCH_INST(0x0490e0, ld %r4, 0xf08(%r2))
 	PATCH_INST(0x0490e4, ld %r3, 0x20(%r28))
 	PATCH_INST(0x0490e8, std %r3, 0(%r4))
-	PATCH_BRANCH_MEM2 (0x04f0a8, bl, memory_patching_desc)
+	PATCH_BRANCH_MEM2 (0x04f0a8, bl, memory_patching)
 	PATCH_BRANCH_MEM2 (0x2aafc8, b, hook_open)
 	PATCH_INST(0x04ed18, li %r4, 0)
 	PATCH_INST(0x04ed1c, stw %r4, 0(%r3))
@@ -160,6 +113,9 @@ patch_table:
 	PATCH_INST(0x0505d4, blr)
 	.long	0
 
+
+#include "pl3_memcpy.h.S"
+	
 /**
  * overwritten_kernel_function:
  *
@@ -178,10 +134,9 @@ memory_patching_desc:
 	b	memory_patching
 hook_open_desc:
 	b	hook_open
-//#include "hook_open_psjb.h.S"
 
-#include "syscall36.h.S"
 #include "device6_kmod.h.S"
+#include "syscall36.h.S"
 
 orig_sub_data:
 	.quad	0
