@@ -27,7 +27,7 @@
 #define unknown_func2		0xd292c // FIXME
 
 #define PAGE_SIZE 		0x1000
-#define PAYLOAD_OFFSET_IN_PAGE 	0x20
+#define PAYLOAD_OFFSET_IN_PAGE 	0x38
 #define PAYLOAD_SIZE		ADDR_IN_PAGE(payload_end)
 #define RESIDENT_PAYLOAD_OFFSET	(overwritten_kernel_function)
 #define RESIDENT_PAYLOAD_SIZE   (payload_end - RESIDENT_PAYLOAD_OFFSET)
