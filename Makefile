@@ -7,11 +7,11 @@ PPU_OBJCOPY = ppu-objcopy
 PPU_CFLAGS = -DUSE_JIG
 
 
-HEADERS = default_shellcode.h \
+HEADERS = shellcode_egghunt.h \
 	default_payload.h \
 	dump_lv2.h
 
-PAYLOADS = default_shellcode.bin \
+PAYLOADS = shellcode_egghunt.bin \
 	shellcode_panic.bin \
 	default_payload.bin \
 	dump_lv2.bin
