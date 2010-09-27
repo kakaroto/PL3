@@ -4,6 +4,7 @@ CFLAGS = -Wall -O3
 CC = gcc
 PPU_CC = ppu-gcc
 PPU_OBJCOPY = ppu-objcopy
+PPU_CFLAGS = -DUSE_JIG
 
 
 HEADERS = default_shellcode.h \
@@ -23,7 +24,7 @@ tools:
 $(PAYLOADS): *.h.S
 
 %.o : %.S
-	$(PPU_CC) -c $< -o $@
+	$(PPU_CC) $(PPU_CFLAGS) -c $< -o $@
 %.bin : %.o
 	$(PPU_OBJCOPY) -O binary $< $@
 %.h : %.bin $(B2HTARGET)

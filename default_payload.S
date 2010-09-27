@@ -51,7 +51,12 @@ payload_entry:
 	std	%r30, 0x90(%r1)
 	std	%r31, 0x98(%r1)
 	std	%r0, 0xb0(%r1)
+
+#ifdef USE_JIG
 	mr	%r31, %r3		// self position at %r31
+#else
+	ld	%r31, -0x08(%r3)	// self position at %r31
+#endif
 
 	MEM_BASE (%r30)			// Load 0x8000000000000000 in %r30
 

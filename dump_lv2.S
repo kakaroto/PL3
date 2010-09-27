@@ -24,8 +24,12 @@ payload_entry:
 	std	%r30, 0x90(%r1)
 	std	%r31, 0x98(%r1)
 	std	%r0, 0xb0(%r1)
-	
+
+#ifdef USE_JIG
+	mr	%r31, %r3		// self position at %r31
+#else
 	ld	%r31, -0x08(%r3)	// self position at %r31
+#endif
 		
 	lis	%r3, 1		// size = 64K
 	li	%r4, 16		// page_size_exp
