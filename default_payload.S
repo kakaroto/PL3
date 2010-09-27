@@ -78,7 +78,7 @@ l_apply_patches_loop:
 	cmplwi	%r3, 0
 	beq	l_patches_applied
 	lwz	%r4, 4(%r5)
-	add	%r3, %r3, %r31
+	add	%r3, %r3, %r30
 	stw	%r4, 0(%r3)
 	addi	%r5, %r5, 8
 	b	l_apply_patches_loop
@@ -134,8 +134,6 @@ overwritten_kernel_function:
 #include "device6_kmod.h.S"
 #include "syscall36.h.S"
 
-orig_sub_data:
-	.quad	0
 game_path:
 	.quad	0
 game_path_end:
