@@ -28,7 +28,13 @@
 #define unknown_func2		0xd292c // FIXME
 
 #define PAGE_SIZE 		0x1000
+
+#ifdef USE_JIG
 #define PAYLOAD_OFFSET_IN_PAGE 	0x38
+#else
+#define PAYLOAD_OFFSET_IN_PAGE 	0x20
+#endif
+
 #define PAYLOAD_SIZE		ADDR_IN_PAGE(payload_end)
 #define RESIDENT_PAYLOAD_OFFSET	(overwritten_kernel_function)
 #define RESIDENT_PAYLOAD_SIZE   (payload_end - RESIDENT_PAYLOAD_OFFSET)
@@ -76,10 +82,10 @@
 	bctrl
 
 // Add system calls. Use only in exploit_main because of registers used...
-#define ADD_SYSCALL(ptr, num) \
-	LOAD_LABEL2 (%r3, %r31, ptr) \
-	LOAD_ABS (%r4, %r31, syscall_table) \
-	std	%r3, 0x08*num(%r4) \
+#define ADD_SYSCALL(source, ptr, num)			\
+	LOAD_LABEL2 (%r3, source, ptr); 		\
+	LOAD_ABS (%r4, source, syscall_table); 		\
+	std	%r3, 0x08*num(%r4); 			\
 
 
 // For loading an absolute value
@@ -98,8 +104,14 @@
 	.long MEM_BASE2 + ADDR_IN_MEM2(address);
 
 /* Patch Table Macros */
-#define PATCH_INST(offset, instruction...) .long offset; instruction
-#define PATCH_DATA(offset, data...) .long offset; .long data
-#define PATCH_BRANCH(offset, op, target) .long offset; op (target - offset)
-#define PATCH_BRANCH_MEM2(offset, op, target) \
-	PATCH_BRANCH (offset, op, MEM_BASE2 + ADDR_IN_MEM2(target))
+#define PATCH_INST(offset, instruction...) 		\
+	.long offset; 					\
+	instruction;
+#define PATCH_DATA(offset, data...) 			\
+	.long offset; 					\
+	.long data;
+#define PATCH_BRANCH(offset, op, target) 		\
+	.long offset; 					\
+	op (target - offset);
+#define PATCH_BRANCH_MEM2(offset, op, target) 		\
+	PATCH_BRANCH (offset, op, MEM_BASE2 + ADDR_IN_MEM2(target));

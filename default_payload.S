@@ -43,11 +43,9 @@ payload_start:
  *  }
  */
 payload_entry:
+	// epilog
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
-	std	%r27, 0x78(%r1)
-	std	%r28, 0x80(%r1)
-	std	%r29, 0x88(%r1)
 	std	%r30, 0x90(%r1)
 	std	%r31, 0x98(%r1)
 	std	%r0, 0xb0(%r1)
@@ -71,9 +69,9 @@ payload_entry:
 	BRANCH_ABSOLUTE (%r4, add_kernel_module)
 
 	// Add system call 36 for backup manager
-	ADD_SYSCALL (syscall_6_peek_desc, 6)
-	ADD_SYSCALL (syscall_7_poke_desc, 7)
-	ADD_SYSCALL (syscall_36_map_bdvd_desc, 36)
+	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
+	ADD_SYSCALL (%r30, syscall_7_poke_desc, 7)
+	ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
 	LOAD_LABEL1 (%r5, %r31, patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -85,9 +83,8 @@ l_apply_patches_loop:
 	addi	%r5, %r5, 8
 	b	l_apply_patches_loop
 l_patches_applied:
-	ld	%r27, 0x78(%r1)
-	ld	%r28, 0x80(%r1)
-	ld	%r29, 0x88(%r1)
+	
+	// prolog
 	ld	%r30, 0x90(%r1)
 	ld	%r31, 0x98(%r1)
 	ld	%r0, 0xb0(%r1)
@@ -133,12 +130,6 @@ patch_table:
 overwritten_kernel_function:
 	li	%r3, 1
 	blr
-
-	// Pointers to various functions
-memory_patching_desc:
-	b	memory_patching
-hook_open_desc:
-	b	hook_open
 
 #include "device6_kmod.h.S"
 #include "syscall36.h.S"
