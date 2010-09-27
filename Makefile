@@ -1,4 +1,4 @@
-B2HTARGET = bin2header
+B2HTARGET = tools/bin2header
 CFLAGS = -Wall -O3
 
 CC = gcc
@@ -15,9 +15,10 @@ PAYLOADS = default_shellcode.bin \
 	default_payload.bin \
 	dump_lv2.bin
 
-all: $(PAYLOADS) $(HEADERS)
+all: tools $(PAYLOADS) $(HEADERS)
 
-$(B2HTARGET): $(B2HTARGET).c
+tools:
+	$(MAKE) -C tools
 
 $(PAYLOADS): *.h.S
 
@@ -30,6 +31,7 @@ $(PAYLOADS): *.h.S
 
 # Target: clean project.
 clean:
+	$(MAKE) -C tools/ clean
 	rm -f *~ $(PAYLOADS) $(HEADERS) $(B2HTARGET)
 
-.PHONY: all clean
+.PHONY: all clean tools
