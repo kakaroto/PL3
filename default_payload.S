@@ -202,6 +202,45 @@ l_proceed:
 	mr	%r3, %r29
 	b	ABSOLUTE_MEM2(0x2aaff0)
 
+/**
+ * memory_patching:
+ * @arg1: 
+ * @arg2: 
+ *
+ *
+ *  memory_patching (arg1, arg2):
+ *  {
+	uint64 *ptr = rtoc[38400][104][24]
+	uint64 *ptr2 = rtoc[3848]
+	
+	if ((arg1[24][48] >> 16) == 0x29) {
+	   if (ptr[16] << 24 >> 56) != 0xFF) {
+	      ptr[16] |= 3
+	      arg2[0] = 6
+	   } else {
+	      ptr[16] |= 2
+	      arg2[0] = 0x2c
+	   }
+	   ptr2[0] += ptr[4]
+	   memcpy(ptr2[0], ptr[8], ptr[4])
+	} else {
+	   unknown_func1 (arg1, arg2) // 0x4e81c
+	   if (rtoc[16] << 24 >> 56) != 0xFF) {
+	     hash = 0
+	     for (i = 0, i < 0x400, i++)
+	       hash ^= ptr2[0][i] // array of 4 bytes
+	     hash = (hash << 32) | rtoc[4]
+	     for (uint64_t p = memory_patch_table, *p, p+=2) {
+	       if (hash != p[0])
+	          continue
+	       for (uint32_t p2 = p[1], *p2, p2+=2)
+	         rtoc[3848][0][p2[0]] = p2[1]
+	     }
+	  }
+	}
+	return 0
+      }
+ */
 memory_patching:
 	mflr	%r0
 	stdu	%r1, -0x1a0(%r1)
@@ -319,26 +358,25 @@ memory_patch_table:
 	QUAD_MEM2(memory_patch_table_2)
 	.quad	0x0000000000000000
 memory_patch_table_1:
-	.quad	0x0030535438600082
-	.quad	0x005f3fc038600001
-	.quad	0x005f3fc44e800020
-	.long	0x00000000
+	PATCH_INST(0x305354, li %r3, 130)
+	PATCH_INST(0x5f3fc0, li %r3, 1)
+	PATCH_INST(0x5f3fc4, blr)
+	.long 0
 memory_patch_table_2:
-	.quad	0x0002ed0c3ba00001
-	.long	0x00000000
+	PATCH_INST(0x2ed0c, li %r29, 1)
+	.long 0
 memory_patch_table_3:
-	.quad	0x0022b8885f746f6f
-	.quad	0x0022b88c6c322e78
-	.quad	0x0022b8906d6c2372
-	.quad	0x0022b8946f6f7400
-	.long	0x00000000
+	PATCH_DATA(0x0022b888, 0x5f746f6f)
+	PATCH_DATA(0x0022b88c, 0x6c322e78)
+	PATCH_DATA(0x0022b890, 0x6d6c2372)
+	PATCH_DATA(0x0022b894, 0x6f6f7400)
+	.long 0
 memory_patch_table_4:
-	.quad	0x000d68b85f746f6f
-	.quad	0x000d68bc6c322e78
-	.quad	0x000d68c06d6c2372
-	.quad	0x000d68c46f6f7400
-	.long	0x00000000
-
+	PATCH_DATA(0x000d68b8, 0x5f746f6f)
+	PATCH_DATA(0x000d68bc, 0x6c322e78)
+	PATCH_DATA(0x000d68c0, 0x6d6c2372)
+	PATCH_DATA(0x000d68c4, 0x6f6f7400)
+	
 hook_path:
 	.string "PSFreedom"
 hook_path_end:
