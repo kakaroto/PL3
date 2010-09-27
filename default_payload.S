@@ -112,9 +112,6 @@ exploit_main:
 	// Add system call 36 for backup manager
 	ADD_SYSCALL (syscall_6_peek_desc, 6)
 	ADD_SYSCALL (syscall_7_poke_desc, 7)
-	ADD_SYSCALL (syscall_8_alloc_desc, 8)
-	ADD_SYSCALL (syscall_9_free_desc, 9)
-	ADD_SYSCALL (syscall_10_exec_desc, 10)
 	ADD_SYSCALL (syscall_36_map_bdvd_desc, 36)
 	LOAD_LABEL1 (%r5, %r31, patch_table)
 l_apply_patches_loop:

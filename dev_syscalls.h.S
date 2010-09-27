@@ -11,15 +11,9 @@
 
 
 syscall_6_peek_desc:
-	QUAD_ABS2(syscall_6_peek)
+	QUAD_MEM2(syscall_6_peek)
 syscall_7_poke_desc:
-	QUAD_ABS2(syscall_7_poke)
-syscall_8_alloc_desc:
-	QUAD_ABS2(syscall_8_alloc)
-syscall_9_free_desc:
-	QUAD_ABS2(syscall_9_free)
-syscall_10_peek_desc:
-	QUAD_ABS2(syscall_10_exec)
+	QUAD_MEM2(syscall_7_poke)
 
 
 syscall_6_peek:
@@ -29,15 +23,3 @@ syscall_6_peek:
 syscall_7_poke:
 	std	%r4, 0x00(%r3)
 	blr	
-	
-syscall_8_alloc:
-	li	%r4, 0x27
-	b	ABSOLUTE_MEM2(alloc)
-	
-syscall_9_free:
-	li	%r4, 0x27
-	b	ABSOLUTE_MEM2(free)
-
-syscall_10_exec:
-	mtctr	%r3
-	bctr
