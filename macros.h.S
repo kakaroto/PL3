@@ -30,9 +30,9 @@
 #define PAGE_SIZE 		0x1000
 
 #ifdef USE_JIG
-#define PAYLOAD_OFFSET_IN_PAGE 	0x38
-#else
 #define PAYLOAD_OFFSET_IN_PAGE 	0x20
+#else
+#define PAYLOAD_OFFSET_IN_PAGE 	0x38
 #endif
 
 #define PAYLOAD_SIZE		ADDR_IN_PAGE(payload_end)
