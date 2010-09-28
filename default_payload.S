@@ -72,7 +72,7 @@ payload_entry:
 	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
 	ADD_SYSCALL (%r30, syscall_7_poke_desc, 7)
 	ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
-	LOAD_LABEL1 (%r5, %r31, patch_table)
+	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
 	cmplwi	%r3, 0
