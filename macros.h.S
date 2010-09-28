@@ -74,13 +74,6 @@
 	MEM_BASE (dest) \
 	LOAD_LABEL (MEM_BASE2, dest, dest, 0)
 
-#define BRANCH_ABSOLUTE(dest, target) 	\
-	MEM_BASE (dest);		\
-	oris	dest, dest, target@h; 	\
-	ori	dest, dest, target@l; 	\
-	mtctr	dest;			\
-	bctrl
-
 // Add system calls. Use only in exploit_main because of registers used...
 #define ADD_SYSCALL(source, ptr, num)			\
 	LOAD_LABEL2 (%r3, source, ptr); 		\
@@ -115,3 +108,26 @@
 	op (target - offset);
 #define PATCH_BRANCH_MEM2(offset, op, target) 		\
 	PATCH_BRANCH (offset, op, MEM_BASE2 + ADDR_IN_MEM2(target));
+
+#define BRANCH_ABSOLUTE(dest, target) 	\
+	MEM_BASE (dest);		\
+	oris	dest, dest, target@h; 	\
+	ori	dest, dest, target@l; 	\
+	mtctr	dest;			\
+	bctrl
+	
+#define GET_CURRENT_PAGE(temp, dest)	\
+	bl	get_current_page;	\
+	b	got_current_page;	\
+get_current_page:			\
+	mflr	dest;			\
+	blr;				\
+got_current_page:			\
+	li	temp, 0xfff;		\
+	nor	temp, temp, temp;	\
+	and	dest, dest, temp;
+
+#define PANIC()				\
+        li      %r3, 0;			\
+        li      %r11, 255;		\
+        sc      1;
