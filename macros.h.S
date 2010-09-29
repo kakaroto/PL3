@@ -28,6 +28,7 @@
 #define get_device_descriptor	0xd2998 // FIXME: unsure of the name!
 #define unknown_func1		0xd29c4 // FIXME
 #define unknown_func2		0xd292c // FIXME
+#define memory_patch_func	0x4e81c
 #define patch_func1		0x0490AC
 #define patch_func1_offset	0x34
 #define patch_func2		0x04F07C
@@ -62,6 +63,7 @@
 #define get_device_descriptor	 // FIXME: unsure of the name!
 #define unknown_func1		 // FIXME
 #define unknown_func2		 // FIXME
+#define memory_patch_func	0x4BFF0
 
 #define patch_func1		0x468C4
 #define patch_func1_offset	0x34

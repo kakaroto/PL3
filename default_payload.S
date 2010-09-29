@@ -280,7 +280,7 @@ loc_4b8:
 loc_4d4:
 	mr	%r3, %r29
 	mr	%r4, %r30
-	bl	ABSOLUTE_MEM2(0x4e81c)
+	bl	ABSOLUTE_MEM2(memory_patch_func)
 	mr	%r29, %r31
 	LOADI_LABEL2(%r29, flags)
 	lwz	%r3, 0(%r29)
