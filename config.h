@@ -12,10 +12,10 @@
 #define PL3_CONFIG_H
 
 
-/* Comment out the #define if you don't want your code to be using the jig */
-#ifndef USE_JIG
+/* Define this macro if want to use the jig method */
 #define USE_JIG
-#endif
 
+/* Define the firmware version you want to build PSFreedom for */
+#define FIRMWARE_3_41
 
 #endif /* PL3_CONFIG_H */

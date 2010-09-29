@@ -98,17 +98,17 @@ l_patches_applied:
  *
  */
 patch_table:
-	PATCH_INST(0x0490e0, ld %r4, 0xf08(%r2))
-	PATCH_INST(0x0490e4, ld %r3, 0x20(%r28))
-	PATCH_INST(0x0490e8, std %r3, 0(%r4))
-	PATCH_BRANCH_MEM2 (0x04f0a8, bl, memory_patching)
-	PATCH_BRANCH_MEM2 (0x2aafc8, b, hook_open)
-	PATCH_INST(0x04ed18, li %r4, 0)
-	PATCH_INST(0x04ed1c, stw %r4, 0(%r3))
-	PATCH_INST(0x04ed20, blr)
-	PATCH_DATA(0x3ba890, 0x01000000)
-	PATCH_INST(0x0505d0, li %r3, 1)
-	PATCH_INST(0x0505d4, blr)
+	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2))
+	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
+	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
+	PATCH_BRANCH_MEM2 (patch_func3 + patch_func3_offset, b, hook_open)
+	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
+	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
+	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
+	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
+	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1)
+	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
+	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 
 
@@ -160,6 +160,7 @@ flags:
  *    return original_open (path, mode);
  *  }
  */
+.align 4
 hook_open:
 	// This is a copy from the original hook function, setting up the stack
 	stdu	%r1, -0xa0(%r1)
@@ -172,7 +173,7 @@ hook_open:
 	std	%r0, 0xb0(%r1)
 	mr	%r28, %r4
 	mr	%r29, %r3
-
+	
 	// Actual payload code
 	MEM_BASE (%r31)
 	LOAD_LABEL2 (%r4, %r31, hook_path)
@@ -190,7 +191,8 @@ hook_open:
 	ld	%r29, 0(%r31)
 l_proceed:
 	mr	%r3, %r29
-	b	ABSOLUTE_MEM2(0x2aaff0)
+	b       ABSOLUTE_MEM2(patch_func3 + 0x28)
+
 
 /**
  * memory_patching:
@@ -243,10 +245,10 @@ memory_patching:
 	mr	%r29, %r3
 	mr	%r30, %r4
 	MEM_BASE (%r31)
-	ld	%r28, -0x6a00(%r2)
+	ld	%r28, rtoc_entry_2(%r2)
 	ld	%r28, 0x68(%r28)
 	ld	%r28, 0x18(%r28)
-	ld	%r27, 0xf08(%r2)
+	ld	%r27, rtoc_entry_1(%r2)
 	ld	%r9, 0x18(%r29)
 	lwz	%r9, 0x30(%r9)
 	rldicl	%r9, %r9, 48, 16
@@ -371,5 +373,7 @@ hook_path:
 	.string "PSFreedom"
 hook_path_end:
 payload_end:
-	// fill out to 3840 bytes
+.org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
+
+// fill out to 3840 bytes
 .org 3840

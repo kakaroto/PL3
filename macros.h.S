@@ -12,6 +12,8 @@
 
 #include "config.h"
 
+#ifdef FIRMWARE_3_41
+
 /* Common Symbols */
 #define memcpy 			0x7c01c
 #define memset 			0x4d144
@@ -26,7 +28,62 @@
 #define get_device_descriptor	0xd2998 // FIXME: unsure of the name!
 #define unknown_func1		0xd29c4 // FIXME
 #define unknown_func2		0xd292c // FIXME
+#define patch_func1		0x0490AC
+#define patch_func1_offset	0x34
+#define patch_func2		0x04F07C
+#define patch_func2_offset	0x2C
+#define patch_func3		0x2aafc8
+#define patch_func3_offset	0x0
+#define patch_func4		0x04ed18
+#define patch_func4_offset	0x0
+#define patch_func5		0x0505d0
+#define patch_func5_offset	0x0
+#define patch_data1		0x3ba890
+#define rtoc_entry_1		0xf08
+#define rtoc_entry_2		-0x6a00
 
+// Payload bases
+#define MEM_BASE2 		(0x50B3C)
+	
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+	
+#elif defined(FIRMWARE_3_01)
+
+#define memcpy 			0x77E84
+#define memset 			
+#define strcpy 			0x4AAC4	
+#define strncmp	 		0x4AB18
+#define strlen			0x4AAEC
+#define strdup			 // FIXME: unsure of the name!
+#define alloc 			0x5DF4C
+#define free 			0x5E38C
+#define add_kernel_module 	
+#define syscall_table		0x2CFB40
+#define get_device_descriptor	 // FIXME: unsure of the name!
+#define unknown_func1		 // FIXME
+#define unknown_func2		 // FIXME
+
+#define patch_func1		0x468C4
+#define patch_func1_offset	0x34
+#define patch_func2		0x04C824
+#define patch_func2_offset	0x2C
+#define patch_func3		0x291DEC
+#define patch_func3_offset	0x0
+#define patch_func4		0x4C4C0
+#define patch_func4_offset	0x0
+#define patch_func5		0x04DCA8
+#define patch_func5_offset	0x0
+#define patch_data1		0x39C010
+#define rtoc_entry_1		0xD00
+#define rtoc_entry_2		-0x6B30
+	
+#define MEM_BASE2 		(0x04E214)
+	
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+	
+#endif
+
+	
 #define PAGE_SIZE 		0x1000
 
 #ifdef USE_JIG
@@ -43,9 +100,6 @@
 #define ADDR_IN_MEM2(target) 	((target) - RESIDENT_PAYLOAD_OFFSET)
 
 /* Addressing Macros */
-// Payload bases
-#define MEM_BASE1 		(0x700000)
-#define MEM_BASE2 		(0x50B3C)
 
 // Absolute branching
 #define ABSOLUTE_MEM1(target)	(target - (MEM_BASE1 + ADDR_IN_MEM1(.)))
