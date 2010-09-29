@@ -147,9 +147,9 @@
 	.long data;
 #define PATCH_BRANCH(offset, op, target) 		\
 	.long offset; 					\
-	op (target - offset);
+	op ((target) - (offset));
 #define PATCH_BRANCH_MEM2(offset, op, target) 		\
-	PATCH_BRANCH (offset, op, MEM_BASE2 + ADDR_IN_MEM2(target));
+	PATCH_BRANCH (offset, op, (MEM_BASE2 + ADDR_IN_MEM2(target)));
 
 #define BRANCH_ABSOLUTE(dest, target) 	\
 	MEM_BASE (dest);		\
