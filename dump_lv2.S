@@ -110,10 +110,8 @@ payload_entry:
 	bne	l_done
 	
 	// store bus_addr
-	addi	%r3, %r31, ADDR_IN_PAGE(gelic_buf_addr)
 	addi	%r4, %r30, 0x100
-	stw	%r4, 0(%r3)
-
+	stw	%r4, gelic_buf_addr(%r27)
 
 	li	%r3, 1		// bus_id = 1
 	li	%r4, 0		// dev_id = 0
@@ -157,33 +155,35 @@ payload_entry:
 l_send_lv2_dump:	
 	// Set cmd_status to CARDOWNED | IKE | NO_CHKSUM | TX_DMA_FRAME_TAIL
 	lis	%r4, 0xa00C
-	addi	%r3, %r31, ADDR_IN_PAGE(gelic_dmac_cmd_status)
-	stw	%r4, 0(%r3)
+	stw	%r4, gelic_dmac_cmd_status(%r27)
+
+	li	%r4, 1046
+        stw	%r4, gelic_buf_size(%r27)
 
 	// Set result_size and data_status to 0
 	li	%r4, 0
-	addi	%r3, %r31, ADDR_IN_PAGE(gelic_result_size)
-	stw	%r4, 0(%r3)
-	addi	%r3, %r31, ADDR_IN_PAGE(gelic_data_status)
-	stw	%r4, 0(%r3)
+	stw	%r4, gelic_result_size(%r27)
+	stw	%r4, gelic_data_status(%r27)
+	stw	%r4, gelic_next_desc_addr(%r27)
+	stw	%r4, gelic_valid_size(%r27)
+	stw	%r4, gelic_data_error(%r27)
+
+	// Copy the ethernet header
+	addi	%r3, %r31, ADDR_IN_PAGE(pkt)
+	addi	%r4, %r27, 0x100
+	li	%r5, (pkt_header_size+7)&-8
+	bl	my_memcpy
 
 	// Copy the lv2 ram into the message
 	mr	%r3, %r28
-	addi	%r4, %r31, ADDR_IN_PAGE(message)
-	stw	%r28, 0(%r4)
-	addi	%r4, %r4, 4
+	stw	%r28, 0x100+pkt_header_size(%r27)
+	addi	%r4, %r27, 0x104+pkt_header_size
 	li	%r5, 1024
 	bl	my_memcpy
 	
 	// Increment our lv2 pointer
 	addi	%r28, %r28, 1024
 
-	// Copy our block of data
-	addi	%r3, %r31, ADDR_IN_PAGE(dma_block)
-	mr	%r4, %r27
-	li	%r5, (dma_block_end - dma_block)
-	bl	my_memcpy
-	
 	// Start DMA transfer
 	li	%r3, 1		// bus_id = 1
 	li	%r4, 0		// dev_id = 0
@@ -196,8 +196,7 @@ l_send_lv2_dump:
 	bne	l_done
 
 l_wait_completion:	
-	addi	%r3, %r27, (gelic_dmac_cmd_status - gelic_desc)
-	lwz	%r3, 0(%r3)
+	lwz	%r3, gelic_dmac_cmd_status(%r27)
 	lis	%r4, 0xf000
 	and	%r3, %r3, %r4
 	lis	%r4, 0xa000
@@ -234,26 +233,7 @@ my_memcpy:
 	bne	my_memcpy
 	blr
 
-.align 8
-dma_block:
-gelic_desc:	
-gelic_buf_addr:	
-	.long	0
-gelic_buf_size:	
-	.long	1046
-gelic_next_desc_addr:	
-	.long	0
-gelic_dmac_cmd_status:
-	.long	0xa00c0000
-gelic_result_size:
-	.long	0
-gelic_valid_size:	
-	.long	0
-gelic_data_status:	
-	.long	0
-gelic_data_error:	
-	.long	0
-.org gelic_desc + 0x100
+	.align	8
 pkt:
 pkt_eth:
 pkt_eth_dest:
@@ -272,11 +252,17 @@ pkt_vlan_vlan:
 	.short	0
 pkt_vlan_subtype:
 	.short	0x1337
-message:
-	.space 1028
-.align 8
-dma_block_end:
-	
+	.set	pkt_header_size, . - pkt
+
 payload_end:
 	// fill out to 3840 bytes
 .org 3840
+
+	.set	gelic_buf_addr, 0
+	.set	gelic_buf_size, 4
+	.set	gelic_next_desc_addr, 8
+	.set	gelic_dmac_cmd_status, 12
+	.set	gelic_result_size, 16
+	.set	gelic_valid_size, 20
+	.set	gelic_data_status, 24
+	.set	gelic_data_error, 28
