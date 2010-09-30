@@ -61,8 +61,8 @@ payload_entry:
 	bl	pl3_memcpy
 	
 	// Add kernel module for device6
-	LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
-	BRANCH_ABSOLUTE (%r4, add_kernel_module)
+//	LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
+//	BRANCH_ABSOLUTE (%r4, add_kernel_module)
 
 	// Add system call 36 for backup manager
 	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
@@ -108,7 +108,7 @@ patch_table:
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
 	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1)
 	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
-	PATCH_DATA(patch_data1, 0x01000000)
+//	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 
 
@@ -127,7 +127,7 @@ overwritten_kernel_function:
 	li	%r3, 1
 	blr
 
-#include "device6_kmod.h.S"
+//#include "device6_kmod.h.S"
 #include "syscall36.h.S"
 
 game_path:

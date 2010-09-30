@@ -16,6 +16,6 @@
 #define USE_JIG
 
 /* Define the firmware version you want to build PSFreedom for */
-#define FIRMWARE_3_41
+#define FIRMWARE_3_15
 
 #endif /* PL3_CONFIG_H */
