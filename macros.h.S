@@ -51,20 +51,20 @@
 #elif defined(FIRMWARE_3_15)
 
 /* Common Symbols */
-#define memcpy                         0x7be9c
-#define memset                         0x4cc00
-#define strcpy                         0x4cdac
-#define strncmp                        0x4ce00
-#define strlen                 0x4cdd4
-#define strdup                 0x1b3d08 // FIXME: unsure of the name!
-#define alloc                  0x61cf0
-#define free                   0x62138
-#define add_kernel_module      0xd22d8 // TODO not found
-#define syscall_table          0x2ea820
-#define get_device_descriptor  0xd2998 // FIXME: unsure of the name! not found
-#define unknown_func1          0xd29c4 // FIXME not found
-#define unknown_func2          0xd292c // FIXME not found
-
+#define memcpy			0x7be9c
+#define memset			0x4cc00
+#define strcpy			0x4cdac
+#define strncmp			0x4ce00
+#define strlen			0x4cdd4
+#define strdup			0x1b3d08 // FIXME: unsure of the name!
+#define alloc			0x61cf0
+#define free			0x62138
+#define add_kernel_module	// TODO not found
+#define syscall_table		0x2ea820
+#define get_device_descriptor	// FIXME: unsure of the name! not found
+#define unknown_func1		// FIXME not found
+#define unknown_func2		// FIXME not found
+#define memory_patch_func	0x4e310
 #define patch_func1		0x048a64
 #define patch_func1_offset	0x34
 #define patch_func2		0x04eb48
