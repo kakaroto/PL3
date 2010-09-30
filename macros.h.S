@@ -10,6 +10,9 @@
  *
  */
 
+#ifndef __MACRO_H_S__
+#define __MACRO_H_S__
+
 #include "config.h"
 
 #ifdef FIRMWARE_3_41
@@ -171,7 +174,10 @@ got_current_page:			\
 	nor	temp, temp, temp;	\
 	and	dest, dest, temp;
 
+
 #define PANIC()				\
         li      %r3, 0;			\
         li      %r11, 255;		\
         sc      1;
+
+#endif /* __MACRO_H_S */
