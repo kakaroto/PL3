@@ -12,8 +12,8 @@
 #define __SEND_ETH_H_S__
 
 #include "macros.h.S"
-#include "pl3_memcpy.h.S"
 
+	
 .align 4
 send_eth_init:
 	mflr	%r0
@@ -181,10 +181,11 @@ send_eth:
 	sc	1		// lv1 syscall
 
 	cmpwi	%r3, 0
-	bne	no_vlan
+	bne	l_send_eth_no_vlan
 
 	// Store vlan id
 	sth	%r4, vlan_id(%r31)
+l_send_eth_no_vlan:
 	li	%r4, 0x1337
 	sth	%r4, vlan_type(%r31)
 
@@ -192,22 +193,16 @@ send_eth:
         stw	%r3, gelic_buf_size(%r31)
 	
 	addi	%r4, %r31, eth_data
-	b	l_send_eth_copy_data
 	
-l_send_eth_no_vlan:
-	addi	%r3, %r28, (eth_data_no_vlan - pkt_header)
-        stw	%r3, gelic_buf_size(%r31)
-	addi	%r4, %r31, eth_data_no_vlan
-l_send_eth_copy_data:
 	// Copy the lv2 ram into the message
 	mr	%r3, %r27
 	mr	%r5, %r28
-send_eth_memcpy:
+l_send_eth_memcpy:
 	subi	%r5, %r5, 1		// set %r5 to read the previous byte
 	lbzx	%r6, %r3, %r5		// Copy byte content of %r3[%r5] to %r6
 	stbx	%r6, %r4, %r5		// Store byte %r6 to %r4[%r5]
 	cmpldi	%r5, 0			// if %r5 reaches 0, end it
-	bne	send_eth_memcpy
+	bne	l_send_eth_memcpy
 
 	// Start DMA transfer
 	li	%r3, 1		// bus_id = 1
@@ -254,6 +249,5 @@ l_send_eth_done:
 	.set	vlan_id, 0x10E
 	.set	vlan_type, 0x110
 	.set	eth_data, 0x112
-	.set	eth_data_no_vlan, 0x10E
 
 #endif /* __SEND_ETH_H_S__ */
