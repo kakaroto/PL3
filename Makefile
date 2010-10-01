@@ -9,12 +9,14 @@ PPU_CFLAGS =
 
 HEADERS = shellcode_egghunt.h \
 	default_payload.h \
-	dump_lv2.h
+	dump_lv2.h \
+	payload_dump_elfs.h
 
 PAYLOADS = shellcode_egghunt.bin \
 	shellcode_panic.bin \
 	default_payload.bin \
-	dump_lv2.bin
+	dump_lv2.bin \
+	payload_dump_elfs.bin
 
 all: tools $(PAYLOADS) $(HEADERS)
 
