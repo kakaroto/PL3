@@ -343,34 +343,34 @@ loc_594:
 	blr
 
 memory_patch_table:
-	.quad	0xa0556f3d002cb8fd
+	.quad	HASH_TABLE_1
 	QUAD_MEM2(memory_patch_table_1)
-	.quad	0x8c0a948c000d99b1
+	.quad	HASH_TABLE_3
 	QUAD_MEM2(memory_patch_table_3)
-	.quad	0xa2bc1a5600052adc
+	.quad	HASH_TABLE_4
 	QUAD_MEM2(memory_patch_table_4)
-	.quad	0x6b70280200020017
+	.quad	HASH_TABLE_2
 	QUAD_MEM2(memory_patch_table_2)
 	.quad	0x0000000000000000
 memory_patch_table_1:
-	PATCH_INST(0x305354, li %r3, 130)
-	PATCH_INST(0x5f3fc0, li %r3, 1)
-	PATCH_INST(0x5f3fc4, blr)
+	PATCH_INST(elf1_func1 + elf1_func1_offset, li %r3, 1)
+	PATCH_INST(elf1_func1 + elf1_func1_offset + 4, blr)
+	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
 	.long 0
 memory_patch_table_2:
-	PATCH_INST(0x2ed0c, li %r29, 1)
+	PATCH_INST(elf2_func1 + elf2_func1_offset, li %r29, 1)
 	.long 0
 memory_patch_table_3:
-	PATCH_DATA(0x0022b888, 0x5f746f6f)
-	PATCH_DATA(0x0022b88c, 0x6c322e78)
-	PATCH_DATA(0x0022b890, 0x6d6c2372)
-	PATCH_DATA(0x0022b894, 0x6f6f7400)
+	PATCH_DATA(elf3_data, 0x5f746f6f)
+	PATCH_DATA(elf3_data + 4, 0x6c322e78)
+	PATCH_DATA(elf3_data + 8, 0x6d6c2372)
+	PATCH_DATA(elf3_data + 12, 0x6f6f7400)
 	.long 0
 memory_patch_table_4:
-	PATCH_DATA(0x000d68b8, 0x5f746f6f)
-	PATCH_DATA(0x000d68bc, 0x6c322e78)
-	PATCH_DATA(0x000d68c0, 0x6d6c2372)
-	PATCH_DATA(0x000d68c4, 0x6f6f7400)
+	PATCH_DATA(elf4_data, 0x5f746f6f)
+	PATCH_DATA(elf4_data + 4, 0x6c322e78)
+	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
+	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
 	
 hook_path:
 	.string "PSFreedom"
