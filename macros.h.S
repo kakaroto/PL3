@@ -95,7 +95,7 @@
 #define patch_func5		0x05009c
 #define patch_func5_offset	0x0
 #define patch_data1		0x
-#define rtoc_entry_1		-0x1b80
+#define rtoc_entry_1		0xd58
 #define rtoc_entry_2		-0x6b08
 
 // Payload bases
