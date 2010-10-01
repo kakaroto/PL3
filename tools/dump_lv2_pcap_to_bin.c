@@ -125,7 +125,7 @@ int main (int argc, char *argv[])
     }
     last_offset = offset;
     fseek (out, offset, SEEK_SET);
-    fwrite (buf+4, 1, 1024, out);
+    fwrite (buf + 4, 1, 1024, out);
   }
   printf ("Written %d bytes\n", offset + 1024);
   fclose (in);

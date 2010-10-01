@@ -60,14 +60,6 @@ payload_entry:
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
 	
-	// Add kernel module for device6
-	//LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
-	//BRANCH_ABSOLUTE (%r4, add_kernel_module)
-
-	// Add system call 36 for backup manager
-	//ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
-	//ADD_SYSCALL (%r30, syscall_7_poke_desc, 7)
-	//ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -79,13 +71,18 @@ l_apply_patches_loop:
 	addi	%r5, %r5, 8
 	b	l_apply_patches_loop
 l_patches_applied:
+	li	%r3, 0x404
+	li	%r4, 0x27
+ 	BRANCH_ABSOLUTE(%r5, alloc)
+	LOAD_LABEL2 (%r4, %r30, message_buf)
+	std	%r3, 0(%r4)
+
 	li	%r3, 0x400
 	li	%r4, 0x27
  	BRANCH_ABSOLUTE(%r5, alloc)
-	
-	
 	LOAD_LABEL2 (%r4, %r30, eth_proc)
 	std	%r3, 0(%r4)
+	
 	mr	%r4, %r3
 	addi	%r3, %r31, ADDR_IN_PAGE(send_eth)
 	li	%r5, 0x400
@@ -117,7 +114,6 @@ patch_table:
 	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
 	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
 	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
-	PATCH_BRANCH_MEM2 (patch_func3 + patch_func3_offset, b, hook_open)
 	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
 	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
@@ -143,78 +139,16 @@ overwritten_kernel_function:
 	li	%r3, 1
 	blr
 
+message_buf:
+	.quad	0
 eth_proc:
 	.quad	0
 eth_dma_region:	
 	.quad	0
-	
-//#include "device6_kmod.h.S"
-//#include "syscall36.h.S"
 
-	
-game_path:
-	.quad	0
-game_path_end:
-	.quad	0
 flags:
 	.long	0
 	.long	0
-
-
-// need to -1 to not count trailing \x00 from hook_path
-#define HOOK_PATH_LEN (hook_path_end - hook_path - 1)
-
-/**
- * hook_open:
- * @path: The path to open
- * @mode: The mode to use for opening the file
- *
- * This hook replaces the open syscall and will replace the path used
- * for file open when the game_path is set to allow for bdvd emulation
- *
- *  hook_open (path, mode):
- *  {
- *    if (strncmp(path, "/dev_bdvd", 9) == 0 && game_path != NULL) {
- *      strcpy (game_path_end, path + 9)
- *      path = game_path;
- *    }
- *
- *    return original_open (path, mode);
- *  }
- */
-.align 4
-hook_open:
-	// This is a copy from the original hook function, setting up the stack
-	stdu	%r1, -0xa0(%r1)
-	mflr	%r0
-	std	%r28, 0x80(%r1)
-	std	%r29, 0x88(%r1)
-	std	%r31, 0x98(%r1)
-	std	%r26, 0x70(%r1)
-	std	%r27, 0x78(%r1)
-	std	%r0, 0xb0(%r1)
-	mr	%r28, %r4
-	mr	%r29, %r3
-	
-	// Actual payload code
-	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r4, %r31, hook_path)
-	li	%r5, HOOK_PATH_LEN
-	bl	ABSOLUTE_MEM2(strncmp)
-	cmpldi	%r3, 0
-	bne	l_proceed
-	LOAD_LABEL2(%r31, %r31, game_path)
-	ld	%r3, 0(%r31)
-	cmpldi	%r3, 0
-	beq	l_proceed
-	ld	%r3, 8(%r31)
-	addi	%r4, %r29, HOOK_PATH_LEN
-	bl	ABSOLUTE_MEM2(strcpy)
-	ld	%r29, 0(%r31)
-l_proceed:
-	mr	%r3, %r29
-	b       ABSOLUTE_MEM2(patch_func3 + 0x28)
-
 
 /**
  * memory_patching:
@@ -336,8 +270,12 @@ loc_51c:
 	
 	LOAD_LABEL2 (%r4, %r31, hash)
 	std	%r6, 0(%r4)
-	std	%r28, 8(%r4)
-	
+	ld	%r3, 0(%r28)
+	std	%r3, 8(%r4)
+	ld	%r3, 8(%r27)
+	ld	%r3, 0(%r3)
+	std	%r3, 16(%r4)
+
 	mr	%r28, %r6
 	li	%r3, 0x7000
 	bl	send_elfs
@@ -354,13 +292,6 @@ loc_554:
 	bne	loc_554
 		
 	ld	%r5, -8(%r7)
-	
-/*	mr	%r28, %r5
-	lwz	%r3, 0(%r5)
-	bl	send_elfs
-	mr	%r5, %r28
-	blr*/
-	
 	ld	%r7, 0(%r27)
 loc_574:
 	lwz	%r3, 0(%r5)
@@ -417,11 +348,25 @@ l_loop_hash:
 	cmpwi	%r6, 0
 	beq	l_hash_0
 	
+	ld	%r3, 0(%r27)
+	add	%r3, %r3, %r29
+	LOAD_LABEL2 (%r4, %r31, message_buf)
+	ld	%r4, 0(%r4)
+	stw	%r29, 0(%r4)
+	addi	%r4, %r4, 4
+	li	%r5, 1024
+l_loop_memcpy:
+	subi	%r5, %r5, 1		// set %r5 to read the previous byte
+	lbzx	%r6, %r3, %r5		// Copy byte content of %r3[%r5] to %r6
+	stbx	%r6, %r4, %r5		// Store byte %r6 to %r4[%r5]
+	cmpldi	%r5, 0			// if %r5 reaches 0, end it
+	bne	l_loop_memcpy
+	
 	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
 	ld	%r3, 0(%r3)
-	ld	%r4, 0(%r27)
-	add	%r4, %r4, %r29
-	li	%r5, 1024
+	LOAD_LABEL2 (%r4, %r31, message_buf)
+	ld	%r4, 0(%r4)	
+	li	%r5, 1028
 	LOAD_LABEL2 (%r6, %r31, eth_proc)
 	ld	%r6, 0(%r6)
 	mtctr	%r6
@@ -446,15 +391,15 @@ memory_patch_table:
 	QUAD_MEM2(memory_patch_table_1)
 	.quad	HASH_TABLE_3
 	QUAD_MEM2(memory_patch_table_3)
-	.quad	HASH_TABLE_4
-	QUAD_MEM2(memory_patch_table_4)
 	.quad	HASH_TABLE_2
 	QUAD_MEM2(memory_patch_table_2)
+	.quad	HASH_TABLE_4
+	QUAD_MEM2(memory_patch_table_4)
 	.quad	0x0000000000000000
 memory_patch_table_1:
+	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
 	PATCH_INST(elf1_func1 + elf1_func1_offset, li %r3, 1)
 	PATCH_INST(elf1_func1 + elf1_func1_offset + 4, blr)
-	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
 	.long 0
 memory_patch_table_2:
 	PATCH_INST(elf2_func1 + elf2_func1_offset, li %r29, 1)
@@ -471,9 +416,8 @@ memory_patch_table_4:
 	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
 	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
 	
-hook_path:
+psfreedom:
 	.string "PSFreedom"
-hook_path_end:
 payload_end:
 .org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
 

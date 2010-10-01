@@ -68,7 +68,9 @@ int main (int argc, char *argv[])
   FILE *out = NULL;
   pcaprec_hdr_t header;
   char path[1024];
-  char buf[1024];
+  char buf[1028];
+  int offset;
+  int last_offset = -1;
   int ret;
 
   if (argc != 3) {
@@ -107,7 +109,7 @@ int main (int argc, char *argv[])
       break;
     /* If there's garbage, then ignore it */
     if (header.incl_len != (64 + sizeof(ethernet_hdr_t)) &&
-        header.incl_len != (1024 + sizeof(ethernet_hdr_t))) {
+        header.incl_len != (1028 + sizeof(ethernet_hdr_t))) {
       char *temp = malloc (header.incl_len);
       if (temp == NULL) {
         printf ("memory allocation error: %d\n", header.incl_len);
@@ -149,12 +151,20 @@ int main (int argc, char *argv[])
       }
       printf ("Now writing to file %s\n", path);
     } else if (out) {
-      fwrite (buf, 1, 1024, out);
+      offset = be32_to_cpu (*((int *) buf));
+      if (last_offset > 0 && offset != last_offset &&
+          offset != last_offset + 1024) {
+        printf ("WARNING: offset %X missing!!!\n", last_offset + 1024);
+      }
+      last_offset = offset;
+      fseek (out, offset, SEEK_SET);
+      fwrite (buf + 4, 1, 1024, out);
     }
   }
 
   fclose (in);
   if (out) {
+    fseek (out, 0, SEEK_END);
     printf ("File has %d bytes\n", ftell (out));
     fclose (out);
   }
