@@ -202,6 +202,7 @@ l_proceed:
  *
  *  memory_patching (arg1, arg2):
  *  {
+	static uint32 total = 0	;
 	uint64 *ptr = rtoc[38400][104][24]
 	uint64 *ptr2 = rtoc[3848]
 	
@@ -217,16 +218,18 @@ l_proceed:
 	   memcpy(ptr2[0], ptr[8], ptr[4])
 	} else {
 	   unknown_func1 (arg1, arg2) // 0x4e81c
-	   if (rtoc[16] << 24 >> 56) != 0xFF) {
+	   total += ptr[4]
+	   if (ptr[16] << 24 >> 56) != 0xFF) {
 	     hash = 0
 	     for (i = 0, i < 0x400, i++)
 	       hash ^= ptr2[0][i] // array of 4 bytes
-	     hash = (hash << 32) | rtoc[4]
+	     hash = (hash << 32) | total
+	     total = 0
 	     for (uint64_t p = memory_patch_table, *p, p+=2) {
 	       if (hash != p[0])
 	          continue
 	       for (uint32_t p2 = p[1], *p2, p2+=2)
-	         rtoc[3848][0][p2[0]] = p2[1]
+	         ptr2[0][p2[0]] = p2[1]
 	     }
 	  }
 	}
