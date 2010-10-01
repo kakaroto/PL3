@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <string.h>
+#include <malloc.h>
 
 
 typedef struct pcap_hdr_s {
@@ -65,6 +67,7 @@ int main (int argc, char *argv[])
   FILE *out = NULL;
   int ret;
   char buf[1028];
+  pcaprec_hdr_t header;
   int offset;
   int last_offset = -1;
 
@@ -91,11 +94,24 @@ int main (int argc, char *argv[])
     return -2;
   }
 
+  if (buf[0] != 0xd4 || buf[1] != 0xc3 || buf[2] != 0xb2 || buf[3] != 0xa1) {
+    printf ("Invalid file format\n");
+    return -2;
+  }
 
   while (1) {
-    ret = fread(buf, sizeof(pcaprec_hdr_t), 1, in);
+    ret = fread(&header, sizeof(pcaprec_hdr_t), 1, in);
     if (ret != 1)
       break;
+    /* If there's garbage, then ignore it */
+    if (header.incl_len != (1028 + sizeof(ethernet_hdr_t))) {
+      char *temp = malloc (header.incl_len);
+      ret = fread(temp, 1, header.incl_len, in);
+      if (ret != 1)
+        break;
+      free (temp);
+      continue;
+    }
     ret = fread(buf, sizeof(ethernet_hdr_t), 1, in);
     if (ret != 1)
       break;
