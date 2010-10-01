@@ -23,7 +23,7 @@ all: tools $(PAYLOADS) $(HEADERS)
 tools:
 	$(MAKE) -C tools
 
-$(PAYLOADS): *.h.S
+$(PAYLOADS): *.h.S config.h
 
 %.o : %.S
 	$(PPU_CC) $(PPU_CFLAGS) -c $< -o $@
