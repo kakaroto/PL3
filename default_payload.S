@@ -61,8 +61,8 @@ payload_entry:
 	bl	pl3_memcpy
 	
 	// Add kernel module for device6
-	LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
-	BRANCH_ABSOLUTE (%r4, add_kernel_module)
+	//LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
+	//BRANCH_ABSOLUTE (%r4, add_kernel_module)
 
 	// Add system call 36 for backup manager
 	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
@@ -98,15 +98,15 @@ l_patches_applied:
  *
  */
 patch_table:
-	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2))
+	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2)) //hang
 	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
 	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
 	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
 	PATCH_BRANCH_MEM2 (patch_func3 + patch_func3_offset, b, hook_open)
-	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
+	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0) //80010009 error
 	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
-	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1)
+	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1) //irrelevant
 	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
 	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
@@ -127,8 +127,10 @@ overwritten_kernel_function:
 	li	%r3, 1
 	blr
 
-#include "device6_kmod.h.S"
+//#include "device6_kmod.h.S"
 #include "syscall36.h.S"
+#include "dev_syscalls.h.S"
+
 
 game_path:
 	.quad	0
@@ -137,8 +139,7 @@ game_path_end:
 flags:
 	.long	0
 	.long	0
-
-
+	
 // need to -1 to not count trailing \x00 from hook_path
 #define HOOK_PATH_LEN (hook_path_end - hook_path - 1)
 
@@ -344,13 +345,13 @@ loc_594:
 
 memory_patch_table:
 	.quad	HASH_TABLE_1
-	QUAD_MEM2(memory_patch_table_1)
+	QUAD_MEM2(memory_patch_table_1)	// Play unsigned apps
 	.quad	HASH_TABLE_3
-	QUAD_MEM2(memory_patch_table_3)
-	.quad	HASH_TABLE_4
-	QUAD_MEM2(memory_patch_table_4)
+	QUAD_MEM2(memory_patch_table_3) // Add 'install package files' menu in XMB
 	.quad	HASH_TABLE_2
-	QUAD_MEM2(memory_patch_table_2)
+	QUAD_MEM2(memory_patch_table_2)	// Allow the installation of debug .pkg files
+	.quad	HASH_TABLE_4
+	QUAD_MEM2(memory_patch_table_4) // adds 'install package files' for ingame XMB
 	.quad	0x0000000000000000
 memory_patch_table_1:
 	PATCH_INST(elf1_func1 + elf1_func1_offset, li %r3, 1)
@@ -371,7 +372,7 @@ memory_patch_table_4:
 	PATCH_DATA(elf4_data + 4, 0x6c322e78)
 	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
 	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
-	
+	.long 0	
 hook_path:
 	.string "PSFreedom"
 hook_path_end:
