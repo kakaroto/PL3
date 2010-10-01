@@ -108,7 +108,7 @@ patch_table:
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
 	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1) //irrelevant
 	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
-	PATCH_DATA(patch_data1, 0x01000000)
+//	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 
 
