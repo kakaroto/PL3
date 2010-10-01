@@ -103,19 +103,19 @@
 #define RESIDENT_PAYLOAD_MAXSIZE   (1296)
 
 #define HASH_TABLE_1		0xA00A6748002B0669
-#define HASH_TABLE_2		0
+#define HASH_TABLE_2		0x6331A81B0001F7AC
 #define HASH_TABLE_3		0x6A05EE84000BEBFC
-#define HASH_TABLE_4		0
+#define HASH_TABLE_4		0xBF5574E70004FDD5
 
-#define elf1_func1		0
+#define elf1_func1		0x5B009C
 #define elf1_func1_offset	0x00
-#define elf1_func2		0
+#define elf1_func2		0x219B44
 #define elf1_func2_offset	0x00
-#define elf2_func1		0
+#define elf2_func1		0xe708
 #define elf2_func1_offset	0x00
 	
-#define elf3_data		0
-#define elf4_data		0
+#define elf3_data		0x001EAE98
+#define elf4_data		0x000D1D00
 	
 #endif
 
