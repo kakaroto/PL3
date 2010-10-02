@@ -68,7 +68,7 @@ int main (int argc, char *argv[])
   int ret;
   char buf[1028];
   pcaprec_hdr_t header;
-  int offset;
+  int offset = -1;
   int last_offset = -1;
 
   if (argc != 3) {
@@ -94,10 +94,14 @@ int main (int argc, char *argv[])
     return -2;
   }
 
-  if (buf[0] != 0xd4 || buf[1] != 0xc3 || buf[2] != 0xb2 || buf[3] != 0xa1) {
-    printf ("Invalid file format\n");
-    return -2;
+  if (buf[0] != '\xd4' ||
+      buf[1] != '\xc3' ||
+      buf[2] != '\xb2' ||
+      buf[3] != '\xa1') {
+    printf ("Invalid file format : 0x%X\n", ((int *)buf)[0]);
+    return -4;
   }
+
 
   while (1) {
     ret = fread(&header, sizeof(pcaprec_hdr_t), 1, in);
@@ -107,7 +111,7 @@ int main (int argc, char *argv[])
     if (header.incl_len != (1028 + sizeof(ethernet_hdr_t))) {
       char *temp = malloc (header.incl_len);
       ret = fread(temp, 1, header.incl_len, in);
-      if (ret != 1)
+      if (ret != header.incl_len)
         break;
       free (temp);
       continue;
@@ -127,7 +131,11 @@ int main (int argc, char *argv[])
     fseek (out, offset, SEEK_SET);
     fwrite (buf + 4, 1, 1024, out);
   }
-  printf ("Written %d bytes\n", offset + 1024);
+  if (offset > 0)
+    printf ("Written %d bytes\n", offset + 1024);
+  else
+    printf ("Didn't find any data\n");
+
   fclose (in);
   fclose (out);
 
