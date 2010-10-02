@@ -67,6 +67,58 @@
 #define elf3_data		0x0022b888
 #define elf4_data		0x000d68b8
 	
+#elif defined(FIRMWARE_3_15)
+
+/* Common Symbols */
+#define memcpy			0x7be9c
+#define memset			0x4cc00
+#define strcpy			0x4cdac
+#define strncmp			0x4ce00
+#define strlen			0x4cdd4
+#define strdup			0x1b3d08 // FIXME: unsure of the name!
+#define alloc			0x61cf0
+#define free			0x62138
+#define add_kernel_module	// TODO not found
+#define syscall_table		0x2ea820
+#define get_device_descriptor	// FIXME: unsure of the name! not found
+#define unknown_func1		// FIXME not found
+#define unknown_func2		// FIXME not found
+#define memory_patch_func	0x4e310
+#define patch_func1		0x048a64
+#define patch_func1_offset	0x34
+#define patch_func2		0x04eb48
+#define patch_func2_offset	0x2C
+#define patch_func3		0x2aabec
+#define patch_func3_offset	0x0
+#define patch_func4		0x04e7e4
+#define patch_func4_offset	0x0
+#define patch_func5		0x05009c
+#define patch_func5_offset	0x0
+#define patch_data1		0x3B9910
+#define rtoc_entry_1		0xd58
+#define rtoc_entry_2		-0x6b08
+
+// Payload bases
+#define MEM_BASE2 		(0x50608)
+
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+
+#define HASH_TABLE_1		0xA06FF29B002C284A
+#define HASH_TABLE_2		0x6B7028220001E53E
+#define HASH_TABLE_3		0x8C0A948C000C7AA6
+#define HASH_TABLE_4		0x7FE3F53F000508D5
+
+#define elf1_func1		0x5e3aec
+#define elf1_func1_offset	0x00
+#define elf1_func2		0x2fb05c
+#define elf1_func2_offset	0x00
+#define elf2_func1		0xe6a8
+#define elf2_func1_offset	0x00
+
+#define elf3_data		0x00204048
+#define elf4_data		0x000d3e10
+
+
 #elif defined(FIRMWARE_3_01)
 
 #define memcpy 			0x77E84

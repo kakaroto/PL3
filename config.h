@@ -17,6 +17,7 @@
 
 /* The firmware version supported gets defined in the Makefile */
 //#define FIRMWARE_3_41
+//#define FIRMWARE_3_15
 //#define FIRMWARE_3_01
 
 #endif /* PL3_CONFIG_H */
