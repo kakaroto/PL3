@@ -106,7 +106,7 @@
 #define HASH_TABLE_1		0xA06FF29B002C284A
 #define HASH_TABLE_2		0x6B7028220001E53E
 #define HASH_TABLE_3		0x8C0A948C000C7AA6
-#define HASH_TABLE_4		0xa2bc1a5600052adc
+#define HASH_TABLE_4		0x7FE3F53F000508D5
 
 #define elf1_func1		0x5e3aec
 #define elf1_func1_offset	0x00
@@ -116,7 +116,7 @@
 #define elf2_func1_offset	0x00
 
 #define elf3_data		0x00204048
-#define elf4_data		0x00204048
+#define elf4_data		0x000d3e10
 
 
 #elif defined(FIRMWARE_3_01)
