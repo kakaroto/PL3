@@ -98,20 +98,17 @@ l_patches_applied:
  *
  */
 patch_table:
-//	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2)) //hang
-//	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
-//	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
-	PATCH_INST(patch_func1 + patch_func1_offset, nop)
-	PATCH_INST(patch_func1 + patch_func1_offset + 4, nop)
-	PATCH_INST(patch_func1 + patch_func1_offset + 8, nop)
+	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2)) //hang
+	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
+	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
 	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
-//	PATCH_BRANCH_MEM2 (patch_func3 + patch_func3_offset, b, hook_open)
-//	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0) //80010009 error
-//	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
-//	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
-//	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1) //irrelevant
-//	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
-//	PATCH_DATA(patch_data1, 0x01000000)
+	PATCH_BRANCH_MEM2 (patch_func3 + patch_func3_offset, b, hook_open)
+	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0) //80010009 error
+	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
+	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
+	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1) //irrelevant
+	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
+	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 
 

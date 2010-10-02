@@ -393,8 +393,8 @@ memory_patch_table:
 	QUAD_MEM2(memory_patch_table_3)
 	.quad	HASH_TABLE_2
 	QUAD_MEM2(memory_patch_table_2)
-//	.quad	HASH_TABLE_4
-//	QUAD_MEM2(memory_patch_table_4)
+	.quad	HASH_TABLE_4
+	QUAD_MEM2(memory_patch_table_4)
 	.quad	0x0000000000000000
 memory_patch_table_1:
 	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
