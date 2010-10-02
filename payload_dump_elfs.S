@@ -110,19 +110,16 @@ l_patches_applied:
  *
  */
 patch_table:
-//	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2))
-//	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
-//	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
-	PATCH_INST(patch_func1 + patch_func1_offset, nop)
-	PATCH_INST(patch_func1 + patch_func1_offset + 4, nop)
-	PATCH_INST(patch_func1 + patch_func1_offset + 8, nop)
+	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2))
+	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
+	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
 	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
-//	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
-//	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
-//	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
-//	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1)
-//	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
-//	PATCH_DATA(patch_data1, 0x01000000)
+	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
+	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
+	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
+	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1)
+	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
+	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 
 
@@ -390,15 +387,14 @@ hash:
 	.space 64
 
 memory_patch_table:
-	.quad	0x0000000000000000
 	.quad	HASH_TABLE_1
 	QUAD_MEM2(memory_patch_table_1)
 	.quad	HASH_TABLE_3
 	QUAD_MEM2(memory_patch_table_3)
 	.quad	HASH_TABLE_2
 	QUAD_MEM2(memory_patch_table_2)
-	.quad	HASH_TABLE_4
-	QUAD_MEM2(memory_patch_table_4)
+//	.quad	HASH_TABLE_4
+//	QUAD_MEM2(memory_patch_table_4)
 	.quad	0x0000000000000000
 memory_patch_table_1:
 	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
@@ -419,6 +415,7 @@ memory_patch_table_4:
 	PATCH_DATA(elf4_data + 4, 0x6c322e78)
 	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
 	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
+	.long 0
 	
 psfreedom:
 	.string "PSFreedom"

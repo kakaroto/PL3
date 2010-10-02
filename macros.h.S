@@ -94,7 +94,7 @@
 #define patch_func4_offset	0x0
 #define patch_func5		0x05009c
 #define patch_func5_offset	0x0
-#define patch_data1		0x
+#define patch_data1		0x3B9910
 #define rtoc_entry_1		0xd58
 #define rtoc_entry_2		-0x6b08
 
@@ -103,20 +103,20 @@
 
 #define RESIDENT_PAYLOAD_MAXSIZE   (1296)
 
-#define HASH_TABLE_1		0xa0556f3d002cb8fd
-#define HASH_TABLE_2		0x6b70280200020017
-#define HASH_TABLE_3		0x8c0a948c000d99b1
+#define HASH_TABLE_1		0xA06FF29B002C284A
+#define HASH_TABLE_2		0x6B7028220001E53E
+#define HASH_TABLE_3		0x8C0A948C000C7AA6
 #define HASH_TABLE_4		0xa2bc1a5600052adc
 
-#define elf1_func1		0x5f3fc0
+#define elf1_func1		0x5e3aec
 #define elf1_func1_offset	0x00
-#define elf1_func2		0x305354
+#define elf1_func2		0x2fb05c
 #define elf1_func2_offset	0x00
-#define elf2_func1		0x2ed0c
+#define elf2_func1		0xe6a8
 #define elf2_func1_offset	0x00
-	
-#define elf3_data		0x0022b888
-#define elf4_data		0x000d68b8
+
+#define elf3_data		0x00204048
+#define elf4_data		0x00204048
 	
 
 #elif defined(FIRMWARE_3_01)
