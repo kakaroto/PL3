@@ -136,12 +136,12 @@ int main (int argc, char *argv[])
       uint32_t thingy = be32_to_cpu (((uint32_t *)buf)[1]);
 
       if (out) {
-        printf ("File has %d bytes\n", ftell (out));
+        printf ("File has %ld bytes\n", ftell (out));
         fclose (out);
         out = NULL;
       }
 
-      snprintf (temp, sizeof(temp), "%0.8X%0.8X", hash, thingy);
+      snprintf (temp, sizeof(temp), "%08X%08X", hash, thingy);
       snprintf (path, sizeof(path), "%s/%s.bin", argv[2], temp);
       out = fopen (path, "wb");
       if (out == NULL) {
@@ -165,7 +165,7 @@ int main (int argc, char *argv[])
   fclose (in);
   if (out) {
     fseek (out, 0, SEEK_END);
-    printf ("File has %d bytes\n", ftell (out));
+    printf ("File has %ld bytes\n", ftell (out));
     fclose (out);
   }
 

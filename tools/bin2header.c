@@ -3,12 +3,19 @@
 #include <stdio.h>
 #include <string.h>
 
-static const char header[] = \
+static const char ifdef_guard_header[] = \
   "#ifndef __%s__\n" \
-  "#define __%s__\n\n" \
-  "static const u8 %s[] = {\n ";
+  "#define __%s__\n\n";
 
-static const char footer[] = "\n};\n\n#endif\n";
+static const char ifdef_guard_footer[] = "\n#endif\n";
+
+static const char array_header[] = "static const u8 %s[] = {\n ";
+
+static const char array_footer[] = "\n};\n\n";
+
+static const char macro_header[] = "#define %s_macro \\\n ";
+
+static const char macro_footer[] = "\n";
 
 int main(int argc, char **argv)
 {
@@ -33,18 +40,35 @@ int main(int argc, char **argv)
     return -3;
   }
 
-  fprintf(fo, header, argv[3], argv[3], argv[3]);
+  fprintf(fo, ifdef_guard_header, argv[3], argv[3]);
+  fprintf(fo, array_header, argv[3]);
 
   idx = 0;
   while ((r = fread(buf, 1, sizeof(buf), fi)) > 0) {
     for (i = 0; i < r; i++) {
       fprintf(fo, " 0x%.2x,", buf[i] & 0xff);
       if (++idx % 8 == 0)
-	fprintf(fo, "\n ");
+        fprintf(fo, "\n ");
     }
   }
 
-  fprintf(fo, "%s", footer);
+  fprintf(fo, "%s", array_footer);
+
+  fseek(fi, 0, SEEK_SET);
+
+  fprintf(fo, macro_header, argv[3]);
+
+  idx = 0;
+  while ((r = fread(buf, 1, sizeof(buf), fi)) > 0) {
+    for (i = 0; i < r; i++) {
+      fprintf(fo, " 0x%.2x,", buf[i] & 0xff);
+      if (++idx % 8 == 0)
+        fprintf(fo, " \\\n ");
+    }
+  }
+
+  fprintf(fo, macro_footer);
+  fprintf(fo, ifdef_guard_footer);
 
   fclose(fi);
   fclose(fo);

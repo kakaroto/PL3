@@ -23,3 +23,4 @@ syscall_6_peek:
 syscall_7_poke:
 	std	%r4, 0x00(%r3)
 	blr	
+
