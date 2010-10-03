@@ -168,7 +168,7 @@
 	
 #define elf3_data		0x001EAE98
 #define elf4_data		0x000D1D00
-	
+
 #endif
 
 	

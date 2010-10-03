@@ -6,7 +6,7 @@
 static const char header[] = \
   "#ifndef __%s__\n" \
   "#define __%s__\n\n" \
-  "static const u8 %s[] = {\n ";
+  "static const char %s[] = {\n ";
 
 static const char footer[] = "\n};\n\n#endif\n";
 
