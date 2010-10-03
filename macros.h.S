@@ -118,6 +118,51 @@
 #define elf3_data		0x00204048
 #define elf4_data		0x000d3e10
 
+#elif defined(FIRMWARE_3_10)
+
+#define memcpy 			0x7BE98
+#define memset 			0x4CBFC
+#define strcpy 			0x4CDA8
+#define strncmp	 		0x4CDFC
+#define strlen			0x4CDD0
+#define alloc 			0x61CEC
+#define free 			0x62134
+#define syscall_table		0x2EA820
+#define memory_patch_func	0x4E30C
+
+#define patch_func1		0x48A60
+#define patch_func1_offset	0x34
+#define patch_func2		0x4EB44
+#define patch_func2_offset	0x2C
+#define patch_func3		0x2AABF4
+#define patch_func3_offset	0x0
+#define patch_func4		0x4E7E0
+#define patch_func4_offset	0x0
+#define patch_func5		0x50098
+#define patch_func5_offset	0x0
+#define patch_data1		0x3B9990
+#define rtoc_entry_1		0xD60
+#define rtoc_entry_2		-0x6B08
+
+#define MEM_BASE2 		(0x50604)
+
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+
+#define HASH_TABLE_1		0xA06F35DB002C221E
+#define HASH_TABLE_2		0x6B7028220001E535
+#define HASH_TABLE_3		0x8C0A948C000C79E5
+#define HASH_TABLE_4		0x7FE3F5CF000508A4
+
+#define elf1_func1		0x5E2C7C
+#define elf1_func1_offset	0x00
+#define elf1_func2		0x2FAA14
+#define elf1_func2_offset	0x00
+#define elf2_func1		0xE6A8
+#define elf2_func1_offset	0x00
+
+#define elf3_data	0x203e90
+#define elf4_data	0xd3e28
+
 
 #elif defined(FIRMWARE_3_01)
 
