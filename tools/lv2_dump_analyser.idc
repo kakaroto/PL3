@@ -6,7 +6,7 @@
  *
  * This software is distributed under the terms of the GNU General Public
  * License ("GPL") version 3, as published by the Free Software Foundation.
- *   
+ *
  */
 
 #include <idc.idc>
@@ -189,7 +189,7 @@ static get_hvcall_rawname(num)
         else
                             return form("undocumented_function_%d", num);
 }
- 
+
 static get_lv2_rawname(num)
 {
         if(     num ==   0) return "not_implemented";
@@ -219,7 +219,6 @@ static get_lv2_rawname(num)
 
 
 static NameHypercalls(void) {
-        
   auto addr, ea, num, lookup, total;
 
   total=0;
@@ -239,7 +238,7 @@ static NameHypercalls(void) {
 	num = Dword(addr) & 255;
 	break;
       }
-    } 
+    }
 
     if (num == -1) {
       Message("Failed to find hypercall id at offset 0x%06X\n", ea);
@@ -249,7 +248,7 @@ static NameHypercalls(void) {
     }
     ea = ea + 4;
   }
- 
+
   Message("\n*** Finished marking hypercalls. Found %d !\n", total);
 }
 
@@ -257,7 +256,7 @@ static CreateOpdStructure(void) {
   auto id;
 
   Message("Creating structure OPD_s\n");
-  
+
   id = GetStrucIdByName("OPD_s");
   if (id != -1) {
     Message("Structure OPD_s already exists. Renaming it\n");
@@ -289,7 +288,7 @@ static CreateOpd (toc_addr) {
   CreateOpdStructure();
 
   MakeName(toc_addr, "TOC");
-  
+
   Message("Defining OPD section entries\n");
 
   ea = toc_addr - 0x8000;
@@ -404,7 +403,7 @@ static CreateSyscallTable(syscall_table) {
 
 static main() {
   auto syscall_table, toc;
-  
+
   syscall_table = FindSyscallTable();
 
   if (syscall_table == BADADDR) {
