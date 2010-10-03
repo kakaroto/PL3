@@ -1,0 +1,267 @@
+How to port to a new Firmware (but < 3.41) :
+
+First disable the JIG mode, and try to bruteforce the position of the payload
+with a panic payload (add 'b panic' at payload_start in dump_lv2.S), until you
+can get a hit reliably (see http://pastie.org/1195108).
+
+Then replace the payload with the original dump_lv2 payload, and connect the
+ps3 through ethernet to your PC and run wireshark to capture your dump... 
+Run the payload, then once the ps3 panics (to tell you it's done), you can
+save your wireshark dump to a file in .pcap format.
+
+Then run the tools/dump_lv2_pcap_to_bin program to dump the lv2 binary from the
+pcap file captured by wireshark.
+
+Open the dump with IDA, set the processor to 'ppc', then run the
+dump_lv2_analyzer.idc IDC file from the tools directory to get it analyzed and
+follow the instructions (set TOC table in IDA options).
+
+Once you are done, set the TOC_TABLE value in PSFreedom/PSGroove and set the
+syscall_table define in macros.h.S.
+
+Then look for the position of the JIG response offset in the dump by searching
+for a recognizable string you previously put in there.
+You can now set the JIG response address in PSGroove/PSFreedom and test JIG mode
+with a panic payload and the egghunter shellcode.
+
+You can  then start looking for the various patch_funcX functions...
+(For this you will most likely need a clean/unmodified dump of an already
+supported firmware, so you can compare the asm code to find the right offsets)
+
+The first step would be to go to label 'syscall_open' (set by the IDC) and look
+for the hooked_open, as well as alloc/free. Then follow the hooked_open proc to
+find the 'strlen' symbol (first bl in the function).
+
+Once you have those, you should go to the strlen function then can disable the
+'chart' mode in IDA  (press spacebar), then look at the function right below
+strlen, it will be strncmp, and the function right above strlen will be strcpy.
+You can also find memset here, if you scroll up from strcpy, the memset function
+will be 4 functions above strcpy (so 3 functions are between them).
+
+Now you need to find the functions to patch.. let's start with function 1 :
+search for binary data in IDA and look for "3960006344000022", it should give
+you one match. go to it, and that's your patch_func1, the data being patched is
+right after the 'hvsc' call, so count the number of instructions since the start
+of patch_func1 up to, and including, the 'hvsc' instruction, and multiply by 4,
+that should give you patch_func1_offset.
+
+Now to find the patch_func2, search for binary data in IDA and look for :
+"380000013FE08001", it should give you one result, that's your patch_func2. Now
+find the first 'bl' inside that function, and count how many instructions are
+before the 'bl' (excluding the bl instruction), multiply by 4 and that's your
+patch_func2_offset.
+Now that function that gets branched to in the 'bl' instruction at patch_func2 +
+patch_func2_offset, that's your 'memory_patch_func'.
+Now scroll a bit lower, and you should see a "ld %r28, qword_XYZXYZ", that qword
+entry in the TOC is the 'rtoc_entry_2' value. Press the 'q' key while selecting
+it to make IDA transform it into "-0xABCD(%rtoc)".. the -0xABCD is the value
+you want for rtoc_entry_2.
+
+Now for patch_func3, that's the easiest, it's the 'hooked_open' function you 
+found in the syscall_open earlier. The offset should be 0 here.
+
+Now time for patch_func4, search for binary data in IDA and look for :
+"3C00800160000017", it should give you two results. Look at them both, and
+compare with the original function from a supported firmware dump. It should be
+pretty obvious which one is patch_func4.. one of them is exactly the same, the
+other is extremely different. Now you found patch_func4
+
+Time for patch_func5, this one is easy too, if you right click on it in the
+support firmware's dump and you choose "Chart of xrefs to", you will see that it
+gets called by almost every system call, so choose any one of those syscalls and
+go to them, for the sake of this guide, let's say we choose randomly syscall_29
+Go to syscall_29 in the new dump and compare it with the other dump, and you
+should spot the patch_func5 right away, it should be the fourth 'bl' call and
+the last 'bl' before the 'bne' of the first block of this syscall (in IDA chart
+view).
+
+Now you need to find the slightly more difficult remaining offsets : memcpy,
+patch_data1, rtoc_entry_1, and the overwritten function to use for MEM_BASE2.
+
+Let's start with MEM_BASE2. Go to 'patch_func5', disable IDA's 'chart' mode,
+then scroll down, all the way to the end of patch_func5, you will find a total
+of 4 functions separating patch_func5 with the function in MEM_BASE2...
+With MEM_BASE2 being the 5th function stacked after patch_func5. You can also
+add 0x56C to the patch_func5 and see if it gives you the right function, it
+should but it's not guaranteed.. it will at least get you closer. You should
+now switch back to 'chart' mode in IDA and quickly compare that function's
+flowchart with the one from the supported firmware's dump. They should be the
+same.
+Now let's make sure that the RESIDENT_PAYLOAD_MAXSIZE is correct.. go to the end
+of this function, remove IDA's chart mode, and right where you see the comment
+"End of function sub_XYZ", take that position, substract it from MEM_BASE2 and
+you've got your RESIDENT_PAYLOAD_MAXSIZE (should be 1296).
+
+Now let's try to find rtoc_entry1.. if you go to the rtoc_entry_1 offset in the
+supported firmware's dump (TOC+rtoc_entry_1), press 'N' and rename that data
+into 'rtoc_entry_1'. You will see IDA shows a 'DATA XREF' next to it that points
+to a function, click on it. you found the function that uses that TOC entry.
+Now disable chart mode in IDA and scroll up to the previous function, you will
+find a small function that calls lv1_pause!
+This is our chance, looking at the hex values of the "li %r11, 9; hvsc", start a
+binary search in the new firmware's IDA instance and look for "3960000944000022"
+It should give you a single result, go to it, you found your lv1_pause call in
+the function just above the one using rtoc_entry1, disable IDA's chart mode,
+scroll down to the function below it and reenable chart mode. Now compare this
+function with the one from the supported firmware, you should see that there is
+a 'ld %r9, rtoc_entry_1' right below a 'bl __asm_func_dummy_X'. So look for that
+'bl' in your dump (should be the first one), and you will find the rtoc_entry_1
+being referenced in the line right below it. select it and press 'Q' in IDA to
+make it show you the actual offset value in the "0xABCD(%rtoc)" form. You found
+rtoc_entry_1
+
+Now we need to find the slightly harder patch_data1 offset. In your supported
+firmware's dump, go to the patch_data1 offset, press 'N' and rename it. Now you
+will see a "DATA XREF" next to it which points to a "ROM:.." location, click on
+it. You will find yourself on an entry in the TOC... rename that entry as
+'patch_data1_toc' and look for the "DATA XREF" that uses it, there should be
+two functions shown that references that patch_data1_toc entry, try them both, 
+first rename them into something easier to read, like 'patch_data1_func1' and
+'patch_data1_func2', then go to each function and right click on it and choose
+"Chart of xrefs to". Both functions should only be called by one other function
+in its 'xrefs to' chart. One of the 'patch_data1_funcX' function will be called
+by some other random sub_XYZ function, but the other one will be called by
+syscall_470.. yeay, we got an entry point to this! Now go to syscall_470.
+Switch back to your new dump and also go there to syscall_470, now compare both
+syscalls, it should be fairly easy to spot the patch_data1_func1 function in
+the syscall, it would be the last 'bl' in the flowchart. Now jump to it and look
+for the reference to patch_data1_toc, it should be the first 'ld' instruction
+of the patch_data1_func1 function, now you found it, jump to it.
+You are now in the TOC of your new firmware's dump, and you see the value that
+TOC entry points to.. it should be 0x80000000XYABCDEF. That's your patch_data1
+value.. remove the 0x80000000 prefix, and set the XYABCDEF value as the
+patch_data1 in macros.h.S
+
+Now the 'memcpy' function is the only one remainingd! This one is easy to find
+but the technique is a bit trickier.. Through all of this, we didn't yet find by
+luck a function that uses memcpy (unlike alloc/free/strlen/strcpy/strncmp), so
+we need to find it different, if we go to memcpy, we cannot ask IDA to draw
+a "Chart of xrefs to" for it, don't even try it, it's used in so many places
+that IDA or the chart-viewer app will freeze! What we can do however is disable
+IDA's "chart" mode, and go to the memcpy function declaration, then we should
+see IDA being nice enough to give two "CODE XREF".. let's follow those two and
+see who calls those functions, and try to drill down from there until we find
+the memcpy location. Luckily, one of those two functions uses hypercalls as you
+can see the 'lv1_undocumented_function_109' and 'lv1_undocumented_function_107'
+comments as soon as we enter one of the xref functions (if you don't see this
+maybe IDA gave you different xrefs, it's ok, continue reading). So we see that
+memcpy is used between a hvsc 109 and a hvsc 107. We can't really do a binary
+search on the "li %r11, 0x6B; hvsc" since there's a "ld %r7, 0x10(%r31)" in the
+middle, and a different kernel build might use a different register or a
+different offset to %r31, so let's stay safe, and let's search only for the 
+"li %r11, 0x6B", so open the binary search of IDA and search for "3960006B". It
+should give you 3 results (maybe not, depending on the dump you're analyzing).
+Go to each one of them, they should appear as the only hypercall in the function
+for two of them, but for one of the functions found, it will be between a call
+to hvsc 109 and hvsc 107. You found your memcpy!
+
+
+All right, we're done with the first part of the analysis, this whole thing
+should have taken about an hour to do or less (unless you're writing a guide
+at the same time :p).
+
+Now let's start part 2, finding the hashes for the hash table and the offsets
+for the user-space ELF files.
+Let's compile our payloads, add the version we're trying to add in the Makefile
+by adding it to SUPPORTED_FIRMWARES and by adding a rule for %_X_YZ.o: %.s which
+defines the -DFIRMWARE_X_YZ, then type make.
+In the project, replace the default_payload_X_YZ by payload_dump_elfs_X_YZ in
+order to use the payload_dump_elfs.
+
+Now connect the PS3 with the ethernet cable to the PC and run wireshark, let it
+boot, it should in theory be able to boot into the XMB if you found all the
+correct offsets. Once it boots, you will see a lot of packets being captured
+by wireshark. let it finish booting, then turn it off, save the wireshark dump
+to a file, then run the ./tools/dump_elfs_pcap_to_bin utility on the .pcap file,
+giving it a directory to output the files to.
+
+Now search (grep) for the word 'category_game' in that directory, and it should
+give you one file matching the string, the filename of that file will be the
+value of HASH_TABLE_3 (prefix it with '0x').
+Hex edit that file. In it, you will find multiple references to 'category_game',
+you only need to find the one that says 'category_game.xml#root' then followed
+by a few 0x00 values. The value of 'elf3_data' is the offset where the '.xml'
+starts in that string.
+
+
+Now look for a file with a size of 6MB or 7MB. This is the VSH (XMB) ELF file,
+its filename is the HASH_TABLE_1 value.
+Open that file in IDA and let it analyze it, it will complain a few times about
+wrong sizes and missing stuff, ignore those warnings. Then once it loads and
+finishes the file analyzis, do a binary search for "68000001540007FE". It should
+find two results, you need the first one. The two results point to very similar
+functions, but one of them contains a 'nop' after the 'bl' while the other
+doesn't. The one you want is the one without the 'nop'. The offset of this
+function is the elf1_func1 offset. But be aware that IDA will load the data
+with a start address of 0x1000, so make sure you substract 0x1000 from the
+offset reported by IDA before setting it to elf1_func1.
+
+
+Now let's find elf1_func2, do a binary search for "396000013803FF7F". It should
+find one result, go to it, it should be a "li %r11, 1; addi %r0, %r3, -0x81"
+instructions, the offset for elf1_func2 that you need is the offset of the
+instruction "lhz %r3, 4(%r31)" just above that. You have found the elf1_func2
+offset, but don't forget to substract 0x1000 from the offset reported by IDA.
+
+You are ready for the second set of elf dumps! Now recompile everything and run
+the exploit once more, but DO NOT connect the ethernet cable! Let the PS3 boot
+and connect your PS3 controller. You should now see the "Install package files"
+option in the XMB. Congratulations! But it's not finished.
+
+Now insert a USB device with a homebrew .pkg file on it, and then connect the
+ethernet cable to your PC. Once the ethernet cable is connected, open the
+"Install package files" menu and click on your .pkg to install it. It will
+fail with a 0x80029519 error. It's ok! You can also see a new set of packets
+just got captured by wireshark.
+Now you have two choices, either you open an existing application installed on
+your PS3, and once you do that, press the PS button on your controller to open
+the in-game XMB (which will freeze). Or you can just shut down your PS3 and do
+this later.
+
+Now save your wireshark dump to a new .pcap file, and extract its content with
+the tools/dump_elfs_pcap_to_bin utility. You will find a few new files extracted
+but you need to notice the output of the tool! The very first file it will write
+is the HASH_TABLE_2 value, it should be about 280K or 300K in size.
+
+Open the file in IDA and set the processor type to 'ppc' then click ok. Now
+search for the binary value "3929FFFF793D0FE0", it should give you one result,
+open it, you will see random data (this is not a full ELF, only part of it, so
+IDA cannot analyze it). press the 'C' key for IDA to transform it into code. You
+should see the instructions "addi %r9, %r9, -1; rldicl %r29, %r9, 1, 63". What
+you need is the offset of the 'rldicl' instruction.. so the result of the search
++ 4 bytes. That's the elf2_func1 value that you want.. Note that since this
+wasn't analyzed by IDA and not recognized as an ELF, so the data is not shifted
+so the offset value given to you by IDA is the offset you want, do not substract
+0x1000 from it, use it as is!
+
+Now the only thing remaining is the HASH_TABLE_4 and elf4_data! If you did open
+a game earlier for the second set of elf dumps, and tried to access the in-game
+XMB, then skip this step, otherwise... :
+--Now recompile everything and rerun the exploit, you should now be able to both
+--install and run homebrew applications! once you have installed and ran an
+--application, connect the ethernet cable to your PC, start wireshark, then you
+--can press the PS button on the controller to bring the in-game XMB. It will
+--crash, but that's all you need. Now shut down the PS3, and save the wireshark
+--dump and run the tools/dump_elfs_pcap_to_bin on it.
+
+Now this is where we join for the final step, search in the files (grep) for the
+"category_game.xml" string, you should find one file (if you only search for
+"category_game", you will find two files, you need the biggest file of the two)
+Now you need to do the same thing as for elf3_data, look for the 'cateogry_game'
+string in the file with a hex editor until you find "category_game.xml#root"
+followed by a few 0x00, and you need the offset of the start of the ".xml".
+That's your elf4_data! Don't forget to copy the filename (prefixed with '0x')
+to the HASH_TABLE_4 value.
+
+You can now disable the dump_elfs payload and return everything back to normal,
+i.e. use default_payload. Everything should work now! Congratulations!
+
+Now you just need to test it, boot it up, look for the menu, install a .pkg file
+and try to run it, then make sure the in-game XMB works as it should and you're
+done! git commit all your changes, push them and make sure they get integrated
+with the upstream repository!
+
+All this should take between one and two hours of work.
+
+Good luck!
+KaKaRoTo
