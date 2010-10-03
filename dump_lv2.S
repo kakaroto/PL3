@@ -88,5 +88,3 @@ message:
 #include "send_eth.h.S"
 
 payload_end:
-	// fill out to 3840 bytes
-.org 3840
