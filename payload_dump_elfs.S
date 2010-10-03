@@ -420,6 +420,3 @@ psfreedom:
 	.string "PSFreedom"
 payload_end:
 .org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
-
-// fill out to 3840 bytes
-.org 3840

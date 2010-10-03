@@ -23,3 +23,4 @@ pl3_memcpy:
 	blr
 
 #endif /* __PL3_MEMCPY_H_S__ */
+

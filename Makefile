@@ -25,10 +25,30 @@ ALL_PAYLOADS = $(PAYLOADS) $(FW_PAYLOADS_EXT)
 
 HEADERS = $(ALL_PAYLOADS:%.bin=%.h)
 
-all: tools $(ALL_PAYLOADS) $(HEADERS)
+MAX_PAYLOAD_SIZE=3840
+
+all: tools $(ALL_PAYLOADS) $(HEADERS) check_sizes
 
 tools:
 	$(MAKE) -C tools
+
+check_sizes: $(ALL_PAYLOADS)
+	@error=0; \
+	 for f in $+; do \
+		size=`ls -l $$f | awk '{print $$5}'`; \
+		if [ $$size -gt $(MAX_PAYLOAD_SIZE) ]; then \
+			echo "File $$f has a size of $$size."; \
+			false; \
+			error=1; \
+		fi; \
+	 done; \
+	 if [ $$error -eq 1 ]; then \
+		echo ""; \
+		echo "The maximum allowed size for a payload is $(MAX_PAYLOAD_SIZE)"; \
+		exit 1; \
+	 fi; \
+	 true
+
 
 $(ALL_PAYLOADS): *.h.S config.h
 
@@ -53,4 +73,4 @@ clean:
 	$(MAKE) -C tools/ clean
 	rm -f *~ *.bin $(ALL_PAYLOADS) $(HEADERS) $(B2HTARGET)
 
-.PHONY: all clean tools
+.PHONY: all clean tools check_sizes
