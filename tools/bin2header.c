@@ -1,4 +1,17 @@
-/* raw2payload. Convert our raw PPC code into a fancy C header */
+/* bin2header. Convert our raw PPC code into a fancy C header
+ *
+ * The xxx_macro portion gives the raw code as a simple comma seperated
+ * list of bytes. This is handy if you want to insert a payload into a
+ * static descriptor stored in the flash memory of an AVR microcontroller.
+ * Its usage will look something like this:
+ *
+ * const uint8_t PROGMEM usb_descriptor {
+ *   // descriptor header bytes,
+ *   default_payload_macro,
+ *   // descriptor trailer bytes,
+ * }
+ *
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -21,7 +34,7 @@ int main(int argc, char **argv)
 {
   char buf[256];
   FILE *fi, *fo;
-  int i, idx, r;
+  int i, idx, r, last_byte;
 
   if (argc < 4) {
     fprintf(stderr, "Usage: %s <raw> <c header> <array name>\n", argv[0]);
@@ -41,6 +54,8 @@ int main(int argc, char **argv)
   }
 
   fprintf(fo, ifdef_guard_header, argv[3], argv[3]);
+
+  // print the array version
   fprintf(fo, array_header, argv[3]);
 
   idx = 0;
@@ -54,16 +69,28 @@ int main(int argc, char **argv)
 
   fprintf(fo, "%s", array_footer);
 
+  // rewind the file so it can be read again
   fseek(fi, 0, SEEK_SET);
 
+  // print the macro version
   fprintf(fo, macro_header, argv[3]);
 
   idx = 0;
   while ((r = fread(buf, 1, sizeof(buf), fi)) > 0) {
     for (i = 0; i < r; i++) {
-      fprintf(fo, " 0x%.2x,", buf[i] & 0xff);
-      if (++idx % 8 == 0)
+      fprintf(fo, " 0x%.2x", buf[i] & 0xff);
+
+      last_byte = feof(fi) && i == r-1;
+
+      // dont print a comma after the last byte
+      if (!last_byte) {
+        fprintf(fo, ",");
+      }
+
+      // dont print the line continuation after the last byte
+      if (++idx % 8 == 0 && !last_byte) {
         fprintf(fo, " \\\n ");
+      }
     }
   }
 
