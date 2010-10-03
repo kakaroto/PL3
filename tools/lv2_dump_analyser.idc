@@ -293,6 +293,11 @@ static CreateOpd (toc_addr) {
   Message("Defining OPD section entries\n");
 
   ea = toc_addr - 0x8000;
+  /* Find last OPD entry */
+  while (ea != BADADDR && Dword(ea - 0xC) != toc_addr) {
+    ea = ea - 0x04;
+  }
+
   while (ea != BADADDR && Dword(ea - 0xC) == toc_addr) {
     ea = ea - 0x18;
     MakeUnknown(ea, 0x18, DOUNK_SIMPLE);
