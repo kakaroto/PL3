@@ -69,7 +69,7 @@ $(ALL_PAYLOADS): *.h.S config.h
 %.bin : %.o
 	$(PPU_OBJCOPY) -O binary $< $@
 %.h : %.bin $(B2HTARGET)
-	$(PWD)/$(B2HTARGET) $< $@ $(*F)
+	$(CURDIR)/$(B2HTARGET) $< $@ $(*F)
 
 # Target: clean project.
 clean:
