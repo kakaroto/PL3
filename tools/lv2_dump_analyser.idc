@@ -307,6 +307,50 @@ static CreateOpd (toc_addr) {
 }
 
 
+static CreateTocStructure(void) {
+  auto id;
+
+  Message("Creating structure TOC_s\n");
+
+  id = GetStrucIdByName("TOC_s");
+  if (id != -1) {
+    Message("Structure TOC_s already exists. Renaming it\n");
+    if (SetStrucName(id, "TOC_s_renamed") == 0) {
+      Message("Structure TOC_s_renamed already exists. deleting existing structure\n");
+      DelStruc(id);
+    }
+    id = -1;
+  }
+  id = AddStrucEx(-1, "TOC_s", 0);
+  if (id == -1) {
+    Message ("Error creating TOC_S structure\n");
+    return 0;
+  }
+  AddStrucMember(id, "base_addr_toc", 0x00, FF_DWRD | FF_DATA, -1, 4);
+  AddStrucMember(id, "toc", 0x04, FF_DWRD | FF_0OFF, 0, 4);
+
+  return 1;
+}
+
+
+static CreateToc (toc_addr) {
+  auto ea;
+
+  CreateTocStructure();
+
+  MakeName(toc_addr, "TOC");
+
+  Message("Defining TOC entries\n");
+
+  ea = toc_addr - 0x8000;
+  while (ea != toc_addr + 0x8000) {
+    MakeUnknown(ea, 0x10, DOUNK_SIMPLE);
+    MakeStructEx (ea, 0x10, "TOC_s");
+    ea = ea + 0x10;
+  }
+}
+
+
 static isSyscallTable(addr) {
     if (Qword(addr + 8*1) != Qword(addr) &&
 	Qword(addr + 8*2) != Qword(addr) &&
@@ -422,6 +466,7 @@ static main() {
   }
 
   Message (form("\n*** Found TOC at : 0x%X\n", toc));
+  CreateToc(toc);
   CreateOpd(toc);
 
   NameHypercalls();
