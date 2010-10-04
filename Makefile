@@ -32,6 +32,8 @@ all: tools $(ALL_PAYLOADS) $(HEADERS) check_sizes
 tools:
 	$(MAKE) -C tools
 
+$(B2HTARGET): tools
+
 check_sizes: $(ALL_PAYLOADS)
 	@error=0; \
 	 for f in $+; do \
@@ -76,4 +78,4 @@ clean:
 	$(MAKE) -C tools/ clean
 	rm -f *~ *.bin $(ALL_PAYLOADS) $(HEADERS) $(B2HTARGET)
 
-.PHONY: all clean tools check_sizes
+.PHONY: all clean tools check_sizes $(B2HTARGET)
