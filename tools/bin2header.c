@@ -35,6 +35,7 @@ int main(int argc, char **argv)
   char buf[256];
   FILE *fi, *fo;
   int i, idx, r, last_byte;
+  long file_size;
 
   if (argc < 4) {
     fprintf(stderr, "Usage: %s <raw> <c header> <array name>\n", argv[0]);
@@ -58,10 +59,24 @@ int main(int argc, char **argv)
   // print the array version
   fprintf(fo, array_header, argv[3]);
 
+  // obtain the file size
+  fseek (fi , 0 , SEEK_END);
+  file_size = ftell(fi) - 1;
+  // rewind the file so it can be read again
+  fseek(fi, 0, SEEK_SET);
+
   idx = 0;
   while ((r = fread(buf, 1, sizeof(buf), fi)) > 0) {
     for (i = 0; i < r; i++) {
-      fprintf(fo, " 0x%.2x,", buf[i] & 0xff);
+      fprintf(fo, " 0x%.2x", buf[i] & 0xff);
+
+      if(idx == file_size)
+        last_byte = 1;
+
+      if (!last_byte) {
+        fprintf(fo, ",");
+      }
+
       if (++idx % 8 == 0)
         fprintf(fo, "\n ");
     }
@@ -81,6 +96,8 @@ int main(int argc, char **argv)
       fprintf(fo, " 0x%.2x", buf[i] & 0xff);
 
       last_byte = feof(fi) && i == r-1;
+      if(idx == file_size)
+        last_byte = 1;
 
       // dont print a comma after the last byte
       if (!last_byte) {
