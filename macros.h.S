@@ -78,11 +78,11 @@
 #define strdup			0x1b3d08 // FIXME: unsure of the name!
 #define alloc			0x61cf0
 #define free			0x62138
-#define add_kernel_module	// TODO not found
+#define add_kernel_module	0x12A7AC // DONE
 #define syscall_table		0x2ea820
-#define get_device_descriptor	// FIXME: unsure of the name! not found
-#define unknown_func1		// FIXME not found
-#define unknown_func2		// FIXME not found
+#define get_device_descriptor	0x12A1B4 // DONE
+#define unknown_func1		0xE0928 // DONE
+#define unknown_func2		0xD3408 // DONE
 #define memory_patch_func	0x4e310
 #define patch_func1		0x048a64
 #define patch_func1_offset	0x34
