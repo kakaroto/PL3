@@ -42,7 +42,8 @@ syscall_36_map_bdvd:
 	std	%r0, 0xe0(%r1)
 	std	%r31, 0xc8(%r1)
 	addi	%r4, %r1, 0x70
-	bl	ABSOLUTE_MEM2(strdup)	// strdup %arg3 into %r1[0x70]
+	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r3 from userspace and store
+						// the new pointer into %r1[0x70]
 	MEM_BASE (%r31)
 	LOADI_LABEL2 (%r31, game_path)
 	ld	%r3, 0(%r31)

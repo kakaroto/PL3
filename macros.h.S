@@ -23,7 +23,7 @@
 #define strcpy 			0x4d2f0
 #define strncmp	 		0x4d344
 #define strlen			0x4d318
-#define strdup			0x1b3b3c // FIXME: unsure of the name!
+#define strdup_from_user			0x1b3b3c // FIXME: unsure of the name!
 #define alloc 			0x62088
 #define free 			0x624c8
 #define add_kernel_module 	0xd22d8
@@ -75,7 +75,7 @@
 #define strcpy			0x4cdac
 #define strncmp			0x4ce00
 #define strlen			0x4cdd4
-#define strdup			0x1b3d08 // FIXME: unsure of the name!
+#define strdup_from_user	0x1b3d08 // FIXME: unsure of the name!
 #define alloc			0x61cf0
 #define free			0x62138
 #define add_kernel_module	0x12A7AC // DONE
@@ -125,6 +125,7 @@
 #define strcpy 			0x4CDA8
 #define strncmp	 		0x4CDFC
 #define strlen			0x4CDD0
+#define strdup_from_user			 // FIXME: unsure of the name!
 #define alloc 			0x61CEC
 #define free 			0x62134
 #define syscall_table		0x2EA820
@@ -171,7 +172,7 @@
 #define strcpy 			0x4AAC4	
 #define strncmp	 		0x4AB18
 #define strlen			0x4AAEC
-#define strdup			 // FIXME: unsure of the name!
+#define strdup_from_user			 // FIXME: unsure of the name!
 #define alloc 			0x5DF4C
 #define free 			0x5E38C
 #define add_kernel_module 	
