@@ -168,11 +168,11 @@
 #elif defined(FIRMWARE_3_01)
 
 #define memcpy 			0x77E84
-#define memset 			
+#define memset 			0x4A95C
 #define strcpy 			0x4AAC4	
 #define strncmp	 		0x4AB18
 #define strlen			0x4AAEC
-#define strdup_from_user			 // FIXME: unsure of the name!
+#define strdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
 #define alloc 			0x5DF4C
 #define free 			0x5E38C
 #define add_kernel_module 	
