@@ -44,8 +44,8 @@ l_send_lv2_dump:
 	stw	%r28, 0(%r3)
 
 	// Copy the lv2 ram into the message
-	mr	%r3, %r28
-	addi	%r4, %r31, ADDR_IN_PAGE(message)
+	addi	%r3, %r31, ADDR_IN_PAGE(message)
+	mr	%r4, %r28
 	li	%r5, 1024
 	bl	pl3_memcpy
 

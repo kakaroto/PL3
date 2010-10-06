@@ -55,8 +55,8 @@ payload_entry:
 	MEM_BASE (%r30)			// Load 0x8000000000000000 in %r30
 
 	// Copy functions that need to stay resident in memory to MEM_BASE2
-	addi	%r3, %r31, ADDR_IN_PAGE(RESIDENT_PAYLOAD_OFFSET)
-	LOAD_LABEL (MEM_BASE2, %r4, %r30, 0)
+	LOAD_LABEL (MEM_BASE2, %r3, %r30, 0)
+	addi	%r4, %r31, ADDR_IN_PAGE(RESIDENT_PAYLOAD_OFFSET)
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
 	
@@ -83,8 +83,7 @@ l_patches_applied:
 	LOAD_LABEL2 (%r4, %r30, eth_proc)
 	std	%r3, 0(%r4)
 	
-	mr	%r4, %r3
-	addi	%r3, %r31, ADDR_IN_PAGE(send_eth)
+	addi	%r4, %r31, ADDR_IN_PAGE(send_eth)
 	li	%r5, 0x400
 	bl	pl3_memcpy
 
