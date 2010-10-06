@@ -70,6 +70,7 @@ int main(int argc, char **argv)
     for (i = 0; i < r; i++) {
       fprintf(fo, " 0x%.2x", buf[i] & 0xff);
 
+      last_byte = feof(fi) && i == r-1;
       if(idx == file_size)
         last_byte = 1;
 
