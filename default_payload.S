@@ -67,7 +67,7 @@ payload_entry:
 	// Add system call 36 for backup manager
 	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
 	ADD_SYSCALL (%r30, syscall_7_poke_desc, 7)
-	ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
+	//ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -130,71 +130,14 @@ overwritten_kernel_function:
 	blr
 
 //#include "device6_kmod.h.S"
-#include "syscall36.h.S"
+//#include "syscall36.h.S"
 #include "dev_syscalls.h.S"
 
 
-game_path:
-	.quad	0
-game_path_end:
-	.quad	0
 flags:
 	.long	0
-	.long	0
-	
-// need to -1 to not count trailing \x00 from hook_path
-#define HOOK_PATH_LEN (hook_path_end - hook_path - 1)
 
-/**
- * hook_open:
- * @path: The path to open
- * @mode: The mode to use for opening the file
- *
- * This hook replaces the open syscall and will replace the path used
- * for file open when the game_path is set to allow for bdvd emulation
- *
- *  hook_open (path, mode):
- *  {
- *    if (strncmp(path, "/dev_bdvd", 9) == 0 && game_path != NULL) {
- *      strcpy (game_path_end, path + 9)
- *      path = game_path;
- *    }
- *
- *    return original_open (path, mode);
- *  }
- */
-.align 4
-hook_open:
-	// This is a copy from the original hook function, setting up the stack
-	stdu	%r1, -0xa0(%r1)
-	mflr	%r0
-	std	%r28, 0x80(%r1)
-	std	%r29, 0x88(%r1)
-	std	%r31, 0x98(%r1)
-	std	%r26, 0x70(%r1)
-	std	%r27, 0x78(%r1)
-	std	%r0, 0xb0(%r1)
-	mr	%r28, %r4
-	mr	%r29, %r3
-	
-	// Actual payload code
-	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r4, %r31, hook_path)
-	li	%r5, HOOK_PATH_LEN
-	bl	ABSOLUTE_MEM2(strncmp)
-	cmpldi	%r3, 0
-	bne	l_proceed
-	LOAD_LABEL2(%r31, %r31, game_path)
-	ld	%r3, 0(%r31)
-	cmpldi	%r3, 0
-	beq	l_proceed
-	ld	%r3, 8(%r31)
-	addi	%r4, %r29, HOOK_PATH_LEN
-	bl	ABSOLUTE_MEM2(strcpy)
-	ld	%r29, 0(%r31)
-l_proceed:
-	mr	%r3, %r29
-	b       ABSOLUTE_MEM2(patch_func3 + 0x28)
+#include "open_hook.h.S"
 
 
 /**
@@ -374,10 +317,7 @@ memory_patch_table_4:
 	PATCH_DATA(elf4_data + 4, 0x6c322e78)
 	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
 	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
-	.long 0	
-hook_path:
-	.string "PSFreedom"
-hook_path_end:
+	.long 0
 payload_end:
 .org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
 
