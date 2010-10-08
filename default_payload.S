@@ -108,6 +108,10 @@ patch_table:
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
 	PATCH_INST(patch_func5 + patch_func5_offset, li %r3, 1) //irrelevant
 	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
+#ifdef FIRMWARE_3_41
+	PATCH_INST(patch_func6 + patch_func6_offset, li %r3, 0)
+	PATCH_INST(patch_func7 + patch_func7_offset, li %r3, 0)
+#endif
 	PATCH_DATA(patch_data1, 0x01000000)
 	.long	0
 

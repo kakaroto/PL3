@@ -42,6 +42,10 @@
 #define patch_func4_offset	0x0
 #define patch_func5		0x0505d0
 #define patch_func5_offset	0x0
+#define patch_func6		0x0234d0
+#define patch_func6_offset	0x0
+#define patch_func7		0x0e83d4
+#define patch_func7_offset	0x0
 #define patch_data1		0x3ba890
 #define rtoc_entry_1		0xf08
 #define rtoc_entry_2		-0x6a00
