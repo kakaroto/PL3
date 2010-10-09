@@ -1,4 +1,4 @@
-B2HTARGET = tools/bin2header
+B2HTARGET = $(CURDIR)/tools/bin2header
 CFLAGS = -Wall -O3
 
 CC = gcc
@@ -33,6 +33,7 @@ tools:
 	$(MAKE) -C tools
 
 $(B2HTARGET): tools
+	@true
 
 check_sizes: $(ALL_PAYLOADS)
 	@error=0; \
@@ -71,11 +72,11 @@ $(ALL_PAYLOADS): *.h.S config.h
 %.bin : %.o
 	$(PPU_OBJCOPY) -O binary $< $@
 %.h : %.bin $(B2HTARGET)
-	$(CURDIR)/$(B2HTARGET) $< $@ $(*F)
+	$(B2HTARGET) $< $@ $(*F)
 
 # Target: clean project.
 clean:
 	$(MAKE) -C tools/ clean
-	rm -f *~ *.bin $(ALL_PAYLOADS) $(HEADERS) $(B2HTARGET)
+	rm -f *~ *.bin $(ALL_PAYLOADS) $(HEADERS)
 
-.PHONY: all clean tools check_sizes $(B2HTARGET)
+.PHONY: all clean tools check_sizes
