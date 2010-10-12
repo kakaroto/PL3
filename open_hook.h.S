@@ -12,12 +12,16 @@
 
 /* Pointer to :
  * struct {
- *    int old_size
- *    char *old_path
- *    int new_size
- *    char *new_path
+ *    struct path old
+ *    struct path new
+ * }
+ *
+ * struct path {
+ *    int size
+ *    char path[404]
  * }
  */
+	.set	MAX_TABLE_ENTRIES, 256
 open_mapping_table:
 	.quad	0
 	
@@ -53,38 +57,42 @@ hook_open:
 	mr	%r28, %r4
 	mr	%r29, %r3
 	
-	// Actual payload code
+	// load the mapping_table in %r26
 	MEM_BASE (%r31)
 	LOAD_LABEL2 (%r26, %r31, open_mapping_table)
-	cmpldi	%r26, 0
-	bne	l_hook_open_proceed
-
-	// load the mapping_table in %r26
 	ld	%r26, 0(%r26)
+	cmpldi	%r26, 0
+	beq	l_hook_open_proceed
+
 	mr	%r27, %r26
-	addi	%r27, %r27, 0x1000		// Set our limit
+	addi	%r27, %r27, 0x10*MAX_TABLE_ENTRIES	// Set our limit
 l_hook_open_next_table_entry:
 	cmpldi	%r26, %r27
 	beq	l_hook_open_proceed		// If we reached our limit, we're done
-	lwz	%r5, 0(%r26)			// Load the size of this path
-	ld	%r4, 4(%r26)			// Load the path
-	addi	%r26, %r26, (4 + 8 + 4 + 8)	// skip to the next entry
-	cmplwi	%r5, 0
+	ld	%r3, 0(%r26)			// Load the old path structure
+	cmplwi	%r3, 0
 	beq	l_hook_open_next_table_entry	// if empty entry, then try next
+	addi	%r4, %r3, 4			// Load the path
+	lwz	%r5, 0(%r3)			// Load the size of this path
+	addi	%r26, %r26, 0x10		// skip to the next entry
+	cmplwi	%r5, 0
+	beq	l_hook_open_next_table_entry	// if size is 0, then try next
 	mr	%r3, %r29			// Load the path to compare in %r3
-	mr	%r30, %r5			// Store the size %r30
+	mr	%r30, %r5			// Store the size in %r30
 	bl	ABSOLUTE_MEM2(strncmp)
 	cmpldi	%r3, 0
 	bne	l_hook_open_next_table_entry	// If different, then go to next entry
 	// We found the entry we wanted
-	ld	%r3, -8(%r26)
-	lwz	%r4, -(4 + 8)(%r26)
+	ld	%r3, -0x08(%r26)
+	lwz	%r4, 0(%r3)			// Load the size of the new path
+	addi	%r3, %r3, 4			// Load the new path
 	cmpldi	%r3, 0
 	beq	l_hook_open_proceed		// If the new path is NULL, skip
 	add	%r3, %r3, %r4			// set dest = new_path + new_size
 	addi	%r4, %r29, %r30			// set src = old_path + old_size
 	bl	ABSOLUTE_MEM2(strcpy)
-	ld	%r29, -8(%r26)			// reload the new_path into %r29
+	ld	%r3, -0x08(%r26)
+	addi	%r29, %r3, 4			// reload the new_path into %r29
 l_hook_open_proceed:
 	mr	%r3, %r29
 	b       ABSOLUTE_MEM2(patch_func3 + 0x28)
