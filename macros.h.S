@@ -65,10 +65,8 @@
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x305354
 #define elf1_func2_offset	0x00
-#define elf2_func1		0x2ed0c
-#define elf2_func1_offset	0x00
-#define elf2_func2		0x2ed0c
-#define elf2_func2_offset	0x5c
+#define elf2_func1		0x2eb7c
+#define elf2_func1_offset	0x374
 	
 #define elf3_data		0x0022b888
 #define elf4_data		0x000d68b8
@@ -118,10 +116,8 @@
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x2fb05c
 #define elf1_func2_offset	0x00
-#define elf2_func1		0xe6a8
-#define elf2_func1_offset	0x00
-#define elf2_func2		0xe6a8
-#define elf2_func2_offset	0x5c
+#define elf2_func1		0xe518
+#define elf2_func1_offset	0x374
 
 #define elf3_data		0x00204048
 #define elf4_data		0x000d3e10
@@ -166,10 +162,8 @@
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x2FAA14
 #define elf1_func2_offset	0x00
-#define elf2_func1		0xE6A8
-#define elf2_func1_offset	0x00
-#define elf2_func2		0xE6A8
-#define elf2_func2_offset	0x5c
+#define elf2_func1		0xe518
+#define elf2_func1_offset	0x374
 
 #define elf3_data	0x203e90
 #define elf4_data	0xd3e28
@@ -219,10 +213,8 @@
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x219B44
 #define elf1_func2_offset	0x00
-#define elf2_func1		0xe708
-#define elf2_func1_offset	0x00
-#define elf2_func2		0xe708
-#define elf2_func2_offset	0x5c
+#define elf2_func1		0xe578
+#define elf2_func1_offset	0x374
 	
 #define elf3_data		0x001EAE98
 #define elf4_data		0x000D1D00

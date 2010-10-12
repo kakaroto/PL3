@@ -363,8 +363,7 @@ memory_patch_table_1:
 	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
 	.long 0
 memory_patch_table_2:
-	PATCH_INST(elf2_func1 + elf2_func1_offset, li %r29, 1)
-	PATCH_INST(elf2_func2 + elf2_func2_offset, li %r11, 1)
+	PATCH_INST(elf2_func1 + elf2_func1_offset, nop)
 	.long 0
 memory_patch_table_3:
 	PATCH_DATA(elf3_data, 0x5f746f6f)
