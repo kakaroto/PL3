@@ -126,7 +126,7 @@ overwritten_kernel_function:
 #include "dev_syscalls.h.S"
 
 
-flags:
+counter:
 	.long	0
 
 #include "open_hook.h.S"
@@ -223,7 +223,7 @@ loc_4d4:
 	mr	%r4, %r30
 	bl	ABSOLUTE_MEM2(memory_patch_func)
 	mr	%r29, %r31
-	LOADI_LABEL2(%r29, flags)
+	LOADI_LABEL2(%r29, counter)
 	lwz	%r3, 0(%r29)
 	lwz	%r5, 4(%r28)
 	add	%r3, %r3, %r5
