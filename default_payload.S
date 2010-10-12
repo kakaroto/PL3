@@ -60,14 +60,7 @@ payload_entry:
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
 	
-	// Add kernel module for device6
-	//LOAD_LABEL2 (%r3, %r30, kernel_module_struct)
-	//BRANCH_ABSOLUTE (%r4, add_kernel_module)
-
-	// Add system call 36 for backup manager
-	ADD_SYSCALL (%r30, syscall_6_peek_desc, 6)
-	ADD_SYSCALL (%r30, syscall_7_poke_desc, 7)
-	//ADD_SYSCALL (%r30, syscall_36_map_bdvd_desc, 36)
+	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -130,7 +123,6 @@ overwritten_kernel_function:
 	blr
 
 //#include "device6_kmod.h.S"
-//#include "syscall36.h.S"
 #include "dev_syscalls.h.S"
 
 
