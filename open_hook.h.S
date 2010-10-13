@@ -47,10 +47,7 @@ syscall_map_open:
 	mr	%r26, %r4
 
 	cmpldi	%r3, 0
-	/*li	%r3, 0xFFFF		// return -1
-	oris	%r3, 0xFFFF
-	extsw	%r3, %r3*/
-	beq	l_syscall_map_open_return
+	beq	l_syscall_map_open_error
 	addi	%r4, %r1, 0xa0			// old path
 	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r3 from userspace
 	mr	%r29, %r3
@@ -68,6 +65,7 @@ l_syscall_map_open_call:
 	addi	%r3, %r1, 0xa0			// old path
 	addi	%r4, %r1, 0xb0			// new path
 	bl	add_open_path_map
+	mr	%r26, %r3
 	ld	%r3, 0xa0(%r1)
 	li	%r4, 0x27
 	bl	ABSOLUTE_MEM2(free)
@@ -77,12 +75,17 @@ l_syscall_map_open_call:
 	li	%r4, 0x27
 	bl	ABSOLUTE_MEM2(free)
 l_syscall_map_open_return:
-	// prolog
+	mr	%r3, %r26			// return result of add_open_path_map
+l_syscall_map_open_return_r3:
+	// epilog
 	ld	%r26, 0x70(%r1)
 	ld	%r0, 0xd0(%r1)
 	addi	%r1, %r1, 0xc0
 	mtlr	%r0
 	blr
+l_syscall_map_open_error:
+	nor	%r3, %r3, %r3			// r3 is already 0 here, so make it -1
+	b	l_syscall_map_open_return_r3	
 
 	
 add_open_path_map:
@@ -102,10 +105,7 @@ add_open_path_map:
 	mr	%r25, %r4
 
 	cmpldi	%r3, 0
-	/*li	%r3, 0xFFFF		// return -1
-	oris	%r3, 0xFFFF
-	extsw	%r3, %r3*/
-	beq	l_map_open_return
+	beq	l_map_open_error
 	bl	ABSOLUTE_MEM2(strlen)
 	mr	%r29, %r3
 
@@ -170,19 +170,18 @@ l_map_open_next_table_entry:
 	li	%r3, 0
 	std	%r3, 0(%r26)
 	std	%r3, 8(%r26)
-	b	l_map_open_return
+	b	l_map_open_return_0
 l_map_open_not_found:
 	mr	%r26, %r28
 l_map_open_next_table_entry2:
 	cmpld	%r26, %r27
-	/*li	%r3, -2*/
-	beq	l_map_open_return		// If we reached our limit, we're done
+	beq	l_map_open_full			// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the path structure
 	cmplwi	%r3, 0
 	bne	l_map_open_next_table_entry2	// if empty entry, then try next
 l_map_open_new_entry:
 	cmpwi	%r30, 0
-	beq	l_map_open_return		// If there is no new path, return
+	beq	l_map_open_return_0		// If there is no new path, return
 	addi	%r3, %r29, 5
 	li	%r4, 0x27
 	bl	ABSOLUTE_MEM2(alloc)		// allocate space for the old path
@@ -203,8 +202,18 @@ l_map_open_set_new_path:
 	addi	%r3, %r3, 4
 	mr	%r4, %r25
 	bl	ABSOLUTE_MEM2(strcpy)
-
+	b	l_map_open_return_0
+l_map_open_error:
+	li	%r3, 0
+	nor	%r3, %r3, %r3			// r3 is already 0 here, so make it -1
+	b	l_map_open_return
+l_map_open_full:
+	li	%r3, 1
+	nor	%r3, %r3, %r3			// return -2
+	b	l_map_open_return
+l_map_open_return_0:
 	li	%r3, 0			// return 0
+	b	l_map_open_return
 l_map_open_return:
 	// prolog
 	ld	%r24, 0x70(%r1)
@@ -219,7 +228,7 @@ l_map_open_return:
 	addi	%r1, %r1, 0xc0
 	mtlr	%r0
 	blr
-
+	
 /**
  * hook_open:
  * @path: The path to open
