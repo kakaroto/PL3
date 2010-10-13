@@ -8,6 +8,80 @@
  *
  */
 
+/**
+ * map_open_path:
+ * @old_path: The path to map
+ * @new_path: The new path to map it to (or NULL to remove the mapping)
+ *
+ * This position independent function will redirect all file access from @old_path to
+ * @new_path or if @new_path is #NULL, it will remove the mapping
+ *
+ * pseudo-code :
+ * map_open_path(old_path, new_path) {
+ *	int old_len, new_len
+ *	struct path_mapping_s *ptr
+ *
+ *	if (old_path == NULL)
+error:
+ *	  return -1
+ *	old_len = strlen(old_path)
+ *	if (new_path)
+ *	  new_len = strlen(new_path)
+ *	else
+unset:
+ *	  new_len = 0
+ *	if (open_mapping_table == NULL) {
+ *	  open_mapping_table = alloc (MAX_TABLE_ENTRIES * sizeof(struct path_mapping_s))
+memset:
+ *	  for (int i = MAX_TABLE_ENTRIES * sizeof(struct path_mapping_s) - 8; i >= 0; i -= 8)
+ *	    open_mapping_table[i] = 0
+ *	  ptr = open_mapping_table
+ *	  goto new_entry
+ * 	} else {
+no_alloc:
+ *	  ptr = open_mapping_table
+next_table_entry:
+ *	  while (ptr != open_mapping_table + MAX_TABLE_ENTRIES * sizeof(...)) {
+ *	    if (ptr.old == NULL)
+ *	      continue
+ *	    if (ptr.old->size != old_size)
+ *	      continue
+ *	    if (strncmp(ptr.old->path, old_path, old_size) != 0)
+ *	      continue
+ *	    if (new_path)
+ *	      goto set_new_path
+ *	    free (ptr.old)
+ *	    free (ptr.new)
+ *	    ptr.old = ptr.new = 0
+ *	    return 0
+ *	  }
+not_found:
+ *	  ptr = open_mapping_table
+next_table_entry2:
+ *	  while (ptr != open_mapping_table + MAX_TABLE_ENTRIES * sizeof(...)) {
+ *	    if (ptr.old != NULL)
+ *	      continue
+ *	    goto new_entry
+ *	  }
+full:
+ *	  return -2
+ *	}
+ *
+new_entry:
+ *	if (new_path == NULL)
+ *	  return 0
+ *	ptr.old = alloc (sizeof(int) + old_size + 1)
+ *	ptr.old->size = old_size
+ *	strcpy (ptr.old->path, old_path)
+ *	ptr.new = alloc (sizeof (int) + MAX_PATH_SIZE + 1)
+set_new_path:
+ *	ptr.new->size = new_size
+ *	strcpy(ptr.new->path, new_path)
+ *
+ *	return 0
+ *  }
+ *
+ */
 .align 4
 map_open_path:
 	// epilog

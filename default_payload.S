@@ -67,9 +67,11 @@ payload_entry:
 
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)
 
+	// Add default /app_home redirection
 	addi	%r3, %r31, ADDR_IN_PAGE(path_app_home)
 	addi	%r4, %r31, ADDR_IN_PAGE(path_usb_default_app_home)
 	bl	map_open_path
+	
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -123,7 +125,7 @@ path_app_home:
 	.string "/app_home/"
 path_usb_default_app_home:
 	.string "/dev_usb000/PS3/HOMEBREW/APP_HOME/"
-
+	
 /**
  * overwritten_kernel_function:
  *
