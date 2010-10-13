@@ -256,11 +256,11 @@ l_hook_open_next_table_entry:
 	cmpld	%r26, %r27
 	beq	l_hook_open_proceed		// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the old path structure
-	cmplwi	%r3, 0
+	addi	%r26, %r26, 0x10		// skip to the next entry
+	cmpldi	%r3, 0
 	beq	l_hook_open_next_table_entry	// if empty entry, then try next
 	addi	%r4, %r3, 4			// Load the path
 	lwz	%r5, 0(%r3)			// Load the size of this path
-	addi	%r26, %r26, 0x10		// skip to the next entry
 	cmplwi	%r5, 0
 	beq	l_hook_open_next_table_entry	// if size is 0, then try next
 	mr	%r3, %r29			// Load the path to compare in %r3
