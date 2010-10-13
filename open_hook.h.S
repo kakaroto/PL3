@@ -244,8 +244,8 @@ hook_open:
 	mr	%r29, %r3
 
 	// load the mapping_table in %r26
-	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r26, %r31, open_mapping_table)
+	MEM_BASE (%r26)
+	LOAD_LABEL2 (%r26, %r26, open_mapping_table)
 	ld	%r26, 0(%r26)
 	cmpldi	%r26, 0
 	beq	l_hook_open_proceed
@@ -264,10 +264,11 @@ l_hook_open_next_table_entry:
 	cmplwi	%r5, 0
 	beq	l_hook_open_next_table_entry	// if size is 0, then try next
 	mr	%r3, %r29			// Load the path to compare in %r3
-	mr	%r30, %r5			// Store the size in %r30
+	mr	%r31, %r5			// Store the size in %r30
 	bl	ABSOLUTE_MEM2(strncmp)
 	cmpldi	%r3, 0
 	bne	l_hook_open_next_table_entry	// If different, then go to next entry
+
 	// We found the entry we wanted
 	ld	%r3, -0x08(%r26)
 	lwz	%r4, 0(%r3)			// Load the size of the new path
@@ -275,7 +276,7 @@ l_hook_open_next_table_entry:
 	cmpldi	%r3, 0
 	beq	l_hook_open_proceed		// If the new path is NULL, skip
 	add	%r3, %r3, %r4			// set dest = new_path + new_size
-	add	%r4, %r29, %r30			// set src = old_path + old_size
+	add	%r4, %r29, %r31			// set src = old_path + old_size
 	bl	ABSOLUTE_MEM2(strcpy)
 	ld	%r3, -0x08(%r26)
 	addi	%r29, %r3, 4			// reload the new_path into %r29
