@@ -23,7 +23,7 @@
  *    char path[404]
  * }
  */
-	.set	MAX_TABLE_ENTRIES, 256
+	.set	MAX_TABLE_ENTRIES, 16
 open_mapping_table:
 	.quad	0
 
