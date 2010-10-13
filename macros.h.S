@@ -64,7 +64,7 @@
 #define elf1_func1		0x5f3fc0
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x305354
-#define elf1_func2_offset	0x00
+#define elf1_func2_offset	0x14
 #define elf2_func1		0x2eb7c
 #define elf2_func1_offset	0x374
 	
@@ -115,7 +115,7 @@
 #define elf1_func1		0x5e3aec
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x2fb05c
-#define elf1_func2_offset	0x00
+#define elf1_func2_offset	0x14
 #define elf2_func1		0xe518
 #define elf2_func1_offset	0x374
 
@@ -161,7 +161,7 @@
 #define elf1_func1		0x5E2C7C
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x2FAA14
-#define elf1_func2_offset	0x00
+#define elf1_func2_offset	0x14
 #define elf2_func1		0xe518
 #define elf2_func1_offset	0x374
 
@@ -212,7 +212,7 @@
 #define elf1_func1		0x5B009C
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x219B44
-#define elf1_func2_offset	0x00
+#define elf1_func2_offset	0x14
 #define elf2_func1		0xe578
 #define elf2_func1_offset	0x374
 	

@@ -360,7 +360,7 @@ memory_patch_table:
 memory_patch_table_1:
 	PATCH_INST(elf1_func1 + elf1_func1_offset, li %r3, 1)
 	PATCH_INST(elf1_func1 + elf1_func1_offset + 4, blr)
-	PATCH_INST(elf1_func2 + elf1_func2_offset, li %r3, 130)
+	PATCH_INST(elf1_func2 + elf1_func2_offset, nop)
 	.long 0
 memory_patch_table_2:
 	PATCH_INST(elf2_func1 + elf2_func1_offset, nop)
