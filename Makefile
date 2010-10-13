@@ -15,7 +15,8 @@ PAYLOADS = shellcode_egghunt.bin \
 
 FW_PAYLOADS = \
 	default_payload.bin \
-	payload_dump_elfs.bin
+	payload_dump_elfs.bin \
+	payload_dev.bin
 
 FIRMWARES_2=$(SUPPORTED_FIRMWARES:2.%=2_%)
 FIRMWARES=$(FIRMWARES_2:3.%=3_%)
