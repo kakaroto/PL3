@@ -63,11 +63,11 @@ syscall_map_open:
 l_syscall_map_open_unset:
 	std	%r3, 0xb0(%r1)
 l_syscall_map_open_call:
-	addi	%r3, %r1, 0xa0			// old path
-	addi	%r4, %r1, 0xb0			// new path
+	ld	%r3, 0xa0(%r1)			// old path
+	ld	%r4, 0xb0(%r1)			// new path
 	// Call map_open_path
 	MEM_BASE (%r6)
-	LOAD_LABEL2 (%r6, %r6, map_open_path)
+	LOAD_LABEL2 (%r6, %r6, map_open_path_ptr)
 	ld	%r6, 0(%r6)
 	mtctr	%r6
 	bctrl
