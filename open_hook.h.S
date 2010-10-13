@@ -43,32 +43,75 @@ syscall_map_open:
 	mflr	%r0
 	stdu	%r1, -0xc0(%r1)
 	std	%r26, 0x70(%r1)
-	std	%r27, 0x78(%r1)
-	std	%r28, 0x80(%r1)
-	std	%r29, 0x88(%r1)
-	std	%r30, 0x90(%r1)
-	std	%r31, 0x98(%r1)
 	std	%r0, 0xd0(%r1)
 	mr	%r26, %r4
 
 	cmpldi	%r3, 0
-	b	l_map_open_return
 	/*li	%r3, 0xFFFF		// return -1
 	oris	%r3, 0xFFFF
 	extsw	%r3, %r3*/
-	beq	l_map_open_return
+	beq	l_syscall_map_open_return
 	addi	%r4, %r1, 0xa0			// old path
 	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r3 from userspace
-	ld	%r3, 0xa0(%r1)
-	bl	ABSOLUTE_MEM2(strlen)
 	mr	%r29, %r3
 
 	mr	%r3, %r26
 	cmpldi	%r3, 0
-	beq	l_map_open_unset
+	beq	l_syscall_map_open_unset
 	addi	%r4, %r1, 0xb0			// new path
+	std	%r3, 0(%r4)
 	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r4 from userspace
+	b	l_syscall_map_open_call
+l_syscall_map_open_unset:
+	std	%r3, 0xb0(%r1)
+l_syscall_map_open_call:
+	addi	%r3, %r1, 0xa0			// old path
+	addi	%r4, %r1, 0xb0			// new path
+	bl	add_open_path_map
+	ld	%r3, 0xa0(%r1)
+	li	%r4, 0x27
+	bl	ABSOLUTE_MEM2(free)
 	ld	%r3, 0xb0(%r1)
+	cmpldi	%r3, 0
+	beq	l_syscall_map_open_return
+	li	%r4, 0x27
+	bl	ABSOLUTE_MEM2(free)
+l_syscall_map_open_return:
+	// prolog
+	ld	%r26, 0x70(%r1)
+	ld	%r0, 0xd0(%r1)
+	addi	%r1, %r1, 0xc0
+	mtlr	%r0
+	blr
+
+	
+add_open_path_map:
+	// epilog
+	mflr	%r0
+	stdu	%r1, -0xc0(%r1)
+	std	%r24, 0x70(%r1)
+	std	%r25, 0x78(%r1)
+	std	%r26, 0x80(%r1)
+	std	%r27, 0x88(%r1)
+	std	%r28, 0x90(%r1)
+	std	%r29, 0x98(%r1)
+	std	%r30, 0xa0(%r1)
+	std	%r31, 0xa8(%r1)
+	std	%r0, 0xd0(%r1)
+	mr	%r24, %r3
+	mr	%r25, %r4
+
+	cmpldi	%r3, 0
+	/*li	%r3, 0xFFFF		// return -1
+	oris	%r3, 0xFFFF
+	extsw	%r3, %r3*/
+	beq	l_map_open_return
+	bl	ABSOLUTE_MEM2(strlen)
+	mr	%r29, %r3
+
+	mr	%r3, %r25
+	cmpldi	%r3, 0
+	beq	l_map_open_unset
 	bl	ABSOLUTE_MEM2(strlen)
 l_map_open_unset:
 	mr	%r30, %r3
@@ -147,7 +190,7 @@ l_map_open_new_entry:
 	std	%r3, 0(%r26)
 	stw	%r29, 0(%r3)
 	addi	%r3, %r3, 4
-	addi	%r4, %r1, 0xa0
+	mr	%r4, %r24
 	bl	ABSOLUTE_MEM2(strcpy)
 
 	li	%r3, 0x805
@@ -158,30 +201,24 @@ l_map_open_new_entry:
 l_map_open_set_new_path:
 	stw	%r30, 0(%r3)
 	addi	%r3, %r3, 4
-	addi	%r4, %r1, 0xb0
+	mr	%r4, %r25
 	bl	ABSOLUTE_MEM2(strcpy)
-
-	ld	%r3, 0xa0(%r1)
-	li	%r4, 0x27
-	bl	ABSOLUTE_MEM2(free)
-	ld	%r3, 0xb0(%r1)
-	li	%r4, 0x27
-	bl	ABSOLUTE_MEM2(free)
 
 	li	%r3, 0			// return 0
 l_map_open_return:
 	// prolog
-	ld	%r26, 0x70(%r1)
-	ld	%r27, 0x78(%r1)
-	ld	%r28, 0x80(%r1)
-	ld	%r29, 0x88(%r1)
-	ld	%r30, 0x90(%r1)
-	ld	%r31, 0x98(%r1)
+	ld	%r24, 0x70(%r1)
+	ld	%r25, 0x78(%r1)
+	ld	%r26, 0x80(%r1)
+	ld	%r27, 0x88(%r1)
+	ld	%r28, 0x90(%r1)
+	ld	%r29, 0x98(%r1)
+	ld	%r30, 0xa0(%r1)
+	ld	%r31, 0xa8(%r1)
 	ld	%r0, 0xd0(%r1)
 	addi	%r1, %r1, 0xc0
 	mtlr	%r0
 	blr
-
 
 /**
  * hook_open:
