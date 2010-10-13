@@ -176,8 +176,10 @@ l_map_open_next_table_entry2:
 	cmpld	%r26, %r27
 	beq	l_map_open_full			// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the path structure
+	addi	%r26, %r26, 0x10		// skip to the next entry
 	cmplwi	%r3, 0
 	bne	l_map_open_next_table_entry2	// if empty entry, then try next
+	addi	%r26, %r26, -0x10		// reset back to the correct entry
 l_map_open_new_entry:
 	cmpwi	%r30, 0
 	beq	l_map_open_return_0		// If there is no new path, return
