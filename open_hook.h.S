@@ -139,7 +139,7 @@ l_map_open_no_alloc:
 	mr	%r26, %r28
 	addi	%r27, %r28, 0x10*MAX_TABLE_ENTRIES	// Set our limit
 l_map_open_next_table_entry:
-	cmpldi	%r26, %r27
+	cmpld	%r26, %r27
 	beq	l_map_open_not_found	// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the old path structure
 	cmplwi	%r3, 0
@@ -174,7 +174,7 @@ l_map_open_next_table_entry:
 l_map_open_not_found:
 	mr	%r26, %r28
 l_map_open_next_table_entry2:
-	cmpldi	%r26, %r27
+	cmpld	%r26, %r27
 	/*li	%r3, -2*/
 	beq	l_map_open_return		// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the path structure
@@ -262,7 +262,7 @@ hook_open:
 	mr	%r27, %r26
 	addi	%r27, %r27, 0x10*MAX_TABLE_ENTRIES	// Set our limit
 l_hook_open_next_table_entry:
-	cmpldi	%r26, %r27
+	cmpld	%r26, %r27
 	beq	l_hook_open_proceed		// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the old path structure
 	cmplwi	%r3, 0
@@ -284,7 +284,7 @@ l_hook_open_next_table_entry:
 	cmpldi	%r3, 0
 	beq	l_hook_open_proceed		// If the new path is NULL, skip
 	add	%r3, %r3, %r4			// set dest = new_path + new_size
-	addi	%r4, %r29, %r30			// set src = old_path + old_size
+	add	%r4, %r29, %r30			// set src = old_path + old_size
 	bl	ABSOLUTE_MEM2(strcpy)
 	ld	%r3, -0x08(%r26)
 	addi	%r29, %r3, 4			// reload the new_path into %r29
