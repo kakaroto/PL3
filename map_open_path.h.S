@@ -141,11 +141,11 @@ l_map_open_next_table_entry:
 	cmpld	%r26, %r27
 	beq	l_map_open_not_found	// If we reached our limit, we're done
 	ld	%r3, 0(%r26)			// Load the old path structure
+	addi	%r26, %r26, 0x10		// skip to the next entry
 	cmplwi	%r3, 0
 	beq	l_map_open_next_table_entry	// if empty entry, then try next
 	addi	%r4, %r3, 4			// Load the path
 	lwz	%r5, 0(%r3)			// Load the size of this path
-	addi	%r26, %r26, 0x10		// skip to the next entry
 	cmplw	%r5, %r29
 	bne	l_map_open_next_table_entry	// if different size, then try next
 	mr	%r3, %r24			// Load the old path to compare in %r3
