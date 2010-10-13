@@ -10,17 +10,17 @@
  */
 
 
-syscall_6_peek_desc:
-	QUAD_MEM2(syscall_6_peek)
-syscall_7_poke_desc:
-	QUAD_MEM2(syscall_7_poke)
+syscall_peek_desc:
+	QUAD_MEM2(syscall_peek)
+syscall_poke_desc:
+	QUAD_MEM2(syscall_poke)
 
 
-syscall_6_peek:
+syscall_peek:
 	ld	%r3, 0x00(%r3)
 	blr
 
-syscall_7_poke:
+syscall_poke:
 	std	%r4, 0x00(%r3)
 	blr	
 
