@@ -60,6 +60,11 @@ payload_entry:
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
 
+	// Allocate memory and copy PIC function map_open_path to it
+	ALLOC_AND_COPY_PROC(%r31, map_open_path, (map_open_path_end - map_open_path))
+	LOAD_LABEL2 (%r6, %r30, map_open_path_ptr)
+	std	%r3, 0(%r6)
+
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)
 
 	addi	%r3, %r31, ADDR_IN_PAGE(path_app_home)
@@ -111,6 +116,7 @@ patch_table:
 
 
 #include "pl3_memcpy.h.S"
+#include "map_open_path.h.S"
 
 
 path_app_home:

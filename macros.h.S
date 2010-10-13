@@ -306,7 +306,7 @@
 	oris	dest, dest, target@h; 	\
 	ori	dest, dest, target@l; 	\
 	mtctr	dest;			\
-	bctrl
+	bctrl;
 	
 #define GET_CURRENT_PAGE(temp, dest)	\
 	bl	get_current_page;	\
@@ -324,5 +324,17 @@ got_current_page:			\
         li      %r3, 0;			\
         li      %r11, 255;		\
         sc      1;
+
+// Allocate new memory and copy a function to it. R3 to R11 will be lost
+// pl3_memcpy must be included!
+#define ALLOC_AND_COPY_PROC(base_reg, function, size)	\
+	li	%r3, size;				\
+	li	%r4, 0x27;				\
+	BRANCH_ABSOLUTE (%r6, alloc);			\
+	mr	%r7, %r3;				\
+	addi	%r4, base_reg, ADDR_IN_PAGE(function);	\
+	li	%r5, size;				\
+	bl	pl3_memcpy;				\
+	mr	%r3, %r7;
 
 #endif /* __MACRO_H_S */
