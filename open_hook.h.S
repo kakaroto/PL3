@@ -10,6 +10,8 @@
 
 .align 4
 
+#include "pl3_memset.h.S"
+	
 /* Pointer to :
  * struct {
  *    struct path old
@@ -77,13 +79,16 @@ l_map_open_unset:
 	ld	%r3, 0(%r26)
 	cmpldi	%r3, 0
 	bne	l_map_open_no_alloc
-
+	
 	li	%r3, 0x10*MAX_TABLE_ENTRIES
 	li	%r4, 0x27
 	bl      ABSOLUTE_MEM2(alloc)		// allocate the table
 	std	%r3, 0(%r26)
 	mr	%r28, %r3
 	mr	%r26, %r28
+	li	%r4, 0
+	li	%r5, 0x10*MAX_TABLE_ENTRIES
+	bl	pl3_memset
 	b	l_map_open_new_entry		// no need to scan it
 l_map_open_no_alloc:
 	// load the mapping_table in %r26
