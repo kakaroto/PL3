@@ -25,7 +25,7 @@ payload_start:
  * @payload_block: Pointer to the memory page containing our payload
  *
  * This is the entry point to the payload, it gets branched to form the injected
- * shellcode in the JIG response. 
+ * shellcode in the JIG response.
  * This is the main function of the exploit, its code is position
  * indedependent. It copies the actual payload to a safe-from-overwrite memory,
  * while it overwrites an existing function from the kernel.
@@ -51,7 +51,7 @@ payload_entry:
 	std	%r0, 0xb0(%r1)
 
 	GET_CURRENT_PAGE(%r3, %r31)
-	
+
 	MEM_BASE (%r30)			// Load 0x8000000000000000 in %r30
 
 	// Copy functions that need to stay resident in memory to MEM_BASE2
@@ -59,8 +59,12 @@ payload_entry:
 	addi	%r4, %r31, ADDR_IN_PAGE(RESIDENT_PAYLOAD_OFFSET)
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
-	
+
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)
+
+	addi	%r3, %r31, ADDR_IN_PAGE(path_app_home)
+	addi	%r4, %r31, ADDR_IN_PAGE(path_usb_default_app_home)
+	bl	map_open_path
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -72,7 +76,6 @@ l_apply_patches_loop:
 	addi	%r5, %r5, 8
 	b	l_apply_patches_loop
 l_patches_applied:
-	
 	// prolog
 	ld	%r30, 0x90(%r1)
 	ld	%r31, 0x98(%r1)
@@ -108,7 +111,13 @@ patch_table:
 
 
 #include "pl3_memcpy.h.S"
-	
+
+
+path_app_home:
+	.string "/app_home/"
+path_usb_default_app_home:
+	.string "/dev_usb000/PS3/HOMEBREW/APP_HOME/"
+
 /**
  * overwritten_kernel_function:
  *
