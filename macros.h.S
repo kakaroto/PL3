@@ -37,7 +37,7 @@
 #define patch_func2		0x04F07C
 #define patch_func2_offset	0x2C
 #define patch_func3		0x2aafc8
-#define patch_func3_offset	0x0
+#define patch_func3_offset	0x24
 #define patch_func4		0x04ed18
 #define patch_func4_offset	0x0
 #define patch_func5		0x0505d0
@@ -93,7 +93,7 @@
 #define patch_func2		0x04eb48
 #define patch_func2_offset	0x2C
 #define patch_func3		0x2aabec
-#define patch_func3_offset	0x0
+#define patch_func3_offset	0x24
 #define patch_func4		0x04e7e4
 #define patch_func4_offset	0x0
 #define patch_func5		0x05009c
@@ -144,7 +144,7 @@
 #define patch_func2		0x4EB44
 #define patch_func2_offset	0x2C
 #define patch_func3		0x2AABF4
-#define patch_func3_offset	0x0
+#define patch_func3_offset	0x24
 #define patch_func4		0x4E7E0
 #define patch_func4_offset	0x0
 #define patch_func5		0x50098
@@ -199,7 +199,7 @@
 #define patch_func2		0x04C824
 #define patch_func2_offset	0x2C
 #define patch_func3		0x291DEC
-#define patch_func3_offset	0x0
+#define patch_func3_offset	0x24
 #define patch_func4		0x4C4C0
 #define patch_func4_offset	0x0
 #define patch_func5		0x04DCA8

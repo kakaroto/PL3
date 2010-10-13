@@ -240,16 +240,7 @@ l_map_open_return:
  */
 .align 4
 hook_open:
-	// This is a copy from the original hook function, setting up the stack
-	stdu	%r1, -0xa0(%r1)
-	mflr	%r0
-	std	%r28, 0x80(%r1)
-	std	%r29, 0x88(%r1)
-	std	%r31, 0x98(%r1)
-	std	%r26, 0x70(%r1)
-	std	%r27, 0x78(%r1)
-	std	%r0, 0xb0(%r1)
-	mr	%r28, %r4
+	// The overwritten instruction
 	mr	%r29, %r3
 
 	// load the mapping_table in %r26
@@ -290,5 +281,5 @@ l_hook_open_next_table_entry:
 	addi	%r29, %r3, 4			// reload the new_path into %r29
 l_hook_open_proceed:
 	mr	%r3, %r29
-	b       ABSOLUTE_MEM2(patch_func3 + 0x28)
+	b       ABSOLUTE_MEM2(patch_func3 + patch_func3_offset + 4)
 
