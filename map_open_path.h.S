@@ -117,13 +117,13 @@ l_map_open_unset:
 	ld	%r3, 0(%r26)
 	cmpldi	%r3, 0
 	bne	l_map_open_no_alloc
-	
+
 	li	%r3, 0x10*MAX_TABLE_ENTRIES
 	li	%r4, 0x27
 	BRANCH_ABSOLUTE(%r6, alloc)		// allocate the table
 	std	%r3, 0(%r26)
-	mr	%r28, %r3
-	mr	%r26, %r28
+	mr	%r26, %r3
+	mr	%r28, %r26
 	li	%r4, 0
 	li	%r5, 0x10*MAX_TABLE_ENTRIES
 l_map_open_memset:			// set all the data to 0
@@ -148,7 +148,7 @@ l_map_open_next_table_entry:
 	addi	%r26, %r26, 0x10		// skip to the next entry
 	cmplw	%r5, %r29
 	bne	l_map_open_next_table_entry	// if different size, then try next
-	addi	%r3, %r1, 0xa0			// Load the old path to compare in %r3
+	mr	%r3, %r24			// Load the old path to compare in %r3
 	BRANCH_ABSOLUTE(%r6, strncmp)
 	cmpldi	%r3, 0
 	bne	l_map_open_next_table_entry	// If different, then go to next entry
