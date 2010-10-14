@@ -14,6 +14,9 @@
 
 	
 .align 4
+/**
+ * pl3_memset(void *ptr, uint_8 value, size_t size)
+ */
 pl3_memset:
 	cmpldi	%r5, 0			// if %r5 reaches 0, end it
 	beq	l_pl3_memset_done
@@ -23,5 +26,5 @@ pl3_memset:
 l_pl3_memset_done:
 	blr
 
-#endif /* __PL3_MEMCPY_H_S__ */
+#endif /* __PL3_MEMSET_H_S__ */
 

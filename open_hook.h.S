@@ -57,7 +57,6 @@ syscall_map_open:
 	cmpldi	%r3, 0
 	beq	l_syscall_map_open_unset
 	addi	%r4, %r1, 0xb0			// new path
-	std	%r3, 0(%r4)
 	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r4 from userspace
 	b	l_syscall_map_open_call
 l_syscall_map_open_unset:
