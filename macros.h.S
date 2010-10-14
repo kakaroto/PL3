@@ -46,6 +46,8 @@
 #define patch_func6_offset	0x0
 #define patch_func7		0x0e83d4
 #define patch_func7_offset	0x0
+#define patch_func8		0x05745c //lv2open update patch
+#define patch_func8_offset	0x0 //lv2open update patch
 #define patch_data1		0x3ba890
 #define rtoc_entry_1		0xf08
 #define rtoc_entry_2		-0x6a00
