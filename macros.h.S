@@ -100,10 +100,12 @@
 #define patch_func4_offset	0x0
 #define patch_func5		0x05009c
 #define patch_func5_offset	0x0
-#define patch_func6		0
-#define patch_func6_offset	0
-#define patch_func7		0
-#define patch_func7_offset	0
+#define patch_func6		0x237E0
+#define patch_func6_offset	0x0
+#define patch_func7		0xE8E98
+#define patch_func7_offset	0x0
+#define patch_func8		0x56E48
+#define patch_func8_offset	0x0
 #define patch_data1		0x3B9910
 #define rtoc_entry_1		0xd58
 #define rtoc_entry_2		-0x6b08
@@ -155,6 +157,8 @@
 #define patch_func6_offset	0
 #define patch_func7		0
 #define patch_func7_offset	0
+#define patch_func8		0
+#define patch_func8_offset	0
 #define patch_data1		0x3B9990
 #define rtoc_entry_1		0xD60
 #define rtoc_entry_2		-0x6B08
@@ -210,6 +214,8 @@
 #define patch_func6_offset	0
 #define patch_func7		0
 #define patch_func7_offset	0
+#define patch_func8		0
+#define patch_func8_offset	0
 #define patch_data1		0x39C010
 #define rtoc_entry_1		0xD00
 #define rtoc_entry_2		-0x6B30
