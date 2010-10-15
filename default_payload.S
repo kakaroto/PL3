@@ -114,7 +114,7 @@ patch_table:
 	PATCH_INST(patch_func5 + patch_func5_offset + 4, blr)
 	PATCH_INST(patch_func6 + patch_func6_offset, li %r3, 0)
 	PATCH_INST(patch_func7 + patch_func7_offset, li %r3, 0)
-	PATCH_INST(patch_func8 + patch_func8_offset, li %r31, 0) //lv2open update patch
+	PATCH_INST(patch_func8 + patch_func8_offset, li %r3, 0) //lv2open update patch
 	.long	0
 
 
