@@ -149,6 +149,7 @@ int main (int argc, char *argv[])
         fclose (in);
         return -1;
       }
+      last_offset = 0;
       printf ("Now writing to file %s\n", path);
     } else if (out) {
       offset = be32_to_cpu (*((int *) buf));
