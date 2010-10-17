@@ -41,12 +41,18 @@ typedef struct ethernet_hdr_s {
   uint16_t type;
 } ethernet_hdr_t;
 
+typedef struct vlan_hdr_s {
+  uint16_t vlan_id;
+  uint16_t type;
+} vlan_hdr_t;
 
 int main (int argc, char *argv[])
 {
   FILE *in = NULL;
   FILE *out = NULL;
   pcaprec_hdr_t header;
+  ethernet_hdr_t eth;
+  vlan_hdr_t vlan;
   char path[1024];
   char buf[1028];
   int offset;
@@ -87,9 +93,24 @@ int main (int argc, char *argv[])
     ret = fread(&header, sizeof(pcaprec_hdr_t), 1, in);
     if (ret != 1)
       break;
+    ret = fread(&eth, sizeof(ethernet_hdr_t), 1, in);
+    if (ret != 1)
+      break;
+    eth.type = ntohs (eth.type);
+    header.incl_len -= sizeof(ethernet_hdr_t);
+    /* check for VLAN packet type */
+    if (eth.type == 0x8100) {
+      ret = fread(&vlan, sizeof(vlan_hdr_t), 1, in);
+      if (ret != 1)
+        break;
+      vlan.type = ntohs (vlan.type);
+      header.incl_len -= sizeof(vlan_hdr_t);
+    } else {
+      vlan.type = 0;
+    }
     /* If there's garbage, then ignore it */
-    if (header.incl_len != (64 + sizeof(ethernet_hdr_t)) &&
-        header.incl_len != (1028 + sizeof(ethernet_hdr_t))) {
+    if (!(eth.type == 0x1337 || (eth.type == 0x8100 && vlan.type == 0x1337)) ||
+        (header.incl_len != 64 && header.incl_len != 1028)) {
       char *temp = malloc (header.incl_len);
       if (temp == NULL) {
         printf ("memory allocation error: %d\n", header.incl_len);
@@ -101,10 +122,6 @@ int main (int argc, char *argv[])
       free (temp);
       continue;
     }
-    ret = fread(buf, sizeof(ethernet_hdr_t), 1, in);
-    if (ret != 1)
-      break;
-    header.incl_len -= sizeof(ethernet_hdr_t);
 
     ret = fread(buf, 1, header.incl_len, in);
     if (ret != header.incl_len)
