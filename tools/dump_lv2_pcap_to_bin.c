@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <malloc.h>
-
+#include <arpa/inet.h>
 
 typedef struct pcap_hdr_s {
   uint32_t magic_number;   /* magic number */
@@ -38,27 +38,6 @@ typedef struct ethernet_hdr_s {
   char src[6];
   uint16_t type;
 } ethernet_hdr_t;
-
-static int am_big_endian(void)
-{
-  long one= 1;
-  return !(*((char *)(&one)));
-}
-
-
-static uint32_t be32_to_cpu (uint32_t cpu)
-{
-  int i;
-  uint32_t result;
-
-  if (am_big_endian ())
-    return cpu;
-
-  for (i = 0; i < sizeof(uint32_t); i++)
-    ((char *)&result)[i] = ((char *)&cpu)[sizeof(uint32_t) - i - 1];
-
-  return result;
-}
 
 
 int main (int argc, char *argv[])
@@ -122,7 +101,7 @@ int main (int argc, char *argv[])
     ret = fread(buf, 1, 1028, in);
     if (ret != 1028)
       break;
-    offset = be32_to_cpu (*((int *) buf));
+    offset = ntohl (*((uint32_t *) buf));
     if (last_offset > 0 && offset != last_offset &&
         offset != last_offset + 1024) {
       printf ("WARNING: offset %X missing!!!\n", last_offset + 1024);

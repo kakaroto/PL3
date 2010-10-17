@@ -15,6 +15,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <errno.h>
+#include <arpa/inet.h>
 
 
 typedef struct pcap_hdr_s {
@@ -39,27 +40,6 @@ typedef struct ethernet_hdr_s {
   char src[6];
   uint16_t type;
 } ethernet_hdr_t;
-
-static int am_big_endian(void)
-{
-  long one= 1;
-  return !(*((char *)(&one)));
-}
-
-
-static uint32_t be32_to_cpu (uint32_t cpu)
-{
-  int i;
-  uint32_t result;
-
-  if (am_big_endian ())
-    return cpu;
-
-  for (i = 0; i < sizeof(uint32_t); i++)
-    ((char *)&result)[i] = ((char *)&cpu)[sizeof(uint32_t) - i - 1];
-
-  return result;
-}
 
 
 int main (int argc, char *argv[])
@@ -132,8 +112,8 @@ int main (int argc, char *argv[])
 
     if (header.incl_len == 64) {
       char temp[17];
-      uint32_t hash = be32_to_cpu (((uint32_t *)buf)[0]);
-      uint32_t thingy = be32_to_cpu (((uint32_t *)buf)[1]);
+      uint32_t hash = ntohl (((uint32_t *)buf)[0]);
+      uint32_t thingy = ntohl (((uint32_t *)buf)[1]);
 
       if (out) {
         printf ("File has %ld bytes\n", ftell (out));
@@ -152,7 +132,7 @@ int main (int argc, char *argv[])
       last_offset = 0;
       printf ("Now writing to file %s\n", path);
     } else if (out) {
-      offset = be32_to_cpu (*((int *) buf));
+      offset = ntohl (*((uint32_t *) buf));
       if (last_offset > 0 && offset != last_offset &&
           offset != last_offset + 1024) {
         printf ("WARNING: offset %X missing!!!\n", last_offset + 1024);
