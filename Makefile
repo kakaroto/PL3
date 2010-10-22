@@ -7,7 +7,7 @@ PPU_OBJCOPY = ppu-objcopy
 PPU_CFLAGS =
 
 # This isn't enough, you must also add rules for the filename_fw with the -D define
-SUPPORTED_FIRMWARES = 3.41 3.15 3.10 3.01
+SUPPORTED_FIRMWARES = 3.41 3.41_kiosk 3.15 3.10 3.01
 
 PAYLOADS = shellcode_egghunt.bin \
 	shellcode_panic.bin \
@@ -67,6 +67,9 @@ $(ALL_PAYLOADS): *.h.S config.h
 
 %_3_41.o : %.S
 	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_41 -c $< -o $@
+
+%_3_41_kiosk.o : %.S
+	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_41 -DKIOSK -c $< -o $@
 
 %.o : %.S
 	$(PPU_CC) $(PPU_CFLAGS) -c $< -o $@
