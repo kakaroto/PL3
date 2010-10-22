@@ -67,7 +67,7 @@
 #define elf1_func1_offset       0x00
 #define elf1_func2              0x304F54
 #define elf1_func2_offset       0x14
-#define elf2_func1              0x2ECD4
+#define elf2_func1              0x2EB44
 #define elf2_func1_offset       0x374
 
 #define elf3_data               0x0022A758
