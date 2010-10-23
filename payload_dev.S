@@ -122,6 +122,7 @@ patch_table:
 	// disable calls in lv2open to lv1_send_event_locally which makes
 	// the system crash
 	PATCH_INST(patch_func8 + patch_func8_offset2, nop)
+	PATCH_INST(patch_func9 + patch_func9_offset, nop)
 	.long	0
 
 
