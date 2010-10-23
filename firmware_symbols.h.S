@@ -266,6 +266,65 @@
 #define elf3_data		0x001EAE98
 #define elf4_data		0x000D1D00
 
+#elif defined(FIRMWARE_2_76)
+
+#define memcpy 			0x0007395C
+#define memset 			0x00046850
+#define strcpy 			0x000469B8
+#define strncmp	 		0x00046A0C
+#define strlen			0x000469E0
+#define strdup			0x001A2270
+#define alloc 			0x00059D54
+#define free 			0x0005A194
+#define add_kernel_module 	0x000CC6A0
+#define syscall_table		0x002C4318
+#define get_device_descriptor	0x000CCD2C
+#define unknown_func1		0x000CCD58
+#define unknown_func2		0x000CCCC0
+#define memory_patch_func	0x00047EE4
+#define patch_func1		0x00043828
+#define patch_func1_offset	0x34
+#define patch_func2		0x00048718
+#define patch_func2_offset	0x2C
+#define patch_func3		0x00286BDC
+#define patch_func3_offset	0x0
+#define patch_func4		0x000483B4
+#define patch_func4_offset	0x0
+#define patch_func5		0x00049AF0
+#define patch_func5_offset	0x0
+#define patch_func6		0x00022EE0
+#define patch_func6_offset	0x80
+#define patch_func7		0x000E1F04
+#define patch_func7_offset	0x2C
+#define patch_func8		0x000504BC // lv2open update patch
+#define patch_func8_offset1	0x68
+#define patch_func8_offset2	0x1CC
+#define patch_func9		0x00048EDC // must upgrade patch
+#define patch_func9_offset	0x3EC
+#define patch_data1		0x0038E3E0
+#define rtoc_entry_1		0x988
+#define rtoc_entry_2		-0x6C50
+
+// Payload bases
+#define MEM_BASE2 		(0x4A05C)
+
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+
+#define HASH_TABLE_1		0xB35FF0D7002B53FF
+#define HASH_TABLE_2		0xF662A7ED0001A3F8
+#define HASH_TABLE_3		0x78D617A6000A25AB
+#define HASH_TABLE_4		0x6CD46E1000044996
+
+#define elf1_func1		0x5992D8
+#define elf1_func1_offset	0x00
+#define elf1_func2		0x160BC0
+#define elf1_func2_offset	0x14
+#define elf2_func1		0x2ed0c
+#define elf2_func1_offset	0x00
+
+#define elf3_data		0x001AA2C8
+#define elf4_data		0x000B6BC0
+
 #endif
 
 #endif /* __FIRMWARE_SYMBOLS_H_S__ */
