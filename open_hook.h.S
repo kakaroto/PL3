@@ -137,7 +137,7 @@ l_hook_open_next_table_entry:
 	cmplwi	%r5, 0
 	beq	l_hook_open_next_table_entry	// if size is 0, then try next
 	mr	%r3, %r29			// Load the path to compare in %r3
-	mr	%r31, %r5			// Store the size in %r30
+	mr	%r31, %r5			// Store the size in %r31
 	bl	ABSOLUTE_MEM2(strncmp)
 	cmpldi	%r3, 0
 	bne	l_hook_open_next_table_entry	// If different, then go to next entry
