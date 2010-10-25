@@ -319,8 +319,8 @@
 #define elf1_func1_offset	0x00
 #define elf1_func2		0x160BC0
 #define elf1_func2_offset	0x14
-#define elf2_func1		0x2ed0c
-#define elf2_func1_offset	0x00
+#define elf2_func1		0xc600
+#define elf2_func1_offset	0x378
 
 #define elf3_data		0x001AA2C8
 #define elf4_data		0x000B6BC0
