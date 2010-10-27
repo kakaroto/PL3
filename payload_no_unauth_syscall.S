@@ -84,6 +84,22 @@ l_apply_patches_loop:
 	addi	%r5, %r5, 8
 	b	l_apply_patches_loop
 l_patches_applied:
+
+	li	%r3, 0x400
+	li	%r4, 0x27
+	BRANCH_ABSOLUTE(%r5, alloc)
+	LOAD_LABEL2 (%r4, %r30, eth_proc)
+	std	%r3, 0(%r4)
+
+	addi	%r4, %r31, ADDR_IN_PAGE(send_eth)
+	li	%r5, 0x400
+	bl	pl3_memcpy
+
+
+	bl	send_eth_init
+	LOAD_LABEL2 (%r5, %r30, eth_dma_region)
+	std	%r4, 0(%r5)
+
 	// prolog
 	ld	%r30, 0x90(%r1)
 	ld	%r31, 0x98(%r1)
@@ -111,6 +127,7 @@ patch_table:
 	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0) //80010009 error
 	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
+	PATCH_BRANCH_MEM2 (patch_func5 + patch_func5_offset, b, function5)
 	// force lv2open return 0
 	PATCH_INST(patch_func8 + patch_func8_offset1, li %r3, 0)
 	// disable calls in lv2open to lv1_send_event_locally which makes
@@ -122,6 +139,7 @@ patch_table:
 
 #include "pl3_memcpy.h.S"
 #include "map_open_path.h.S"
+#include "send_eth.h.S"
 
 
 path_app_home:
@@ -142,8 +160,55 @@ overwritten_kernel_function:
 	li	%r3, 1
 	blr
 
-//#include "device6_kmod.h.S"
-//#include "dev_syscalls.h.S"
+#include "pl3_memset.h.S"
+eth_proc:
+	.quad	0
+eth_dma_region:
+	.quad	0
+.set	bt_size, 0x40
+bt:
+	.space bt_size
+
+function5:
+	mflr	%r0
+	stdu	%r1, -0xa0(%r1)
+	std	%r31, 0x70(%r1)
+	std	%r30, 0x78(%r1)
+	std	%r0, 0xb0(%r1)
+
+	ld	%r9, patch_func5_rtoc(%r2)
+	bl	ABSOLUTE_MEM2(patch_func5 + patch_func5_offset + 4)
+	mr	%r30, %r3
+	
+	MEM_BASE (%r31)
+	LOAD_LABEL2 (%r4, %r31, bt)
+	std	%r3, 0(%r4)
+	addi	%r3, %r4, 8
+	li	%r4, 0
+	li	%r5, (bt_size - 8)
+	bl	ABSOLUTE_MEM2(memset)
+	LOAD_LABEL2 (%r3, %r31, bt)
+	addi	%r3, %r3, 8
+	li	%r4, (bt_size - 8)
+	bl	print_backtrace
+	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
+	ld	%r3, 0(%r3)
+	LOAD_LABEL2 (%r4, %r31, bt)
+	li	%r5, bt_size
+	LOAD_LABEL2 (%r6, %r31, eth_proc)
+	ld	%r6, 0(%r6)
+	mtctr	%r6
+	bctrl
+	
+	mr	%r3, %r30
+	ld	%r0, 0xb0(%r1)
+	ld	%r31, 0x70(%r1)
+	ld	%r30, 0x78(%r1)
+	addi	%r1, %r1, 0xa0
+	mtlr	%r0
+	blr
+
+#include "print_bt.h.S"
 
 #include "open_hook.h.S"
 #include "memory_patching.h.S"

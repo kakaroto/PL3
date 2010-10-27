@@ -33,6 +33,7 @@
 #define USBOpenEndpoint		0xd29c4 // FIXME
 #define USBControlTransfer	0xd292c // FIXME
 #define memory_patch_func	0x4e81c
+
 #define patch_func1		0x0490AC
 #define patch_func1_offset	0x34
 #define patch_func2		0x04F07C
@@ -43,6 +44,7 @@
 #define patch_func4_offset	0x0
 #define patch_func5		0x0505d0
 #define patch_func5_offset	0x0
+#define patch_func5_rtoc	-0x6978
 #define patch_func6		0x0234d0
 #define patch_func6_offset	0x0
 #define patch_func7		0x0e83d4
@@ -317,6 +319,7 @@
 #define patch_func4_offset	0x0
 #define patch_func5		0x05009c
 #define patch_func5_offset	0x0
+#define patch_func5_rtoc	-0x6A80
 #define patch_func6		0x237E0
 #define patch_func6_offset	0x0
 #define patch_func7		0xE8E98
