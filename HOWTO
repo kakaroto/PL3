@@ -1,38 +1,79 @@
-How to port to a new Firmware (but < 3.41) :
+How to port to a new Firmware (but < 3.41):
 
-First disable the JIG mode, and try to bruteforce the position of the payload
-with a panic payload (add 'b panic' at payload_start in dump_lv2.S), until you
-can get a hit reliably (see http://pastie.org/1195108).
+Requirements:
 
-Then replace the payload with the original dump_lv2 payload, and connect the
-ps3 through ethernet to your PC and run wireshark to capture your dump... 
-Run the payload, then once the ps3 panics (to tell you it's done), you can
-save your wireshark dump to a file in .pcap format.
+- PSFreedom or PSGroove
+- PL3
+- ps3toolchain
+- wireshark
+- IDA 5.5+ (optional)
 
-Then run the tools/dump_lv2_pcap_to_bin program to dump the lv2 binary from the
-pcap file captured by wireshark.
+Note: ps3toolchain is a submodule of PL3 and PL3 is a submodule of PSGroove and
+PSFreedom.
 
-Open the dump with IDA, set the processor to 'ppc', then run the
+
+Step 1 - Finding the shellcode address
+
+a. First disable the JIG mode by commenting the define USE_JIG in config.h, and 
+try to bruteforce the position/address of the payload with the shellcode_panic 
+payload until you can get a hit reliably (see http://pastie.org/1195108). The
+address should be somewhere between 0x004e0000 and 0x00500000. Put the USB device
+on the PS3 and use de trigger sequence (Power + Eject, then you should listen 3 
+beeps), as soon PS3 boots it will activate the USB device and it should blink.
+Then You will should have a hit, if your ps3 got frozen before displaying any 
+output and will blink the power light with the red color (this should take 
+something between 4s and 8s after the USB device light starts blinking).
+
+If you haven't got a hit, then change the address by incrementing by one and try
+again, remember to hard reset your ps3 (for slim unplug the energy cable).
+
+b. Now that you got the hit, replace the payload with the dump_lv2 payload, and 
+connect the ps3 through ethernet to your PC and run wireshark to capture your 
+dump. Plug the device in the USB, turn on the PS3 and do the trigger sequence.
+You should start receiving packets right after the USB device blink, the packets
+are displayed with the protocol 0x1773. If you got somthing else, like
+a bunch of DHCP requests or nothing at all, it may be a problem with the 
+payload_lv2 (i had to clean up PL3), make sure you got the ps3toolchain working
+and is able to rebuild PL3. Once the ps3 panics (to tell you it's done), you 
+can save your wireshark dump to a file in .pcap format.
+
+Note: You should set the JIG response to something easy to find in the dump,
+in the case of PSGroove change the jig_response variable from descriptor.h
+to something like:
+
+const uint8_t PROGMEM jig_response[64] = {
+        "THIS IS THE JIG BUFFER RESPONSE"
+};
+
+c. Run the tools/dump_lv2_pcap_to_bin program to dump the lv2 binary from the
+pcap file captured by wireshark - if this fails with a "Didn't find any data"
+message you should add 4 bytes in the end of the structure ethernet_hdr_s and 
+try again.
+
+d. Open the dump with IDA, set the processor to 'ppc', then run the
 dump_lv2_analyzer.idc IDC file from the tools directory to get it analyzed and
 follow the instructions (set TOC table in IDA options).
-
 Once you are done, set the TOC_TABLE value in PSFreedom/PSGroove and set the
 syscall_table define in macros.h.S.
 
-Then look for the position of the JIG response offset in the dump by searching
-for a recognizable string you previously put in there.
-You can now set the JIG response address in PSGroove/PSFreedom and test JIG mode
-with a panic payload and the egghunter shellcode.
+e. Then look for the position of the JIG response offset in the dump by searching
+for the recognizable string you previously put in there. You can now set the JIG
+response address in PSGroove/PSFreedom and test JIG mode with a panic payload and 
+the egghunter shellcode.
 
-You can  then start looking for the various patch_funcX functions...
-(For this you will most likely need a clean/unmodified dump of an already
-supported firmware, so you can compare the asm code to find the right offsets)
+f. Now you can start looking for the various patch_funcX functions.
 
-The first step would be to go to label 'syscall_open' (set by the IDC) and look
+Note: For this you will most likely need a clean/unmodified dump of an already
+supported firmware, so you can compare the asm code to find the right offsets.
+
+
+Step 2 - Finding the various function addresses
+
+a. The first step would be to go to label 'syscall_open' (set by the IDC) and look
 for the hooked_open, as well as alloc/free. Then follow the hooked_open proc to
 find the 'strlen' symbol (first bl in the function).
 
-Once you have those, you should go to the strlen function then can disable the
+b. Once you have those, you should go to the strlen function then can disable the
 'chart' mode in IDA  (press spacebar), then look at the function right below
 strlen, it will be strncmp, and the function right above strlen will be strcpy.
 You can also find memset here, if you scroll up from strcpy, the memset function
@@ -155,6 +196,8 @@ Go to each one of them, they should appear as the only hypercall in the function
 for two of them, but for one of the functions found, it will be between a call
 to hvsc 109 and hvsc 107. You found your memcpy!
 
+
+Step 3 - Finding the elfs
 
 All right, we're done with the first part of the analysis, this whole thing
 should have taken about an hour to do or less (unless you're writing a guide
