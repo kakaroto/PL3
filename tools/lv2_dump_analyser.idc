@@ -140,9 +140,9 @@ static CreateToc (toc_addr) {
 
   ea = toc_addr - 0x8000;
   while (ea != toc_addr + 0x8000) {
-    MakeUnknown(ea, 0x10, DOUNK_SIMPLE);
-    MakeStructEx (ea, 0x10, "TOC_s");
-    ea = ea + 0x10;
+    MakeUnknown(ea, 0x08, DOUNK_SIMPLE);
+    MakeStructEx (ea, 0x08, "TOC_s");
+    ea = ea + 0x08;
   }
 }
 
