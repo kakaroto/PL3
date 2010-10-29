@@ -218,8 +218,8 @@ a. Now let's start finding the hashes for the hash table and the offsets for the
 user-space ELF files. Let's compile our payloads, add the version we're trying
 to add in the Makefile by adding it to SUPPORTED_FIRMWARES and by adding a rule
 for %_X_YZ.o: %.s which defines the -DFIRMWARE_X_YZ, then type make PL3.
-In the project (PSGroove/PSFreedom), replace the PAYLOAD to
-use payload_dump_elfs.
+In the project (PSGroove/PSFreedom), replace the PAYLOAD to use
+payload_dump_elfs.
 
 b. Now connect the PS3 with the ethernet cable to the PC and run wireshark, let
 it boot, it should in theory be able to boot into the XMB if you found all the
@@ -228,40 +228,38 @@ by wireshark. let it finish booting, then turn it off, save the wireshark dump
 to a file, then run the ./tools/dump_elfs_pcap_to_bin utility on the .pcap file,
 giving it a directory to output the files to.
 
-Now search (grep) for the word 'category_game' in that directory, and it should
-give you one file matching the string, the filename of that file will be the
-value of HASH_TABLE_3 (prefix it with '0x').
-Hex edit that file. In it, you will find multiple references to 'category_game',
-you only need to find the one that says 'category_game.xml#root' then followed
-by a few 0x00 values. The value of 'elf3_data' is the offset where the '.xml'
-starts in that string.
+c. Now search (grep) for the word 'category_game' in that directory, and it
+should give you one file matching the string, the filename of that file will be
+the value of HASH_TABLE_3 (prefix it with '0x'). Hex edit that file. In it, you
+will find multiple references to 'category_game', you only need to find the one
+that says 'category_game.xml#root' then followed by a few 0x00 values. The value
+of 'elf3_data' is the offset where the '.xml' starts in that string.
 
+d. Now look for a file with a size of 6MB or 7MB. This is the VSH (XMB) ELF
+file, its filename is the HASH_TABLE_1 value. Open that file in IDA and let it
+analyze it, it will complain a few times about wrong sizes and missing stuff,
+ignore those warnings. Then once it loads and finishes the file analyzis, do a
+binary search for "68000001540007FE". It should find two results, you need the
+first one. The two results point to very similar functions, but one of them
+contains a 'nop' after the 'bl' while the other doesn't. The one you want is the
+one without the 'nop'. The offset of this function is the elf1_func1 offset. But
+be aware that IDA will load the data with a start address of 0x1000, so make
+sure you substract 0x1000 from the offset reported by IDA before setting it to
+elf1_func1. The offset is 0x00 as this entire function will be overwritten.
 
-Now look for a file with a size of 6MB or 7MB. This is the VSH (XMB) ELF file,
-its filename is the HASH_TABLE_1 value.
-Open that file in IDA and let it analyze it, it will complain a few times about
-wrong sizes and missing stuff, ignore those warnings. Then once it loads and
-finishes the file analyzis, do a binary search for "68000001540007FE". It should
-find two results, you need the first one. The two results point to very similar
-functions, but one of them contains a 'nop' after the 'bl' while the other
-doesn't. The one you want is the one without the 'nop'. The offset of this
-function is the elf1_func1 offset. But be aware that IDA will load the data
-with a start address of 0x1000, so make sure you substract 0x1000 from the
-offset reported by IDA before setting it to elf1_func1.
+e. Now let's find elf1_func2, do a binary search for "396000013803FF7F". It
+should find one result, go to it, it should be a "li %r11, 1; addi %r0, %r3,
+-0x81" instructions, the offset for elf1_func2 that you need is the offset of
+the instruction "lhz %r3, 4(%r31)" just above that. You have found the
+elf1_func2 offset, but don't forget to substract 0x1000 from the offset reported
+by IDA.
 
+f. You are ready for the second set of elf dumps! Now recompile everything and
+run the exploit once more, but DO NOT connect the ethernet cable! Let the PS3
+boot and connect your PS3 controller. You should now see the "Install package
+files" option in the XMB. Congratulations! But it's not finished.
 
-Now let's find elf1_func2, do a binary search for "396000013803FF7F". It should
-find one result, go to it, it should be a "li %r11, 1; addi %r0, %r3, -0x81"
-instructions, the offset for elf1_func2 that you need is the offset of the
-instruction "lhz %r3, 4(%r31)" just above that. You have found the elf1_func2
-offset, but don't forget to substract 0x1000 from the offset reported by IDA.
-
-You are ready for the second set of elf dumps! Now recompile everything and run
-the exploit once more, but DO NOT connect the ethernet cable! Let the PS3 boot
-and connect your PS3 controller. You should now see the "Install package files"
-option in the XMB. Congratulations! But it's not finished.
-
-Now insert a USB device with a homebrew .pkg file on it, and then connect the
+g. Now insert a USB device with a homebrew .pkg file on it, and then connect the
 ethernet cable to your PC. Once the ethernet cable is connected, open the
 "Install package files" menu and click on your .pkg to install it. It will
 fail with a 0x80029519 error. It's ok! You can also see a new set of packets
@@ -271,12 +269,12 @@ your PS3, and once you do that, press the PS button on your controller to open
 the in-game XMB (which will freeze). Or you can just shut down your PS3 and do
 this later.
 
-Now save your wireshark dump to a new .pcap file, and extract its content with
-the tools/dump_elfs_pcap_to_bin utility. You will find a few new files extracted
-but you need to notice the output of the tool! The very first file it will write
-is the HASH_TABLE_2 value, it should be about 280K or 300K in size.
+h. Now save your wireshark dump to a new .pcap file, and extract its content
+with the tools/dump_elfs_pcap_to_bin utility. You will find a few new files
+extracted but you need to notice the output of the tool! The very first file it
+will write is the HASH_TABLE_2 value, it should be about 280K or 300K in size.
 
-Open the file in IDA and set the processor type to 'ppc' then click ok. Now
+i. Open the file in IDA and set the processor type to 'ppc' then click ok. Now
 search for the binary value "3929FFFF793D0FE0", it should give you one result,
 open it, you will see random data (this is not a full ELF, only part of it, so
 IDA cannot analyze it). press the 'C' key for IDA to transform it into code. You
