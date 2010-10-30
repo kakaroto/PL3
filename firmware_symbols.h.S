@@ -137,20 +137,20 @@
 
 #define RESIDENT_PAYLOAD_MAXSIZE (1296)
 
-#define HASH_TABLE_1		0xA0683FF8002C346B
-#define HASH_TABLE_2		0
-#define HASH_TABLE_3		0x8C0A948C000C7B8F
-#define HASH_TABLE_4		0
+#define HASH_TABLE_1		0xA0683FF8002C346B // vsh elf
+#define HASH_TABLE_2		0x6B7028220001E56B // pkg loader elf
+#define HASH_TABLE_3		0x8C0A948C000C7B8F // xmb elf
+#define HASH_TABLE_4		0x7FE3F5CF00050992 // ingame xmb elf
 
 #define elf1_func1			0x005f38cc
 #define elf1_func1_offset	0x00
 #define elf1_func2			0x00309dc8
 #define elf1_func2_offset	0x14
-#define elf2_func1			0x0
-#define elf2_func1_offset	0x374
+#define elf2_func1			0x0000e518 // run pkg function
+#define elf2_func1_offset	0x374 // patch to run pkg (ignore error 0x80029567)
 	
-#define elf3_data		0x0
-#define elf4_data		0x0
+#define elf3_data		0x00204238 // xmb 'game' submenu xml conf offset.
+#define elf4_data		0x00004008 // ingame xmb 'game' submenu xml conf offset.
 
 #elif defined(FIRMWARE_3_15)
 
