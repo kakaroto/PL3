@@ -262,32 +262,32 @@ files" option in the XMB. Congratulations! But it's not finished.
 g. Now insert a USB device with a homebrew .pkg file on it, and then connect the
 ethernet cable to your PC. Once the ethernet cable is connected, open the
 "Install package files" menu and click on your .pkg to install it. It will
-fail with a 0x80029519 error. It's ok! You can also see a new set of packets
-just got captured by wireshark.
-Now you have two choices, either you open an existing application installed on
-your PS3, and once you do that, press the PS button on your controller to open
-the in-game XMB (which will freeze). Or you can just shut down your PS3 and do
-this later.
+fail with a 0x80029519 (or 0x80029567) error. It's ok! You can also see a new
+set of packets just got captured by wireshark. Now you have two choices, either
+you open an existing application installed on your PS3, and once you do that,
+press the PS button on your controller to open the in-game XMB (which will
+freeze). Or you can just shut down your PS3 and do this later.
 
 h. Now save your wireshark dump to a new .pcap file, and extract its content
-with the tools/dump_elfs_pcap_to_bin utility. You will find a few new files
+with the tools/dump_elfs_pcap_to_dir utility. You will find a few new files
 extracted but you need to notice the output of the tool! The very first file it
 will write is the HASH_TABLE_2 value, it should be about 280K or 300K in size.
 
-i. Open the file in IDA and set the processor type to 'ppc' then click ok. Now
-search for the binary value "3929FFFF793D0FE0", it should give you one result,
-open it, you will see random data (this is not a full ELF, only part of it, so
-IDA cannot analyze it). press the 'C' key for IDA to transform it into code. You
-should see the instructions "addi %r9, %r9, -1; rldicl %r29, %r9, 1, 63". What
-you need is the offset of the 'rldicl' instruction.. so the result of the search
-+ 4 bytes. That's the elf2_func1 value that you want.. Note that since this
-wasn't analyzed by IDA and not recognized as an ELF, so the data is not shifted
-so the offset value given to you by IDA is the offset you want, do not substract
-0x1000 from it, use it as is!
+i. Open the file in IDA and set the processor type to 'ppc' then click ok. Run
+the find_stdu.idc script to analyze the code (this is not a full ELF, only part
+of it, so IDA cannot analyze it) and then search for the binary value
+"3929FFFF793D0FE0", it should give you one result, open it. You should see the
+instructions "addi %r9, %r9, -1; rldicl %r29, %r9, 1, 63". The address of
+the sub found is the elf2_func1 value that you want. Note that since this wasn't
+analyzed by IDA and not recognized as an ELF, so the data is not shifted so the
+offset value given to you by IDA is the offset you want, do not substract 0x1000
+from it, use it as is! The elf2_func1_offset should be 0x374, so it should
+point to a 'beq' instruction that will jump to a piece of code with the comment
+with the error code (in my case it was 0x80029567).
 
-Now the only thing remaining is the HASH_TABLE_4 and elf4_data! If you did open
-a game earlier for the second set of elf dumps, and tried to access the in-game
-XMB, then skip this step, otherwise... :
+j. Now the only thing remaining is the HASH_TABLE_4 and elf4_data! If you did
+open a game earlier for the second set of elf dumps, and tried to access the
+in-game XMB, then skip this step, otherwise:
 --Now recompile everything and rerun the exploit, you should now be able to both
 --install and run homebrew applications! once you have installed and ran an
 --application, connect the ethernet cable to your PC, start wireshark, then you
@@ -295,14 +295,15 @@ XMB, then skip this step, otherwise... :
 --crash, but that's all you need. Now shut down the PS3, and save the wireshark
 --dump and run the tools/dump_elfs_pcap_to_bin on it.
 
-Now this is where we join for the final step, search in the files (grep) for the
-"category_game.xml" string, you should find one file (if you only search for
-"category_game", you will find two files, you need the biggest file of the two)
-Now you need to do the same thing as for elf3_data, look for the 'cateogry_game'
-string in the file with a hex editor until you find "category_game.xml#root"
-followed by a few 0x00, and you need the offset of the start of the ".xml".
-That's your elf4_data! Don't forget to copy the filename (prefixed with '0x')
-to the HASH_TABLE_4 value.
+k. Now this is where we join for the final step, search in the files (grep) for
+the "category_game.xml" string, you should find one file (if you only search for
+"category_game", you will find two files, you need the smaller file of the two
+- one of them will be the same as HASH_TABLE_3, so you should stick with the
+other one). Now you need to do the same thing as for elf3_data, look for the
+'cateogry_game' string in the file with a hex editor until you find
+"category_game.xml#root" followed by a few 0x00, and you need the offset of the
+start of the ".xml". That's your elf4_data! Don't forget to copy the filename
+(prefixed with '0x') to the HASH_TABLE_4 value.
 
 You can now disable the dump_elfs payload and return everything back to normal,
 i.e. use default_payload. Everything should work now! Congratulations!
