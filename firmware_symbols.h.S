@@ -93,6 +93,67 @@
 #define elf4_data		0x000d68b8
 #endif /* KIOSK */
 
+#elif defined(FIRMWARE_3_40)
+
+/* Common Symbols */
+#define memcpy 			0x7c018
+#define memset 			0x4d140
+#define strcpy 			0x4d2ec
+#define strncmp	 		0x4d340
+#define strlen			0x4d314
+#define strdup_from_user	0x1b3b34
+#define alloc 			0x62084
+#define free 			0x624c4
+#define add_kernel_module 	0xd22d0
+#define syscall_table		0x2eb128
+#define get_device_descriptor	0xd2990
+#define unknown_func1		0xd29bc
+#define unknown_func2		0xd2924
+#define memory_patch_func	0x4e818
+#define patch_func1		0x490a8
+#define patch_func1_offset	0x34
+#define patch_func2		0x4f078
+#define patch_func2_offset	0x2c
+#define patch_func3		0x2aafbc
+#define patch_func3_offset	0x24
+#define patch_func4		0x4ed14
+#define patch_func4_offset	0x0
+#define patch_func5		0x505cc
+#define patch_func5_offset	0x0
+#define patch_func6		0x234cc
+#define patch_func6_offset	0x0
+#define patch_func7		0xe83cc
+#define patch_func7_offset	0x0
+#define patch_func8		0x57210
+#define patch_func8_offset1	0xa4
+#define patch_func8_offset2	0x208
+#define patch_func9		0x4fc28
+#define patch_func9_offset	0x0
+#define patch_data1		0x3ba890
+#define rtoc_entry_1		0xf08
+#define rtoc_entry_2		-0x6a00
+
+// Payload bases
+#define MEM_BASE2 		0x50b38
+	
+#define RESIDENT_PAYLOAD_MAXSIZE   (1296)
+
+
+#define HASH_TABLE_1		0xa0556fed002cb89b
+#define HASH_TABLE_2		0x6b70280200020017
+#define HASH_TABLE_3		0x8c0a948c000d99b1
+#define HASH_TABLE_4		0xa2bc1a5600052adc
+
+#define elf1_func1		0x5f3f6c
+#define elf1_func1_offset	0x0
+#define elf1_func2		0x305350
+#define elf1_func2_offset	0x14
+#define elf2_func1		0x2e998
+#define elf2_func1_offset	0x374
+
+#define elf3_data		0x0022b888
+#define elf4_data		0x000d68b8
+
 #elif defined(FIRMWARE_3_21)
 
 /* Common Symbols */
