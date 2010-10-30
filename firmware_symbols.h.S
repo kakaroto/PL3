@@ -23,6 +23,8 @@
 #define strncmp	 		0x4d344
 #define strlen			0x4d318
 #define strdup_from_user	0x1b3b3c // FIXME: unsure of the name!
+#define copy_from_user		0xE26C
+#define copy_to_user		0xE050
 #define alloc 			0x62088
 #define free 			0x624c8
 #define add_kernel_module 	0xd22d8
@@ -222,6 +224,8 @@
 #define strncmp			0x4ce00
 #define strlen			0x4cdd4
 #define strdup_from_user	0x1b3d08 // FIXME: unsure of the name!
+#define copy_from_user		0xE300
+#define copy_to_user		0xE0FC
 #define alloc			0x61cf0
 #define free			0x62138
 #define add_kernel_module	0x12A7AC // DONE
