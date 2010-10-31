@@ -52,6 +52,7 @@
 #define patch_func8_offset2	0x208 //lv2open update patch
 #define patch_func9		0x4F840 // must upgrade error
 #define patch_func9_offset	0x3EC
+#define patch_syscall_func	0x28FB34
 #define patch_data1		0x3ba890
 #define rtoc_entry_1		0xf08
 #define rtoc_entry_2		-0x6a00
@@ -131,6 +132,7 @@
 #define patch_func8_offset2	0x208
 #define patch_func9		0x4fc28
 #define patch_func9_offset	0x0
+#define patch_syscall_func	0
 #define patch_data1		0x3ba890
 #define rtoc_entry_1		0xf08
 #define rtoc_entry_2		-0x6a00
@@ -261,6 +263,7 @@
 #define patch_func9_offset	0x3ec
 #define patch_syscall_func 	0x0028f67c
 #define patch_data1		0x003b9a10
+#define patch_syscall_func	0
 #define rtoc_entry_1		 0x0d60
 #define rtoc_entry_2		-0x6b08
 
@@ -324,6 +327,7 @@
 #define patch_func8_offset2	0x1CC
 #define patch_func9		0x4F30C // must upgrade error
 #define patch_func9_offset	0x3EC
+#define patch_syscall_func	0x28F660
 #define patch_data1		0x3B9910
 #define rtoc_entry_1		0xd58
 #define rtoc_entry_2		-0x6b08
@@ -379,6 +383,7 @@
 #define patch_func8_offset	0
 #define patch_func9		0
 #define patch_func9_offset	0
+#define patch_syscall_func	0
 #define patch_data1		0x3B9990
 #define rtoc_entry_1		0xD60
 #define rtoc_entry_2		-0x6B08
@@ -438,6 +443,7 @@
 #define patch_func8_offset	0
 #define patch_func9		0
 #define patch_func9_offset	0
+#define patch_syscall_func	0
 #define patch_data1		0x39C010
 #define rtoc_entry_1		0xD00
 #define rtoc_entry_2		-0x6B30
@@ -496,6 +502,7 @@
 #define patch_func8_offset2	0x1CC
 #define patch_func9		0x00048EDC // must upgrade patch
 #define patch_func9_offset	0x3EC
+#define patch_syscall_func	0
 #define patch_data1		0x0038E3E0
 #define rtoc_entry_1		0x988
 #define rtoc_entry_2		-0x6C50
