@@ -127,8 +127,8 @@
 #define patch_func8		0x00056c3c // lv2_open
 #define patch_func8_offset1	0xA4 	   // lv2open update patch
 #define patch_func8_offset2	0x208 	   // lv2open update patch
-#define patch_func9		0x0004f6f8 // must upgrade error
-#define patch_func9_offset	0x0 	   // FIXME: find correct offset
+#define patch_func9		0x0004f30c // must upgrade error
+#define patch_func9_offset	0x3ec
 #define patch_data1		0x003b9a10
 #define rtoc_entry_1		 0x0d60
 #define rtoc_entry_2		-0x6b08
