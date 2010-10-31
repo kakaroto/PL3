@@ -1,5 +1,5 @@
 /*
- * default_payload.S -- PS3 Jailbreak payload
+ * payload_no_unauth_syscall.S -- PS3 Jailbreak payload
  *
  * Copyright (C) Youness Alaoui (KaKaRoTo)
  * Copyright (C) Aaron Lindsay (Aaron')
