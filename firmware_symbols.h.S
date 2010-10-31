@@ -142,9 +142,9 @@
 #define HASH_TABLE_3		0x8C0A948C000C7B8F // xmb elf
 #define HASH_TABLE_4		0x7FE3F5CF00050992 // ingame xmb elf
 
-#define elf1_func1			0x005f38cc
+#define elf1_func1			0x005e48cc
 #define elf1_func1_offset	0x00
-#define elf1_func2			0x00309dc8
+#define elf1_func2			0x002fadc8
 #define elf1_func2_offset	0x14
 #define elf2_func1			0x0000e518 // run pkg function
 #define elf2_func1_offset	0x374 // patch to run pkg (ignore error 0x80029567)
