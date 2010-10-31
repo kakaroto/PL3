@@ -248,16 +248,16 @@ binary search for "68000001540007FE". It should find two results, you need the
 first one. The two results point to very similar functions, but one of them
 contains a 'nop' after the 'bl' while the other doesn't. The one you want is the
 one without the 'nop'. The offset of this function is the elf1_func1 offset. But
-be aware that IDA will load the data with a start address of 0x1000, so make
-sure you substract 0x1000 from the offset reported by IDA before setting it to
+be aware that IDA will load the data with a start address of 0x10000, so make
+sure you substract 0x10000 from the offset reported by IDA before setting it to
 elf1_func1. The offset is 0x00 as this entire function will be overwritten.
 
 e. Now let's find elf1_func2, do a binary search for "396000013803FF7F". It
 should find one result, go to it, it should be a "li %r11, 1; addi %r0, %r3,
 -0x81" instructions, the offset for elf1_func2 that you need is the offset of
 the instruction "lhz %r3, 4(%r31)" just above that. You have found the
-elf1_func2 offset, but don't forget to substract 0x1000 from the offset reported
-by IDA.
+elf1_func2 offset, but don't forget to substract 0x10000 from the offset
+reported by IDA.
 
 f. You are ready for the second set of elf dumps! Now recompile everything and
 run the exploit once more, but DO NOT connect the ethernet cable! Let the PS3
@@ -285,10 +285,10 @@ of it, so IDA cannot analyze it) and then search for the binary value
 instructions "addi %r9, %r9, -1; rldicl %r29, %r9, 1, 63". The address of
 the sub found is the elf2_func1 value that you want. Note that since this wasn't
 analyzed by IDA and not recognized as an ELF, so the data is not shifted so the
-offset value given to you by IDA is the offset you want, do not substract 0x1000
-from it, use it as is! The elf2_func1_offset should be 0x374, so it should
-point to a 'beq' instruction that will jump to a piece of code with the comment
-with the error code (in my case it was 0x80029567).
+offset value given to you by IDA is the offset you want, do not substract
+0x10000 from it, use it as is! The elf2_func1_offset should be 0x374, so it
+should point to a 'beq' instruction that will jump to a piece of code with the
+comment with the error code (in my case it was 0x80029567).
 
 j. Now the only thing remaining is the HASH_TABLE_4 and elf4_data! If you did
 open a game earlier for the second set of elf dumps, and tried to access the
