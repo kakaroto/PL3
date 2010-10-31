@@ -207,6 +207,11 @@ dump you're analyzing). Go to each one of them, they should appear as the only
 hypercall in the function for two of them, but for one of the functions found,
 it will be between a call to hvsc 109 and hvsc 107. You found your memcpy!
 
+p. To find the patch_func9, you should search for the binary "60630019". This
+should give you just one match pointing to the instruction "ori %r3, %r3, 0x19".
+The patch_func9 address is the XYZ address of the name sub_XYZ and the
+patch_func9_offset should be 0x3ec, check that it is a "beq" instruction.
+
 
 Step 3 - Finding the elfs
 
