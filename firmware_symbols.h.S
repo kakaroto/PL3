@@ -165,6 +165,8 @@
 #define strncmp	 		0x0004ce00
 #define strlen			0x0004cdd4
 #define strdup_from_user	0x001b3d24
+#define copy_from_user		0x0000e300
+#define copy_to_user		0x0000e0fc
 #define alloc 			0x00061cf0
 #define free 			0x00062138
 #define add_kernel_module 	0
@@ -205,11 +207,11 @@
 #define HASH_TABLE_3		0x8C0A948C000C7B8F // xmb elf
 #define HASH_TABLE_4		0x7FE3F5CF00050992 // ingame xmb elf
 
-#define elf1_func1			0x005e48cc
+#define elf1_func1		0x005e48cc
 #define elf1_func1_offset	0x00
-#define elf1_func2			0x002fadc8
+#define elf1_func2		0x002fadc8
 #define elf1_func2_offset	0x14
-#define elf2_func1			0x0000e518 // run pkg function
+#define elf2_func1		0x0000e518 // run pkg function
 #define elf2_func1_offset	0x374 // patch to run pkg (ignore error 0x80029567)
 	
 #define elf3_data		0x00204238 // xmb 'game' submenu xml conf offset.
