@@ -233,6 +233,7 @@ static const char *get_syscall_name(int num)
         else if(num == 616) return "sys_storage_execute_device_command";
         else if(num == 617) return "sys_storage_get_region_acl";
         else if(num == 618) return "sys_storage_set_region_acl";
+        else if(num == 619) return "sys_storage_async_send_device_command";
         else if(num == 624) return "sys_io_buffer_create";
         else if(num == 625) return "sys_io_buffer_destroy";
         else if(num == 626) return "sys_io_buffer_allocate";
