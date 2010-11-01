@@ -25,7 +25,7 @@ syscall_36_map_bdvd_desc:
  *
  *  syscall_36 (path):
  *  {
- *    char *tmp = strdup(path);
+ *    char *tmp = pathdup_from_user(path);
  *
  *    if (game_path)
  *      free (game_path);
@@ -42,7 +42,7 @@ syscall_36_map_bdvd:
 	std	%r0, 0xe0(%r1)
 	std	%r31, 0xc8(%r1)
 	addi	%r4, %r1, 0x70
-	bl	ABSOLUTE_MEM2(strdup_from_user)	// strdup %r3 from userspace and store
+	bl	ABSOLUTE_MEM2(pathdup_from_user) // strdup %r3 from userspace and store
 						// the new pointer into %r1[0x70]
 	MEM_BASE (%r31)
 	LOADI_LABEL2 (%r31, game_path)

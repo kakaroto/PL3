@@ -22,7 +22,7 @@
 #define strcpy 			0x4d2f0
 #define strncmp	 		0x4d344
 #define strlen			0x4d318
-#define strdup_from_user	0x1b3b3c // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3b3c // FIXME: unsure of the name!
 #define copy_from_user		0xE26C
 #define copy_to_user		0xE050
 #define alloc 			0x62088
@@ -103,7 +103,7 @@
 #define strcpy 			0x4d2ec
 #define strncmp	 		0x4d340
 #define strlen			0x4d314
-#define strdup_from_user	0x1b3b34
+#define pathdup_from_user	0x1b3b34
 #define alloc 			0x62084
 #define free 			0x624c4
 #define add_kernel_module 	0xd22d0
@@ -164,7 +164,7 @@
 #define strcpy 			0x0004cdac
 #define strncmp	 		0x0004ce00
 #define strlen			0x0004cdd4
-#define strdup_from_user	0x001b3d24
+#define pathdup_from_user	0x001b3d24
 #define copy_from_user		0x0000e300
 #define copy_to_user		0x0000e0fc
 #define alloc 			0x00061cf0
@@ -225,9 +225,12 @@
 #define strcpy			0x4cdac
 #define strncmp			0x4ce00
 #define strlen			0x4cdd4
-#define strdup_from_user	0x1b3d08 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3d08 // FIXME: unsure of the name!
 #define copy_from_user		0xE300
 #define copy_to_user		0xE0FC
+#define alloc_and_copy_from_user 0x0x1b3EC8
+#define strdup_from_user	0x1B8C38
+#define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
 #define free			0x62138
 #define add_kernel_module	0x12A7AC // DONE
@@ -286,7 +289,7 @@
 #define strcpy 			0x4CDA8
 #define strncmp	 		0x4CDFC
 #define strlen			0x4CDD0
-#define strdup_from_user	0x1b3d14 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3d14 // FIXME: unsure of the name!
 #define alloc 			0x61CEC
 #define free 			0x62134
 #define syscall_table		0x2EA820
@@ -341,7 +344,7 @@
 #define strcpy 			0x4AAC4	
 #define strncmp	 		0x4AB18
 #define strlen			0x4AAEC
-#define strdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
 #define alloc 			0x5DF4C
 #define free 			0x5E38C
 #define add_kernel_module 	
@@ -399,7 +402,7 @@
 #define strcpy 			0x000469B8
 #define strncmp	 		0x00046A0C
 #define strlen			0x000469E0
-#define strdup			0x001A2270
+#define pathdup_from_user	0x001A2270
 #define alloc 			0x00059D54
 #define free 			0x0005A194
 #define add_kernel_module 	0x000CC6A0
