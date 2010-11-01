@@ -30,8 +30,8 @@
 #define add_kernel_module 	0xd22d8
 #define syscall_table		0x2eb128
 #define get_device_descriptor	0xd2998 // FIXME: unsure of the name!
-#define unknown_func1		0xd29c4 // FIXME
-#define unknown_func2		0xd292c // FIXME
+#define USBOpenEndpoint		0xd29c4 // FIXME
+#define USBControlTransfer	0xd292c // FIXME
 #define memory_patch_func	0x4e81c
 #define patch_func1		0x0490AC
 #define patch_func1_offset	0x34
@@ -233,11 +233,11 @@
 #define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
 #define free			0x62138
-#define add_kernel_module	0x12A7AC // DONE
+#define add_kernel_module		// FIXME:
 #define syscall_table		0x2ea820
-#define get_device_descriptor	0x12A1B4 // DONE
-#define unknown_func1		0xE0928 // DONE
-#define unknown_func2		0xD3408 // DONE
+#define get_device_descriptor	0xD3474 // DONE
+#define USBOpenEndpoint		0xD34AC // DONE
+#define USBControlTransfer	0xD3408 // DONE
 #define memory_patch_func	0x4e310
 #define patch_func1		0x048a64
 #define patch_func1_offset	0x34
@@ -350,8 +350,8 @@
 #define add_kernel_module 	
 #define syscall_table		0x2CFB40
 #define get_device_descriptor	 // FIXME: unsure of the name!
-#define unknown_func1		 // FIXME
-#define unknown_func2		 // FIXME
+#define USBOpenEndpoint		 // FIXME
+#define USBControlTransfer	 // FIXME
 #define memory_patch_func	0x4BFF0
 
 #define patch_func1		0x468C4
@@ -408,8 +408,8 @@
 #define add_kernel_module 	0x000CC6A0
 #define syscall_table		0x002C4318
 #define get_device_descriptor	0x000CCD2C
-#define unknown_func1		0x000CCD58
-#define unknown_func2		0x000CCCC0
+#define USBOpenEndpoint		0x000CCD58
+#define USBControlTransfer	0x000CCCC0
 #define memory_patch_func	0x00047EE4
 #define patch_func1		0x00043828
 #define patch_func1_offset	0x34
