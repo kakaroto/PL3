@@ -295,8 +295,15 @@ int main (int argc, char *argv[])
   pcaprec_hdr_t header;
   ethernet_hdr_t eth;
   vlan_hdr_t vlan;
-  uint64_t value = -1;
   uint64_t syscall = -1;
+  uint64_t r3 = -1;
+  uint64_t r4 = -1;
+  uint64_t r5 = -1;
+  uint64_t r6 = -1;
+  uint64_t r7 = -1;
+  uint64_t r8 = -1;
+  uint64_t r9 = -1;
+  uint64_t r10 = -1;
   int offset = 0;
 
   if (argc != 2) {
@@ -358,12 +365,36 @@ int main (int argc, char *argv[])
     if (ret != 72)
       break;
     offset = 0;
-    syscall = *((uint32_t *) (buf + 68));
-    syscall = ntohl (syscall);
+    r3 = *((uint64_t *) (buf));
+    r4 = *((uint64_t *) (buf + 8));
+    r5 = *((uint64_t *) (buf + 16));
+    r6 = *((uint64_t *) (buf + 24));
+    r7 = *((uint64_t *) (buf + 32));
+    r8 = *((uint64_t *) (buf + 40));
+    r9 = *((uint64_t *) (buf + 48));
+    r10 = *((uint64_t *) (buf + 56));
+    syscall = *((uint64_t *) (buf + 64));
+    syscall = ntohl (syscall >> 32);
     if (get_syscall_name (syscall) == NULL)
-      printf ("syscall %d\n", syscall);
+      printf ("syscall %d\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
+          "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
+          "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
+          "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
+          (uint32_t) syscall,
+          ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
+          ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
+          ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
+          ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
     else
-      printf ("syscall %s\n", get_syscall_name (syscall));
+      printf ("syscall %s\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
+          "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
+          "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
+          "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
+          get_syscall_name (syscall),
+          ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
+          ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
+          ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
+          ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
     /*
     while (offset < 64) {
       value = *((uint64_t *) (buf + offset));
