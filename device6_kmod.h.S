@@ -44,7 +44,7 @@ device_setup_response_desc:
  *
  * device_match(arg):
  * {
- *    char *descriptor = get_device_descriptor(arg, 0, 1);
+ *    char *descriptor = USBGetDeviceDescriptor(arg, 0, 1);
  *
  *    if (*(uint32 *) (descriptor + 8)) == "0xAAAAC0DE)
  *      return 0;
@@ -59,7 +59,7 @@ device_match:
 	std	%r0, 0x90(%r1)
 	li	%r4, 0
 	li	%r5, 1
-	bl	ABSOLUTE_MEM2(get_device_descriptor)
+	bl	ABSOLUTE_MEM2(USBGetDeviceDescriptor)
 	lwz	%r5, 8(%r3)
 	li	%r3, 0
 	lis	%r4, 0xaaaa
@@ -85,11 +85,11 @@ l_device_found:
  * {
  *    short buf[8];
  *
- *    unknown_func1(arg, 0);
+ *    USBOpenEndpoint(arg, 0);
  *    *((uint64_t *)buf) = 0;
  *    buf[0] = 0x21AA;
  *    buf[3] = 0;
- *    unknown_func2(arg, buf, 0, device_setup_response_desc, 0);
+ *    USBControlTransfer(arg, buf, 0, device_setup_response_desc, 0);
  *    return 0;
  *  }
  */
@@ -98,7 +98,7 @@ device_connect:
 	mflr	%r0
 	std	%r0, 0x90(%r1)
 	li	%r4, 0
-	bl	ABSOLUTE_MEM2(unknown_func1)
+	bl	ABSOLUTE_MEM2(USBOpenEndpoint)
 	addi	%r4, %r1, 0x70		// Set %r4 to a pointer in the stack
 	li	%r5, 0
 	std	%r5, 0(%r4)		// %r4[0] = 0;
@@ -109,7 +109,7 @@ device_connect:
 	MEM_BASE (%r6)
 	LOADI_LABEL2 (%r6, device_setup_response_desc)
 	li	%r7, 0
-	bl	ABSOLUTE_MEM2(unknown_func2)
+	bl	ABSOLUTE_MEM2(USBControlTransfer)
 	li	%r3, 0
 	ld	%r0, 0x90(%r1)
 	mtlr	%r0

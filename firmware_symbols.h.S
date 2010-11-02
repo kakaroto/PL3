@@ -27,9 +27,9 @@
 #define copy_to_user		0xE050
 #define alloc 			0x62088
 #define free 			0x624c8
-#define add_kernel_module 	0xd22d8
+#define USBRegisterDriver 	0xd22d8
 #define syscall_table		0x2eb128
-#define get_device_descriptor	0xd2998 // FIXME: unsure of the name!
+#define USBGetDeviceDescriptor	0xd2998 // FIXME: unsure of the name!
 #define USBOpenEndpoint		0xd29c4 // FIXME
 #define USBControlTransfer	0xd292c // FIXME
 #define memory_patch_func	0x4e81c
@@ -106,11 +106,11 @@
 #define pathdup_from_user	0x1b3b34
 #define alloc 			0x62084
 #define free 			0x624c4
-#define add_kernel_module 	0xd22d0
+#define USBRegisterDriver 	0xd22d0
 #define syscall_table		0x2eb128
-#define get_device_descriptor	0xd2990
-#define unknown_func1		0xd29bc
-#define unknown_func2		0xd2924
+#define USBGetDeviceDescriptor	0xd2990
+#define USBOpenEndpoint		0xd29bc
+#define USBControlTransfer		0xd2924
 #define memory_patch_func	0x4e818
 #define patch_func1		0x490a8
 #define patch_func1_offset	0x34
@@ -169,11 +169,11 @@
 #define copy_to_user		0x0000e0fc
 #define alloc 			0x00061cf0
 #define free 			0x00062138
-#define add_kernel_module 	0
+#define USBRegisterDriver 	0
 #define syscall_table		0x002ea8a0
-#define get_device_descriptor	0
-#define unknown_func1		0
-#define unknown_func2		0
+#define USBGetDeviceDescriptor	0
+#define USBOpenEndpoint		0
+#define USBControlTransfer		0
 #define memory_patch_func	0x0004e310
 #define patch_func1		0x00048a64
 #define patch_func1_offset	0x34
@@ -233,9 +233,9 @@
 #define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
 #define free			0x62138
-#define add_kernel_module		// FIXME:
+#define USBRegisterDriver		// FIXME:
 #define syscall_table		0x2ea820
-#define get_device_descriptor	0xD3474 // DONE
+#define USBGetDeviceDescriptor	0xD3474 // DONE
 #define USBOpenEndpoint		0xD34AC // DONE
 #define USBControlTransfer	0xD3408 // DONE
 #define memory_patch_func	0x4e310
@@ -347,9 +347,9 @@
 #define pathdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
 #define alloc 			0x5DF4C
 #define free 			0x5E38C
-#define add_kernel_module 	
+#define USBRegisterDriver 	
 #define syscall_table		0x2CFB40
-#define get_device_descriptor	 // FIXME: unsure of the name!
+#define USBGetDeviceDescriptor	 // FIXME: unsure of the name!
 #define USBOpenEndpoint		 // FIXME
 #define USBControlTransfer	 // FIXME
 #define memory_patch_func	0x4BFF0
@@ -405,9 +405,9 @@
 #define pathdup_from_user	0x001A2270
 #define alloc 			0x00059D54
 #define free 			0x0005A194
-#define add_kernel_module 	0x000CC6A0
+#define USBRegisterDriver 	0x000CC6A0
 #define syscall_table		0x002C4318
-#define get_device_descriptor	0x000CCD2C
+#define USBGetDeviceDescriptor	0x000CCD2C
 #define USBOpenEndpoint		0x000CCD58
 #define USBControlTransfer	0x000CCCC0
 #define memory_patch_func	0x00047EE4
