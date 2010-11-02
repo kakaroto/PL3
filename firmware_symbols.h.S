@@ -22,16 +22,16 @@
 #define strcpy 			0x4d2f0
 #define strncmp	 		0x4d344
 #define strlen			0x4d318
-#define strdup_from_user	0x1b3b3c // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3b3c // FIXME: unsure of the name!
 #define copy_from_user		0xE26C
 #define copy_to_user		0xE050
 #define alloc 			0x62088
 #define free 			0x624c8
-#define add_kernel_module 	0xd22d8
+#define USBRegisterDriver 	0xd22d8
 #define syscall_table		0x2eb128
-#define get_device_descriptor	0xd2998 // FIXME: unsure of the name!
-#define unknown_func1		0xd29c4 // FIXME
-#define unknown_func2		0xd292c // FIXME
+#define USBGetDeviceDescriptor	0xd2998 // FIXME: unsure of the name!
+#define USBOpenEndpoint		0xd29c4 // FIXME
+#define USBControlTransfer	0xd292c // FIXME
 #define memory_patch_func	0x4e81c
 #define patch_func1		0x0490AC
 #define patch_func1_offset	0x34
@@ -103,14 +103,14 @@
 #define strcpy 			0x4d2ec
 #define strncmp	 		0x4d340
 #define strlen			0x4d314
-#define strdup_from_user	0x1b3b34
+#define pathdup_from_user	0x1b3b34
 #define alloc 			0x62084
 #define free 			0x624c4
-#define add_kernel_module 	0xd22d0
+#define USBRegisterDriver 	0xd22d0
 #define syscall_table		0x2eb128
-#define get_device_descriptor	0xd2990
-#define unknown_func1		0xd29bc
-#define unknown_func2		0xd2924
+#define USBGetDeviceDescriptor	0xd2990
+#define USBOpenEndpoint		0xd29bc
+#define USBControlTransfer		0xd2924
 #define memory_patch_func	0x4e818
 #define patch_func1		0x490a8
 #define patch_func1_offset	0x34
@@ -164,16 +164,16 @@
 #define strcpy 			0x0004cdac
 #define strncmp	 		0x0004ce00
 #define strlen			0x0004cdd4
-#define strdup_from_user	0x001b3d24
+#define pathdup_from_user	0x001b3d24
 #define copy_from_user		0x0000e300
 #define copy_to_user		0x0000e0fc
 #define alloc 			0x00061cf0
 #define free 			0x00062138
-#define add_kernel_module 	0
+#define USBRegisterDriver 	0
 #define syscall_table		0x002ea8a0
-#define get_device_descriptor	0
-#define unknown_func1		0
-#define unknown_func2		0
+#define USBGetDeviceDescriptor	0
+#define USBOpenEndpoint		0
+#define USBControlTransfer		0
 #define memory_patch_func	0x0004e310
 #define patch_func1		0x00048a64
 #define patch_func1_offset	0x34
@@ -225,16 +225,19 @@
 #define strcpy			0x4cdac
 #define strncmp			0x4ce00
 #define strlen			0x4cdd4
-#define strdup_from_user	0x1b3d08 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3d08 // FIXME: unsure of the name!
 #define copy_from_user		0xE300
 #define copy_to_user		0xE0FC
+#define alloc_and_copy_from_user 0x0x1b3EC8
+#define strdup_from_user	0x1B8C38
+#define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
 #define free			0x62138
-#define add_kernel_module	0x12A7AC // DONE
+#define USBRegisterDriver		// FIXME:
 #define syscall_table		0x2ea820
-#define get_device_descriptor	0x12A1B4 // DONE
-#define unknown_func1		0xE0928 // DONE
-#define unknown_func2		0xD3408 // DONE
+#define USBGetDeviceDescriptor	0xD3474 // DONE
+#define USBOpenEndpoint		0xD34AC // DONE
+#define USBControlTransfer	0xD3408 // DONE
 #define memory_patch_func	0x4e310
 #define patch_func1		0x048a64
 #define patch_func1_offset	0x34
@@ -286,7 +289,7 @@
 #define strcpy 			0x4CDA8
 #define strncmp	 		0x4CDFC
 #define strlen			0x4CDD0
-#define strdup_from_user	0x1b3d14 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1b3d14 // FIXME: unsure of the name!
 #define alloc 			0x61CEC
 #define free 			0x62134
 #define syscall_table		0x2EA820
@@ -341,14 +344,14 @@
 #define strcpy 			0x4AAC4	
 #define strncmp	 		0x4AB18
 #define strlen			0x4AAEC
-#define strdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
+#define pathdup_from_user	0x1ACAF4 // FIXME: unsure of the name!
 #define alloc 			0x5DF4C
 #define free 			0x5E38C
-#define add_kernel_module 	
+#define USBRegisterDriver 	
 #define syscall_table		0x2CFB40
-#define get_device_descriptor	 // FIXME: unsure of the name!
-#define unknown_func1		 // FIXME
-#define unknown_func2		 // FIXME
+#define USBGetDeviceDescriptor	 // FIXME: unsure of the name!
+#define USBOpenEndpoint		 // FIXME
+#define USBControlTransfer	 // FIXME
 #define memory_patch_func	0x4BFF0
 
 #define patch_func1		0x468C4
@@ -399,14 +402,14 @@
 #define strcpy 			0x000469B8
 #define strncmp	 		0x00046A0C
 #define strlen			0x000469E0
-#define strdup			0x001A2270
+#define pathdup_from_user	0x001A2270
 #define alloc 			0x00059D54
 #define free 			0x0005A194
-#define add_kernel_module 	0x000CC6A0
+#define USBRegisterDriver 	0x000CC6A0
 #define syscall_table		0x002C4318
-#define get_device_descriptor	0x000CCD2C
-#define unknown_func1		0x000CCD58
-#define unknown_func2		0x000CCCC0
+#define USBGetDeviceDescriptor	0x000CCD2C
+#define USBOpenEndpoint		0x000CCD58
+#define USBControlTransfer	0x000CCCC0
 #define memory_patch_func	0x00047EE4
 #define patch_func1		0x00043828
 #define patch_func1_offset	0x34

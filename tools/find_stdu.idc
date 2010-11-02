@@ -13,7 +13,7 @@
 
 static main() {
   auto ea;
-  
+
   for ( ea = 0; ea != BADADDR;) {
     ea = FindBinary(ea, 1, "F8 21");
     if (ea == BADADDR)
