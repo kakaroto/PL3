@@ -171,9 +171,9 @@
 #define free 			0x00062138
 #define USBRegisterDriver 	0
 #define syscall_table		0x002ea8a0
-#define USBGetDeviceDescriptor	0
-#define USBOpenEndpoint		0
-#define USBControlTransfer		0
+#define USBGetDeviceDescriptor	0x000d3474
+#define USBOpenEndpoint		0x000d34ac
+#define USBControlTransfer	0x000d3408
 #define memory_patch_func	0x0004e310
 #define patch_func1		0x00048a64
 #define patch_func1_offset	0x34
