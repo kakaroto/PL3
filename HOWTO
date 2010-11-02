@@ -72,7 +72,7 @@ Step 2 - Finding the various functions and patch addresses
 a. The first step would be to go to label 'syscall_open' (set by the IDC), in
 this sub you will find the subs for the alloc, free and patch_func3
 (hooked_open). The free sub should be located at syscall_open + 0x1c4 (or
-somewhere near), the free is the following bl instrunction), the alloc sub
+somewhere near), the free is the following bl instrunction, the alloc sub
 should be at syscall_open + 0x248 (try to find the binary sequence
 3FE08001F80100C8, this should be the only match) and the patch_func3 should
 be at syscall_open + 0x264 (or near).
@@ -211,6 +211,12 @@ p. To find the patch_func9, you should search for the binary "60630019". This
 should give you just one match pointing to the instruction "ori %r3, %r3, 0x19".
 The patch_func9 address is the XYZ address of the name sub_XYZ and the
 patch_func9_offset should be 0x3ec, check that it is a "beq" instruction.
+
+====
+Go to 0xC00, follow it to (probably) 0xC2C (ori %r3, mtlr %r3. blr) then
+follow it to the syscall handler (oris+ori %r4. mtsrr0 %r4). Watch for the ori
+of negative value.. Then in the syscall handler, find blrl (probably offset
+174), that's the instruction to patch.
 
 
 Step 3 - Finding the elfs
