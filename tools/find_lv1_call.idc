@@ -16,7 +16,7 @@
 
 
 static FindHypercalls(id) {
-        
+
   auto addr, ea, num, lookup, total;
 
   total=0;
@@ -36,7 +36,7 @@ static FindHypercalls(id) {
 	num = Dword(addr) & 255;
 	break;
       }
-    } 
+    }
 
     if (num == -1) {
       Message("Failed to find hypercall id at offset 0x%06X\n", ea);
@@ -46,7 +46,7 @@ static FindHypercalls(id) {
     }
     ea = ea + 4;
   }
- 
+
   Message("\n*** Finished searching hypercalls. Found %d !\n", total);
 }
 
