@@ -233,7 +233,7 @@
 #define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
 #define free			0x62138
-#define USBRegisterDriver		// FIXME:
+#define USBRegisterDriver	0xd2978	// DONE
 #define syscall_table		0x2ea820
 #define USBGetDeviceDescriptor	0xD3474 // DONE
 #define USBOpenEndpoint		0xD34AC // DONE
