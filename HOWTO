@@ -54,7 +54,7 @@ d. Open the dump with IDA, set the processor to 'ppc', then run the
 dump_lv2_analyzer.idc IDC file from the tools directory to get it analyzed and
 follow the instructions (set TOC table in IDA options).
 Once you are done, set the TOC_TABLE value in PSFreedom/PSGroove and set the
-syscall_table define in macros.h.S.
+syscall_table define in firmware_symbols.h.S.
 
 e. Then look for the position of the JIG response offset in the dump by
 searching for the recognizable string you previously put in there. You can now
@@ -107,10 +107,7 @@ entry in the TOC is the 'rtoc_entry_2' value. Press the 'q' key while selecting
 it to make IDA transform it into "-0xABCD(%rtoc)", the -0xABCD is the value you
 want for rtoc_entry_2.
 
-h. Now for patch_func3, that's the easiest, it's the 'hooked_open' function you 
-found in the syscall_open earlier. The offset should be 0 here.
-
-i. Now time for patch_func4, search for binary data in IDA and look for the
+h. Now time for patch_func4, search for binary data in IDA and look for the
 binary sequence "3C00800160000017", it should give you two results. Look at them
 both, and compare with the original function from a supported firmware dump. It
 should be pretty obvious which one is patch_func4, one of them is exactly the
@@ -119,7 +116,7 @@ to, the correct function should be the short one (in my version it has 3
 blocks in graph view, the wrong function have way more blocks). Now you found
 patch_func4.
 
-j. Time for patch_func5, this one is easy if you have a supported dump
+i. Time for patch_func5, this one is easy if you have a supported dump
 already, right click on it in the sub on the supported firmware and choose
 "Chart of xrefs to", you will see that it gets called by almost every system
 call, so choose any one of those syscalls and go to them, for the sake of this
@@ -128,10 +125,10 @@ and compare it with the other dump, and you should spot the patch_func5 right
 away, it should be the fourth 'bl' call and the last 'bl' before the 'bne' of
 the first block of this syscall (in IDA chart view).
 
-k. Now you need to find the slightly more difficult remaining offsets: memcpy,
+j. Now you need to find the slightly more difficult remaining offsets: memcpy,
 patch_data1, rtoc_entry_1, and the overwritten function to use for MEM_BASE2.
 
-l. Let's start with MEM_BASE2. Go to 'patch_func5', disable IDA's 'chart' mode,
+k. Let's start with MEM_BASE2. Go to 'patch_func5', disable IDA's 'chart' mode,
 then scroll down, all the way to the end of patch_func5, you will find a total
 of 4 functions separating patch_func5 with the function in MEM_BASE2.
 With MEM_BASE2 being the 5th function stacked after patch_func5. You can also
@@ -145,7 +142,7 @@ where you see the comment "End of function sub_XYZ", take that position,
 substract it from MEM_BASE2 and you've got your RESIDENT_PAYLOAD_MAXSIZE (should
 be 1296).
 
-m. Now let's try to find rtoc_entry1, if you go to the rtoc_entry_1 offset in
+l. Now let's try to find rtoc_entry1, if you go to the rtoc_entry_1 offset in
 the supported firmware's dump (TOC + rtoc_entry_1), press 'N' and rename that
 data into 'rtoc_entry_1'. You will see IDA shows a 'DATA XREF' next to it that
 points to a function, click on it. You found the function that uses that TOC
@@ -163,7 +160,7 @@ referenced in the line right below it. select it and press 'Q' in IDA to make it
 show you the actual offset value in the "0xABCD(%rtoc)" form. You found
 rtoc_entry_1.
 
-n. Now we need to find the slightly harder patch_data1 offset. In your supported
+m. Now we need to find the slightly harder patch_data1 offset. In your supported
 firmware dump, go to the patch_data1 offset, press 'N' and rename it. Now you
 will see a "DATA XREF" next to it which points to a "ROM:.." location, click on
 it. You will find yourself on an entry in the TOC, rename that entry as
@@ -184,39 +181,45 @@ the TOC of your new firmware dump, and you see the value that TOC entry points
 to.. it should be 0x80000000XYABCDEF. That's your patch_data1 value, remove the
 0x80000000 prefix, and set the XYABCDEF value as the patch_data1 in macros.h.S
 
-o. Now the 'memcpy' function is the only one remaining! This one is easy to
-find but the technique is a bit trickier. Through all of this, we didn't yet
-find by luck a function that uses memcpy (unlike alloc/free/strlen/strcpy/
-strncmp), so we need to find it differently, if we go to memcpy, we cannot ask
-IDA to draw a "Chart of xrefs to" for it, don't even try it, it's used in so
-many places that IDA or the chart-viewer app will freeze! What we can do however
-is disable IDA's "chart" mode, and go to the memcpy function declaration, then
-we should see IDA being nice enough to give two "CODE XREF" let's follow those
-two and see who calls those functions, and try to drill down from there until we
-find the memcpy location. Luckily, one of those two functions uses hypercalls as
-you can see the 'lv1_undocumented_function_109' and
-'lv1_undocumented_function_107' comments as soon as we enter one of the xref
-functions (if you don't see this maybe IDA gave you different xrefs, it's ok,
-continue reading). So we see that memcpy is used between a hvsc 109 and a hvsc
-107. We can't really do a binary search on the "li %r11, 0x6B; hvsc" since
-there's a "ld %r7, 0x10(%r31)" in the middle, and a different kernel build might
-use a different register or a different offset to %r31, so let's stay safe, and
-let's search only for the "li %r11, 0x6B", so open the binary search of IDA and
-search for "3960006B". It should give you 3 results (maybe not, depending on the
-dump you're analyzing). Go to each one of them, they should appear as the only
-hypercall in the function for two of them, but for one of the functions found,
-it will be between a call to hvsc 109 and hvsc 107. You found your memcpy!
+n. Now the 'memcpy'. This one is easy to find but the technique is a bit
+trickier. Through all of this, we didn't yet find by luck a function that uses
+memcpy (unlike alloc/free/strlen/strcpy/strncmp), so we need to find it
+differently, if we go to memcpy, we cannot ask IDA to draw a "Chart of xrefs to"
+for it, don't even try it, it's used in so many places that IDA or the
+chart-viewer app will freeze! What we can do however is disable IDA's "chart"
+mode, and go to the memcpy function declaration, then we should see IDA being
+nice enough to give two "CODE XREF" let's follow those two and see who calls
+those functions, and try to drill down from there until we find the memcpy
+location. Luckily, one of those two functions uses hypercalls as you can see the
+'lv1_undocumented_function_109' and 'lv1_undocumented_function_107' comments as
+soon as we enter one of the xref functions (if you don't see this maybe IDA gave
+you different xrefs, it's ok, continue reading). So we see that memcpy is used
+between a hvsc 109 and a hvsc 107. We can't really do a binary search on the "li
+%r11, 0x6B; hvsc" since there's a "ld %r7, 0x10(%r31)" in the middle, and a
+different kernel build might use a different register or a different offset to
+%r31, so let's stay safe, and let's search only for the "li %r11, 0x6B", so open
+the binary search of IDA and search for "3960006B". It should give you 3 results
+(maybe not, depending on the dump you're analyzing). Go to each one of them,
+they should appear as the only hypercall in the function for two of them, but
+for one of the functions found, it will be between a call to hvsc 109 and hvsc
+107. You found your memcpy!
+
+o. // Write here how to find: patch_func6, patch_func7 (this is syscall_512),
+patch_func8, patch_dup_fromuser (binary search for "7b40052023a01000"), USB*.
 
 p. To find the patch_func9, you should search for the binary "60630019". This
 should give you just one match pointing to the instruction "ori %r3, %r3, 0x19".
 The patch_func9 address is the XYZ address of the name sub_XYZ and the
 patch_func9_offset should be 0x3ec, check that it is a "beq" instruction.
 
-====
-Go to 0xC00, follow it to (probably) 0xC2C (ori %r3, mtlr %r3. blr) then
-follow it to the syscall handler (oris+ori %r4. mtsrr0 %r4). Watch for the ori
-of negative value.. Then in the syscall handler, find blrl (probably offset
-174), that's the instruction to patch.
+q. To find patch_syscall_func, go to 0xC00, press 'C' to convert it to code if
+it is not, then follow it to (probably) 0xC20 (ori %r3, mtlr %r3, blr) then
+follow it to the syscall handler (oris %r4, %r4, 0x?? - ori %r4, %r4, -0x???,
+mtsrr0 %r4). Watch for the ori of negative value, that is the address of the
+syscall handler, find blrl (probably offset 174), that is the instruction to
+patch. Or search for the binary string "4e800021", it should find 4 entries, 3
+of them are __asm_func_dummy_X. The first one, is the address of the instruction
+'blrl' to be patched.
 
 
 Step 3 - Finding the elfs

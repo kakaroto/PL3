@@ -156,6 +156,71 @@
 #define elf3_data		0x0022b888
 #define elf4_data		0x000d68b8
 
+#elif defined(FIRMWARE_3_30)
+
+// TOC at 0x33dbc0
+// Shell code addr 0x003dde70
+
+/* Common Symbols */
+#define memcpy 			0x0007c014
+#define memset 			0x0004d13c
+#define strcpy 			0x0004d2e8
+#define strncmp	 		0x0004d33c
+#define strlen			0x0004d310
+#define pathdup_from_user	0x001b35e0
+#define copy_from_user		0x0000e268
+#define copy_to_user		0x0000e04c
+#define alloc 			0x00062080
+#define free 			0x000624c0
+#define USBRegisterDriver 	0
+#define syscall_table		0x002ea728
+#define USBGetDeviceDescriptor	0x000d28e8
+#define USBOpenEndpoint		0x000d2904
+#define USBControlTransfer	0x000d287c
+#define memory_patch_func	0x0004e814
+#define patch_func1		0x000490a4
+#define patch_func1_offset	0x34
+#define patch_func2		0x0004f074
+#define patch_func2_offset	0x2c
+#define patch_func3		0x002aa678 // hooked_open
+#define patch_func3_offset	0x24
+#define patch_func4		0x0004ed10
+#define patch_func4_offset	0x0
+#define patch_func5		0x000505c8
+#define patch_func5_offset	0x0
+#define patch_func6		0x0002308c
+#define patch_func6_offset	0x0
+#define patch_func7		0x000e8280 // syscall_512
+#define patch_func7_offset	0x0
+#define patch_func8		0x00057248 // lv2_open
+#define patch_func8_offset1	0x68 	   // lv2open update patch
+#define patch_func8_offset2	0x1cc  	   // lv2open update patch
+#define patch_func9		0x0004f838 // must upgrade error
+#define patch_func9_offset	0x3ec
+#define patch_syscall_func 	0x0028f234
+#define patch_data1		0x003b9d10
+#define rtoc_entry_1		 0x0ee0
+#define rtoc_entry_2		-0x6a00
+
+#define MEM_BASE2		(0x050b34)
+
+#define RESIDENT_PAYLOAD_MAXSIZE (1296)
+
+#define HASH_TABLE_1		0xA0694B50002C638E // vsh elf
+#define HASH_TABLE_2		0x6B70281A0001E3AA // pkg loader elf
+#define HASH_TABLE_3		0x8C0A948C000CC7E9 // xmb elf
+#define HASH_TABLE_4		0xA2BC087A0005224C // ingame xmb elf
+
+#define elf1_func1		0x005e9fe4
+#define elf1_func1_offset	0x00
+#define elf1_func2		0x002ff224
+#define elf1_func2_offset	0x78 // 0x14?
+#define elf2_func1		0x0002ded0 // run pkg function
+#define elf2_func1_offset	0x374 // patch to run pkg (ignore error 0x80029567)
+
+#define elf3_data		0x0020b258 // xmb 'game' submenu xml conf offset.
+#define elf4_data		0x000d5728 // ingame xmb 'game' submenu xml conf offset.
+
 #elif defined(FIRMWARE_3_21)
 
 /* Common Symbols */
@@ -190,10 +255,11 @@
 #define patch_func7		0x000e8e6c // syscall_512
 #define patch_func7_offset	0x0
 #define patch_func8		0x00056c3c // lv2_open
-#define patch_func8_offset1	0xA4 	   // lv2open update patch
-#define patch_func8_offset2	0x208 	   // lv2open update patch
+#define patch_func8_offset1	0x68 	   // lv2open update patch
+#define patch_func8_offset2	0x1cc 	   // lv2open update patch
 #define patch_func9		0x0004f30c // must upgrade error
 #define patch_func9_offset	0x3ec
+#define patch_syscall_func 	0x0028f67c
 #define patch_data1		0x003b9a10
 #define rtoc_entry_1		 0x0d60
 #define rtoc_entry_2		-0x6b08
