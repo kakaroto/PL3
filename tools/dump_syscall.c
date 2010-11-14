@@ -395,22 +395,6 @@ int main (int argc, char *argv[])
           ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
           ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
           ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
-    /*
-    while (offset < 64) {
-      value = *((uint64_t *) (buf + offset));
-      if (offset == 0) {
-        if (ntohl (value >> 32) == 0)
-          break;
-        printf ("Return : %d\n", ntohl (value >> 32));
-      } else if (value != 0) {
-        printf ("Frame %d : 0x%0.8X%0.8X\n", (offset - 8) / 8,
-            ntohl (value), ntohl (value >> 32));
-      }
-      offset += 8;
-
-      if ((offset > 0 && value == 0) || offset == 64)
-      printf ("\n\n");
-    }*/
   }
 
   fclose (in);
