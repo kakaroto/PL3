@@ -263,7 +263,6 @@
 #define patch_func9_offset	0x3ec
 #define patch_syscall_func 	0x0028f67c
 #define patch_data1		0x003b9a10
-#define patch_syscall_func	0
 #define rtoc_entry_1		 0x0d60
 #define rtoc_entry_2		-0x6b08
 
