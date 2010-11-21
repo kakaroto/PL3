@@ -44,6 +44,184 @@ typedef struct vlan_hdr_s {
   uint16_t type;
 } vlan_hdr_t;
 
+
+static const char *get_hypercall_name (int num)
+{
+        if(     num ==   0) return "allocate_memory";
+        else if(num ==   1) return "write_htab_entry";
+        else if(num ==   2) return "construct_virtual_address_space";
+        else if(num ==   3) return "invalidate_htab_entries";
+        else if(num ==   4) return "get_virtual_address_space_id_of_ppe";
+        else if(num ==   5) return "undocumented_function_5";
+        else if(num ==   6) return "query_logical_partition_address_region_info";
+        else if(num ==   7) return "select_virtual_address_space";
+        else if(num ==   8) return "undocumented_function_8";
+        else if(num ==   9) return "pause";
+        else if(num ==  10) return "destruct_virtual_address_space";
+        else if(num ==  11) return "configure_irq_state_bitmap";
+        else if(num ==  12) return "connect_irq_plug_ext";
+        else if(num ==  13) return "release_memory";
+        else if(num ==  15) return "put_iopte";
+        else if(num ==  16) return "peek";
+        else if(num ==  17) return "disconnect_irq_plug_ext";
+        else if(num ==  18) return "construct_event_receive_port";
+        else if(num ==  19) return "destruct_event_receive_port";
+        else if(num ==  20) return "poke";
+        else if(num ==  24) return "send_event_locally";
+        else if(num ==  26) return "detect_pending_interrupts";
+        else if(num ==  27) return "end_of_interrupt";
+        else if(num ==  28) return "connect_irq_plug";
+        else if(num ==  29) return "disconnect_irq_plug";
+        else if(num ==  30) return "end_of_interrupt_ext";
+        else if(num ==  31) return "did_update_interrupt_mask";
+        else if(num ==  44) return "shutdown_logical_partition";
+        else if(num ==  54) return "destruct_logical_spe";
+        else if(num ==  57) return "construct_logical_spe";
+        else if(num ==  61) return "set_spe_interrupt_mask";
+        else if(num ==  62) return "undocumented_function_62";
+        else if(num ==  64) return "set_spe_transition_notifier";
+        else if(num ==  65) return "disable_logical_spe";
+        else if(num ==  66) return "clear_spe_interrupt_status";
+        else if(num ==  67) return "get_spe_interrupt_status";
+        else if(num ==  69) return "get_logical_ppe_id";
+        else if(num ==  73) return "set_interrupt_mask";
+        else if(num ==  74) return "get_logical_partition_id";
+        else if(num ==  75) return "undocumented_function_75";
+        else if(num ==  77) return "configure_execution_time_variable";
+        else if(num ==  78) return "get_spe_irq_outlet";
+        else if(num ==  79) return "set_spe_privilege_state_area_1_register";
+        else if(num ==  89) return "undocumented_function_89";
+        else if(num ==  90) return "create_repository_node";
+        else if(num ==  91) return "get_repository_node_value";
+        else if(num ==  92) return "modify_repository_node_value";
+        else if(num ==  93) return "remove_repository_node";
+        else if(num ==  95) return "read_htab_entries";
+        else if(num ==  96) return "set_dabr";
+        else if(num ==  97) return "set_vmx_graphics_mode";
+        else if(num ==  98) return "set_thread_switch_control_register";
+        else if(num ==  99) return "undocumented_function_99";
+        else if(num == 102) return "undocumented_function_102";
+        else if(num == 105) return "undocumented_function_105";
+        else if(num == 106) return "undocumented_function_106";
+        else if(num == 107) return "undocumented_function_107";
+        else if(num == 108) return "undocumented_function_108";
+        else if(num == 109) return "undocumented_function_109";
+        else if(num == 110) return "undocumented_function_110";
+        else if(num == 111) return "undocumented_function_111";
+        else if(num == 112) return "undocumented_function_112";
+        else if(num == 114) return "undocumented_function_114";
+        else if(num == 115) return "undocumented_function_115";
+        else if(num == 116) return "allocate_io_segment";
+        else if(num == 117) return "release_io_segment";
+        else if(num == 118) return "allocate_ioid";
+        else if(num == 119) return "release_ioid";
+        else if(num == 120) return "construct_io_irq_outlet";
+        else if(num == 121) return "destruct_io_irq_outlet";
+        else if(num == 122) return "map_htab";
+        else if(num == 123) return "unmap_htab";
+        else if(num == 124) return "undocumented_function_124";
+        else if(num == 125) return "undocumented_function_125";
+        else if(num == 126) return "undocumented_function_126";
+        else if(num == 127) return "get_version_info";
+        else if(num == 134) return "undocumented_function_134";
+        else if(num == 135) return "undocumented_function_135";
+        else if(num == 136) return "undocumented_function_136";
+        else if(num == 137) return "undocumented_function_137";
+        else if(num == 138) return "undocumented_function_138";
+        else if(num == 140) return "construct_lpm";
+        else if(num == 141) return "destruct_lpm";
+        else if(num == 142) return "start_lpm";
+        else if(num == 143) return "stop_lpm";
+        else if(num == 144) return "copy_lpm_trace_buffer";
+        else if(num == 145) return "add_lpm_event_bookmark";
+        else if(num == 146) return "delete_lpm_event_bookmark";
+        else if(num == 147) return "set_lpm_interrupt_mask";
+        else if(num == 148) return "get_lpm_interrupt_status";
+        else if(num == 149) return "set_lpm_general_control";
+        else if(num == 150) return "set_lpm_interval";
+        else if(num == 151) return "set_lpm_trigger_control";
+        else if(num == 152) return "set_lpm_counter_control";
+        else if(num == 153) return "set_lpm_group_control";
+        else if(num == 154) return "set_lpm_debug_bus_control";
+        else if(num == 155) return "set_lpm_counter";
+        else if(num == 156) return "set_lpm_signal";
+        else if(num == 157) return "set_lpm_spr_trigger";
+        else if(num == 158) return "insert_htab_entry";
+        else if(num == 162) return "read_virtual_uart";
+        else if(num == 163) return "write_virtual_uart";
+        else if(num == 164) return "set_virtual_uart_param";
+        else if(num == 165) return "get_virtual_uart_param";
+        else if(num == 166) return "configure_virtual_uart_irq";
+        else if(num == 167) return "undocumented_function_167";
+        else if(num == 168) return "undocumented_function_168";
+        else if(num == 170) return "open_device";
+        else if(num == 171) return "close_device";
+        else if(num == 172) return "map_device_mmio_region";
+        else if(num == 173) return "unmap_device_mmio_region";
+        else if(num == 174) return "allocate_device_dma_region";
+        else if(num == 175) return "free_device_dma_region";
+        else if(num == 176) return "map_device_dma_region";
+        else if(num == 177) return "unmap_device_dma_region";
+        else if(num == 178) return "read_pci_config";
+        else if(num == 179) return "write_pci_config";
+        else if(num == 180) return "read_pci_io";
+        else if(num == 181) return "write_pci_io";
+        else if(num == 182) return "undocumented_function_182";
+        else if(num == 183) return "undocumented_function_183";
+        else if(num == 185) return "net_add_multicast_address";
+        else if(num == 186) return "net_remove_multicast_address";
+        else if(num == 187) return "net_start_tx_dma";
+        else if(num == 188) return "net_stop_tx_dma";
+        else if(num == 189) return "net_start_rx_dma";
+        else if(num == 190) return "net_stop_rx_dma";
+        else if(num == 191) return "net_set_interrupt_status_indicator";
+        else if(num == 193) return "net_set_interrupt_mask";
+        else if(num == 194) return "net_control";
+        else if(num == 195) return "undocumented_function_195";
+        else if(num == 196) return "undocumented_function_196";
+        else if(num == 197) return "connect_interrupt_event_receive_port";
+        else if(num == 198) return "disconnect_interrupt_event_receive_port";
+        else if(num == 199) return "get_spe_all_interrupt_statuses";
+        else if(num == 200) return "undocumented_function_200";
+        else if(num == 201) return "undocumented_function_201";
+        else if(num == 202) return "deconfigure_virtual_uart_irq";
+        else if(num == 207) return "enable_logical_spe";
+        else if(num == 209) return "undocumented_function_209";
+        else if(num == 210) return "gpu_open";
+        else if(num == 211) return "gpu_close";
+        else if(num == 212) return "gpu_device_map";
+        else if(num == 213) return "gpu_device_unmap";
+        else if(num == 214) return "gpu_memory_allocate";
+        else if(num == 216) return "gpu_memory_free";
+        else if(num == 217) return "gpu_context_allocate";
+        else if(num == 218) return "gpu_context_free";
+        else if(num == 221) return "gpu_context_iomap";
+        else if(num == 222) return "undocumented_function_222";
+        else if(num == 225) return "gpu_context_attribute";
+        else if(num == 227) return "gpu_context_intr";
+        else if(num == 228) return "gpu_attribute";
+        else if(num == 231) return "undocumented_function_231";
+        else if(num == 232) return "get_rtc";
+        else if(num == 233) return "undocumented_function_233";
+        else if(num == 240) return "set_ppe_periodic_tracer_frequency";
+        else if(num == 241) return "start_ppe_periodic_tracer";
+        else if(num == 242) return "stop_ppe_periodic_tracer";
+        else if(num == 243) return "undocumented_function_243";
+        else if(num == 244) return "undocumented_function_244";
+        else if(num == 245) return "storage_read";
+        else if(num == 246) return "storage_write";
+        else if(num == 248) return "storage_send_device_command";
+        else if(num == 249) return "storage_get_async_status";
+        else if(num == 250) return "undocumented_function_250";
+        else if(num == 251) return "undocumented_function_251";
+        else if(num == 252) return "undocumented_function_252";
+        else if(num == 253) return "undocumented_function_253";
+        else if(num == 254) return "storage_check_async_status";
+        else if(num == 255) return "panic";
+        else
+          return NULL;
+}
+
 static const char *get_syscall_name(int num)
 {
         if(     num ==   0) return "not_implemented";
@@ -285,6 +463,19 @@ static const char *get_syscall_name(int num)
           return NULL;
 }
 
+/* Add number (for unknown syscall/hypercall) or name of the syscalls or
+   hypercalls you want to filter out of the log.
+   The name is in the format of "starts with" so you can remove an entire
+   'class' of syscalls with one entry.
+*/
+const int ignore_syscall_nums[] = {
+  0
+};
+
+const char *ignore_syscalls[] = {
+  "sys_time_",
+  NULL,
+};
 
 
 int main (int argc, char *argv[])
@@ -296,6 +487,7 @@ int main (int argc, char *argv[])
   ethernet_hdr_t eth;
   vlan_hdr_t vlan;
   uint64_t syscall = -1;
+  const char * syscall_name = NULL;
   uint64_t r3 = -1;
   uint64_t r4 = -1;
   uint64_t r5 = -1;
@@ -304,7 +496,7 @@ int main (int argc, char *argv[])
   uint64_t r8 = -1;
   uint64_t r9 = -1;
   uint64_t r10 = -1;
-  int offset = 0;
+  uint32_t first_ts = -1;
 
   if (argc != 2) {
     printf ("Usage : %s in.pcap\n", argv[0]);
@@ -353,7 +545,7 @@ int main (int argc, char *argv[])
     }
     /* If there's garbage, then ignore it */
     if (!(eth.type == 0x1337 || (eth.type == 0x8100 && vlan.type == 0x1337)) ||
-        header.incl_len != 72) {
+        header.incl_len != 80) {
       char *temp = malloc (header.incl_len);
       ret = fread(temp, 1, header.incl_len, in);
       if (ret != header.incl_len)
@@ -361,10 +553,11 @@ int main (int argc, char *argv[])
       free (temp);
       continue;
     }
-    ret = fread(buf, 1, 72, in);
-    if (ret != 72)
+    ret = fread(buf, 1, 80, in);
+    if (ret != 80)
       break;
-    offset = 0;
+    if (first_ts == -1)
+      first_ts = header.ts_sec;
     r3 = *((uint64_t *) (buf));
     r4 = *((uint64_t *) (buf + 8));
     r5 = *((uint64_t *) (buf + 16));
@@ -375,26 +568,55 @@ int main (int argc, char *argv[])
     r10 = *((uint64_t *) (buf + 56));
     syscall = *((uint64_t *) (buf + 64));
     syscall = ntohl (syscall >> 32);
-    if (get_syscall_name (syscall) == NULL)
-      printf ("syscall %d\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
-          "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
-          "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
-          "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
-          (uint32_t) syscall,
-          ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
-          ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
-          ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
-          ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
+    if (ntohl ( *((uint32_t *) (buf + 76))))
+      syscall_name = get_hypercall_name (syscall);
     else
-      printf ("syscall %s\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
-          "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
-          "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
-          "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
-          get_syscall_name (syscall),
-          ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
-          ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
-          ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
-          ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
+      syscall_name = get_syscall_name (syscall);
+    if (syscall_name == NULL) {
+      const int *ptr;
+      int ignore = 0;
+
+      for (ptr = ignore_syscall_nums; *ptr; ptr++) {
+        if (syscall == *ptr) {
+          ignore = 1;
+          break;
+        }
+      }
+      if (ignore == 0)
+        printf ("[%02d:%d] %s %d\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
+            "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
+            "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
+            "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
+            header.ts_sec - first_ts, header.ts_usec / 1000,
+            ntohl ( *((uint32_t *) (buf + 76)))?"hypercall":"syscall",
+            (uint32_t) syscall,
+            ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
+            ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
+            ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
+            ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
+    } else {
+      const char **ptr;
+      int ignore = 0;
+
+      for (ptr = ignore_syscalls; *ptr; ptr++) {
+        if (!strncmp (syscall_name, *ptr, strlen (*ptr))) {
+          ignore = 1;
+          break;
+        }
+      }
+      if (ignore == 0)
+        printf ("[%02d:%d] %s %s\n- r3=0x%0.8X%0.8X - r4=0x%0.8X%0.8X\n"
+            "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
+            "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
+            "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
+            header.ts_sec - first_ts, header.ts_usec / 1000,
+            ntohl ( *((uint32_t *) (buf + 76)))?"hypercall":"syscall",
+            syscall_name,
+            ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
+            ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
+            ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
+            ntohl (r9), ntohl (r9 >> 32), ntohl (r10), ntohl (r10 >> 32));
+    }
   }
 
   fclose (in);
