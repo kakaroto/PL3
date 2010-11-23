@@ -555,8 +555,8 @@ int main (int argc, char *argv[])
       free (temp);
       continue;
     }
-    ret = fread(buf, 1, 80, in);
-    if (ret != 80)
+    ret = fread(buf, 1, header.incl_len, in);
+    if (ret != header.incl_len)
       break;
     if (first_ts == -1)
       first_ts = header.ts_sec;
