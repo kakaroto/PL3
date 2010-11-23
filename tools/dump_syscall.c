@@ -572,11 +572,6 @@ int main (int argc, char *argv[])
     syscall = ntohl (syscall >> 32);
     type = ntohl ( *((uint32_t *) (buf + 76)));
 
-    if (type & 0x10)
-      syscall_name = get_hypercall_name (syscall);
-    else
-      syscall_name = get_syscall_name (syscall);
-
     if (type == 0) {
       call_type = "syscall";
     } else if (type == 1) {
@@ -588,6 +583,19 @@ int main (int argc, char *argv[])
       syscall_name = get_hypercall_name (syscall);
       if (syscall == 249 && ntohl (r3 >> 32) == -6)
         continue;
+    }
+    if (type & 0x10)
+      syscall_name = get_hypercall_name (syscall);
+    else
+      syscall_name = get_syscall_name (syscall);
+
+    if (type == 0x10 && syscall == 107) {
+      memcpy (buf, &r5, 8);
+      memcpy (buf + 8, &r6, 8);
+      memcpy (buf + 16, &r7, 8);
+      memcpy (buf + 24, &r8, 8);
+      buf[ntohl (r4>>32)] = 0;
+      fprintf (stderr, "%s", buf);
     }
 
     if (syscall_name == NULL) {
