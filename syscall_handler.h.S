@@ -28,13 +28,13 @@ syscall_handler:
 	b	l_syscall_handler_done
 l_gt_104:
 l_lt_100:
+	mr	%r30, %r11
 	li	%r31, 1
 	li	%r12, 0
 	bl	send_trace
 
 l_syscall_handler_done:	
 	bl	load_regs
-	mr	%r30, %r11
 	mtctr	%r13
 	bctrl
 	
