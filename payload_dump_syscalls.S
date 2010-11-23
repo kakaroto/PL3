@@ -175,6 +175,7 @@ eth_dma_region:
 buf:
 	.space 0x50
 
+#include "trace_helpers.h.S"
 #include "syscall_handler.h.S"
 #include "hvsc_handler.h.S"
 

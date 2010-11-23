@@ -11,63 +11,49 @@
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
-	std	%r3, 0x70(%r1)
-	std	%r4, 0x78(%r1)
-	std	%r5, 0x80(%r1)
-	std	%r6, 0x88(%r1)
-	std	%r7, 0x90(%r1)
-	std	%r8, 0x98(%r1)
-	std	%r9, 0xA0(%r1)
-	std	%r10, 0xA8(%r1)
-	std	%r11, 0xB0(%r1)
-	std	%r25, 0xB8(%r1)
-	std	%r31, 0xC0(%r1)
+	bl	store_regs
+	std	%r30, 0xC0(%r1)
+	std	%r31, 0xC8(%r1)
+	// Some functions calling hvsc do not modify the stack, so writing to
+	// 0x10(%r1) means we overwrite their own stored LR. So we need to store
+	// our LR inside the allocated stack. It breaks the 'backtrace' but
+	// we have no choice
 	std	%r0, 0xF0(%r1)
 
-	/* do not log the pause hypercall, floods the network */
-	cmplwi	%r11, 9
+	li	%r31, 0
+	/* do not log some hypercall that just flood the network */
+	cmplwi	%r11, 9		// lv1_pause
+	beq	l_hvsc_done
+	cmplwi	%r11, 24	// lv1_send_event_locally
+	beq	l_hvsc_done
+	cmplwi	%r11, 30	// lv1_end_of_interrupt_ext
+	beq	l_hvsc_done
+	cmplwi	%r11, 31	// lv1_did_update_interrupt_mask
 	beq	l_hvsc_done
 
-	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r31, %r31, buf)
-	std	%r3, 0x00(%r31)
-	std	%r4, 0x08(%r31)
-	std	%r5, 0x10(%r31)
-	std	%r6, 0x18(%r31)
-	std	%r7, 0x20(%r31)
-	std	%r8, 0x28(%r31)
-	std	%r9, 0x30(%r31)
-	std	%r10, 0x38(%r31)
-	std	%r11, 0x40(%r31)
-	li	%r3, 1
-	std	%r3, 0x48(%r31)
+	li	%r31, 1
 
-	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
-	ld	%r3, 0(%r3)
-	LOAD_LABEL2 (%r4, %r31, buf)
-	li	%r5, 0x50
-	LOAD_LABEL2 (%r6, %r31, eth_proc)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
+	li	%r12, 0x10
+	bl	send_trace
 	
 l_hvsc_done:
-	ld	%r3, 0x70(%r1)
-	ld	%r4, 0x78(%r1)
-	ld	%r5, 0x80(%r1)
-	ld	%r6, 0x88(%r1)
-	ld	%r7, 0x90(%r1)
-	ld	%r8, 0x98(%r1)
-	ld	%r9, 0xA0(%r1)
-	ld	%r10, 0xA8(%r1)
-	ld	%r11, 0xB0(%r1)
-	ld	%r25, 0xB8(%r1)
-	ld	%r31, 0xC0(%r1)
-
+	bl	load_regs
+	mr	%r30, %r11
 hvsc_call:
 	sc	1
+
+	cmplwi	%r31, 0
+	beq	l_hvsc_return
 	
+	bl	store_regs
+	mr	%r11, %r30
+	li	%r12, 0x11
+	bl	send_trace
+	bl	load_regs
+	
+l_hvsc_return:
+	ld	%r30, 0xC0(%r1)
+	ld	%r31, 0xC8(%r1)
 	ld	%r0, 0xF0(%r1)
 	addi	%r1, %r1, 0x100
 	mtlr	%r0

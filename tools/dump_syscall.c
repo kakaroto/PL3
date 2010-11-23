@@ -487,6 +487,7 @@ int main (int argc, char *argv[])
   ethernet_hdr_t eth;
   vlan_hdr_t vlan;
   uint64_t syscall = -1;
+  const char *call_type = NULL;
   const char * syscall_name = NULL;
   uint64_t r3 = -1;
   uint64_t r4 = -1;
@@ -496,6 +497,7 @@ int main (int argc, char *argv[])
   uint64_t r8 = -1;
   uint64_t r9 = -1;
   uint64_t r10 = -1;
+  uint64_t type = -1;
   uint32_t first_ts = -1;
 
   if (argc != 2) {
@@ -568,10 +570,26 @@ int main (int argc, char *argv[])
     r10 = *((uint64_t *) (buf + 56));
     syscall = *((uint64_t *) (buf + 64));
     syscall = ntohl (syscall >> 32);
-    if (ntohl ( *((uint32_t *) (buf + 76))))
+    type = ntohl ( *((uint32_t *) (buf + 76)));
+
+    if (type & 0x10)
       syscall_name = get_hypercall_name (syscall);
     else
       syscall_name = get_syscall_name (syscall);
+
+    if (type == 0) {
+      call_type = "syscall";
+    } else if (type == 1) {
+      call_type = "SC result";
+    } else if (type == 0x10) {
+      call_type = "hypercall";
+    } else if (type == 0x11) {
+      call_type = "HV result";
+      syscall_name = get_hypercall_name (syscall);
+      if (syscall == 249 && ntohl (r3 >> 32) == -6)
+        continue;
+    }
+
     if (syscall_name == NULL) {
       const int *ptr;
       int ignore = 0;
@@ -588,8 +606,7 @@ int main (int argc, char *argv[])
             "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
             "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
             header.ts_sec - first_ts, header.ts_usec / 1000,
-            ntohl ( *((uint32_t *) (buf + 76)))?"hypercall":"syscall",
-            (uint32_t) syscall,
+            call_type, (uint32_t) syscall,
             ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
             ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
             ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
@@ -610,8 +627,7 @@ int main (int argc, char *argv[])
             "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
             "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
             header.ts_sec - first_ts, header.ts_usec / 1000,
-            ntohl ( *((uint32_t *) (buf + 76)))?"hypercall":"syscall",
-            syscall_name,
+            call_type, syscall_name,
             ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
             ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
             ntohl (r7), ntohl (r7 >> 32), ntohl (r8), ntohl (r8 >> 32),
