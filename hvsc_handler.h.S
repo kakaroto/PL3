@@ -11,9 +11,8 @@
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
-	std	%r29, 0xC0(%r1)
-	std	%r30, 0xC8(%r1)
-	std	%r31, 0xD0(%r1)
+	std	%r30, 0xC0(%r1)
+	std	%r31, 0xC8(%r1)
 	// Some functions calling hvsc do not modify the stack, so writing to
 	// 0x10(%r1) means we overwrite their own stored LR. So we need to store
 	// our LR inside the allocated stack. It breaks the 'backtrace' but
@@ -51,11 +50,10 @@ hvsc_call:
 	li	%r12, 0x11
 	bl	send_trace
 	bl	load_regs
-	
+
 l_hvsc_return:
-	ld	%r29, 0xC0(%r1)
-	ld	%r30, 0xC8(%r1)
-	ld	%r31, 0xD0(%r1)
+	ld	%r30, 0xC0(%r1)
+	ld	%r31, 0xC8(%r1)
 	ld	%r0, 0xF0(%r1)
 	addi	%r1, %r1, 0x100
 	mtlr	%r0
