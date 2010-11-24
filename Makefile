@@ -18,7 +18,8 @@ FW_PAYLOADS = \
 	payload_dev.bin \
 	payload_no_unauth_syscall.bin \
 	payload_dump_elfs.bin \
-	payload_dump_syscalls.bin
+	payload_trace_syscalls.bin \
+	payload_trace_hypercalls.bin
 
 FIRMWARES_2=$(SUPPORTED_FIRMWARES:2.%=2_%)
 FIRMWARES=$(FIRMWARES_2:3.%=3_%)
