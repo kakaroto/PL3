@@ -159,7 +159,6 @@ static isSyscallTable(addr) {
 	Qword(addr + 8*19) != Qword(addr) &&
 	Qword(addr + 8*20) == Qword(addr) &&
 	Qword(addr + 8*21) != Qword(addr) &&
-	Qword(addr + 8*31) != Qword(addr) &&
 	Qword(addr + 8*32) == Qword(addr) &&
 	Qword(addr + 8*33) == Qword(addr) &&
 	Qword(addr + 8*41) != Qword(addr) &&
