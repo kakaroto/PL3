@@ -139,6 +139,7 @@ patch_table:
 	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2)) //hang
 	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
 	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
+	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
 	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
 	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
 	PATCH_INST(patch_func4 + patch_func4_offset + 8, blr)
@@ -162,6 +163,8 @@ patch_table:
 overwritten_kernel_function:
 	li	%r3, 1
 	blr
+
+#include "memory_patching.h.S"
 
 eth_proc:
 	.quad	0
