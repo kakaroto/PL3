@@ -60,7 +60,9 @@ payload_entry:
 	addi	%r4, %r31, ADDR_IN_PAGE(RESIDENT_PAYLOAD_OFFSET)
 	li	%r5, RESIDENT_PAYLOAD_SIZE
 	bl	pl3_memcpy
-	
+
+	LOAD_FUNC_PTR(memory_patching)
+
 	addi	%r5, %r31, ADDR_IN_PAGE (patch_table)
 l_apply_patches_loop:
 	lwz	%r3, 0(%r5)	// If entry in patch table is NULL, we're done
@@ -138,6 +140,7 @@ patch_table:
 	PATCH_DATA(patch_data1, 0x01000000)
 	PATCH_INST(patch_func1 + patch_func1_offset, ld %r4, rtoc_entry_1(%r2)) //hang
 	PATCH_INST(patch_func1 + patch_func1_offset + 4, ld %r3, 0x20(%r28))
+	PATCH_BRANCH_MEM2 (patch_func2 + patch_func2_offset, bl, memory_patching)
 	PATCH_INST(patch_func1 + patch_func1_offset + 8, std %r3, 0(%r4))
 	PATCH_INST(patch_func4 + patch_func4_offset, li %r4, 0)
 	PATCH_INST(patch_func4 + patch_func4_offset + 4, stw %r4, 0(%r3))
@@ -149,6 +152,7 @@ patch_table:
 
 #include "send_eth.h.S"
 #include "pl3_memcpy.h.S"
+#include "memory_patching.h.S"
 	
 /**
  * overwritten_kernel_function:
@@ -170,6 +174,7 @@ eth_dma_region:
 
 #include "trace_helpers.h.S"
 #include "vuart_tracer.h.S"
+#include "memory_patching_res.h.S"
 
 payload_end:
 .org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
