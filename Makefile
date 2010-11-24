@@ -20,7 +20,8 @@ FW_PAYLOADS = \
 	payload_dump_elfs.bin \
 	payload_trace_syscalls.bin \
 	payload_trace_hypercalls.bin \
-	payload_trace_all_sc_calls.bin
+	payload_trace_all_sc_calls.bin \
+	payload_trace_vuart.bin
 
 FIRMWARES_2=$(SUPPORTED_FIRMWARES:2.%=2_%)
 FIRMWARES=$(FIRMWARES_2:3.%=3_%)
