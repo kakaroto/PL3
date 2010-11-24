@@ -499,6 +499,7 @@ int main (int argc, char *argv[])
   uint64_t r10 = -1;
   uint64_t type = -1;
   uint32_t first_ts = -1;
+  uint32_t timestamp = -1;
 
   if (argc != 2) {
     printf ("Usage : %s in.pcap\n", argv[0]);
@@ -558,8 +559,12 @@ int main (int argc, char *argv[])
     ret = fread(buf, 1, header.incl_len, in);
     if (ret != header.incl_len)
       break;
+
     if (first_ts == -1)
-      first_ts = header.ts_sec;
+      first_ts = header.ts_sec * 1000 + header.ts_usec / 1000;
+
+    timestamp = (header.ts_sec * 1000 + header.ts_usec / 1000) - first_ts;
+
     r3 = *((uint64_t *) (buf));
     r4 = *((uint64_t *) (buf + 8));
     r5 = *((uint64_t *) (buf + 16));
@@ -613,7 +618,7 @@ int main (int argc, char *argv[])
             "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
             "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
             "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
-            header.ts_sec - first_ts, header.ts_usec / 1000,
+            (uint32_t) (timestamp / 1000), (uint32_t) (timestamp % 1000),
             call_type, (uint32_t) syscall,
             ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
             ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
@@ -634,7 +639,7 @@ int main (int argc, char *argv[])
             "- r5=0x%0.8X%0.8X - r6=0x%0.8X%0.8X\n"
             "- r7=0x%0.8X%0.8X - r8=0x%0.8X%0.8X\n"
             "- r9=0x%0.8X%0.8X - r10=0x%0.8X%0.8X\n",
-            header.ts_sec - first_ts, header.ts_usec / 1000,
+            (uint32_t) (timestamp / 1000), (uint32_t) (timestamp % 1000),
             call_type, syscall_name,
             ntohl (r3), ntohl (r3 >> 32), ntohl (r4), ntohl (r4 >> 32),
             ntohl (r5), ntohl (r5 >> 32), ntohl (r6), ntohl (r6 >> 32),
