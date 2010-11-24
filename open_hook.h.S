@@ -123,8 +123,7 @@ hook_open:
 	cmpldi	%r26, 0
 	beq	l_hook_open_proceed
 
-	mr	%r27, %r26
-	addi	%r27, %r27, 0x10*MAX_TABLE_ENTRIES	// Set our limit
+	addi	%r27, %r26, 0x10*MAX_TABLE_ENTRIES	// Set our limit
 l_hook_open_next_table_entry:
 	cmpld	%r26, %r27
 	beq	l_hook_open_proceed		// If we reached our limit, we're done
