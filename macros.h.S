@@ -90,6 +90,34 @@
 	ori	dest, dest, target@l; 	\
 	mtctr	dest;			\
 	bctrl;
+
+#define DEFINE_FUNC_PTR(function)				\
+function##_ptr:							\
+	.quad	0;						\
+function:							\
+	mflr	%r0;						\
+	stdu	%r1, -0x80(%r1);				\
+	std	%r31, 0x70(%r1);				\
+	std	%r0, 0x90(%r1);					\
+	BRANCH_FUNC_PTR(%r31, function);			\
+	ld	%r31, 0x70(%r1);				\
+	ld	%r0, 0x90(%r1);					\
+	addi	%r1, %r1, 0x80;					\
+	mtlr	%r0;						\
+	blr;
+
+#define BRANCH_FUNC_PTR(dest, function)				\
+	MEM_BASE (dest);					\
+	LOAD_LABEL2 (dest, dest, function ##_ptr);		\
+	ld	dest, 0(dest);					\
+	mtctr	dest;						\
+	bctrl;
+
+#define LOAD_FUNC_PTR(function)						\
+	ALLOC_AND_COPY_PROC(%r31, function ##_start, 			\
+				(function ## _end - function##_start));	\
+	LOAD_LABEL2 (%r6, %r30, function ##_ptr);			\
+	std	%r3, 0(%r6);
 	
 #define GET_CURRENT_PAGE(temp, dest)	\
 	bl	get_current_page;	\
