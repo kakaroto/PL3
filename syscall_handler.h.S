@@ -34,13 +34,13 @@ syscall_handler:
 	bl	send_trace
 	bl	load_regs
 
-l_syscall_handler_done:	
+l_syscall_handler_done:
 	mtlr	%r13
 	blrl
-	
+
 	cmplwi	%r31, 0
 	beq	l_syscall_handler_return
-	
+
 	bl	store_regs
 	mr	%r11, %r30
 	li	%r12, 1
