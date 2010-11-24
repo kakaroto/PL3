@@ -28,8 +28,8 @@ open_mapping_table:
 syscall_map_open_desc:
 	QUAD_MEM2 (syscall_map_open)
 
-map_open_path_ptr:
-	.quad	0
+DEFINE_FUNC_PTR(map_open_path)
+
 
 /**
  * syscall_map_open:

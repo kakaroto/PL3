@@ -61,10 +61,8 @@ payload_entry:
 	bl	pl3_memcpy
 
 	// Allocate memory and copy PIC function map_open_path to it
-	ALLOC_AND_COPY_PROC(%r31, map_open_path, \
-				(map_open_path_end - map_open_path))
-	LOAD_LABEL2 (%r6, %r30, map_open_path_ptr)
-	std	%r3, 0(%r6)
+	LOAD_FUNC_PTR(map_open_path)
+	LOAD_FUNC_PTR(memory_patching)
 
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)
 
@@ -122,7 +120,7 @@ patch_table:
 
 #include "pl3_memcpy.h.S"
 #include "map_open_path.h.S"
-
+#include "memory_patching.h.S"
 
 path_app_home:
 	.string "/app_home"
@@ -146,7 +144,7 @@ overwritten_kernel_function:
 //#include "dev_syscalls.h.S"
 
 #include "open_hook.h.S"
-#include "memory_patching.h.S"
+#include "memory_patching_res.h.S"
 
 payload_end:
 .org RESIDENT_PAYLOAD_OFFSET + RESIDENT_PAYLOAD_MAXSIZE 
