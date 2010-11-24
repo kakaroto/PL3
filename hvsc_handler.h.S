@@ -11,9 +11,9 @@
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
-	bl	store_regs
-	std	%r30, 0xC0(%r1)
-	std	%r31, 0xC8(%r1)
+	std	%r29, 0xC0(%r1)
+	std	%r30, 0xC8(%r1)
+	std	%r31, 0xD0(%r1)
 	// Some functions calling hvsc do not modify the stack, so writing to
 	// 0x10(%r1) means we overwrite their own stored LR. So we need to store
 	// our LR inside the allocated stack. It breaks the 'backtrace' but
@@ -21,24 +21,25 @@ hvsc_hook:
 	std	%r0, 0xF0(%r1)
 
 	li	%r31, 0
+
 	/* do not log some hypercall that just flood the network */
 	cmplwi	%r11, 9		// lv1_pause
-	beq	l_hvsc_done
-	cmplwi	%r11, 24	// lv1_send_event_locally
-	beq	l_hvsc_done
+	beq	hvsc_call
 	cmplwi	%r11, 30	// lv1_end_of_interrupt_ext
-	beq	l_hvsc_done
+	beq	hvsc_call
 	cmplwi	%r11, 31	// lv1_did_update_interrupt_mask
-	beq	l_hvsc_done
+	beq	hvsc_call
+	cmplwi	%r11, 24	// lv1_send_event_locally
+	beq	hvsc_call
 
 	li	%r31, 1
 
+	bl	store_regs
+	mr	%r30, %r11
 	li	%r12, 0x10
 	bl	send_trace
-	
-l_hvsc_done:
 	bl	load_regs
-	mr	%r30, %r11
+	
 hvsc_call:
 	sc	1
 
@@ -52,8 +53,9 @@ hvsc_call:
 	bl	load_regs
 	
 l_hvsc_return:
-	ld	%r30, 0xC0(%r1)
-	ld	%r31, 0xC8(%r1)
+	ld	%r29, 0xC0(%r1)
+	ld	%r30, 0xC8(%r1)
+	ld	%r31, 0xD0(%r1)
 	ld	%r0, 0xF0(%r1)
 	addi	%r1, %r1, 0x100
 	mtlr	%r0

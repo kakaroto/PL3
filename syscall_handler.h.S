@@ -11,32 +11,32 @@
 syscall_handler:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
-	std	%r0, 0x110(%r1)
-	bl	store_regs
 	std	%r30, 0xC0(%r1)
 	std	%r31, 0xC8(%r1)
-
+	std	%r0, 0x110(%r1)
 
 	li	%r31, 0
-	rldicl	%r11, %r11, 61, 3
 
 	/* do not log the mutex lock/unlock syscalls, floods the network */
-	cmplwi	%r11, 104
-	bgt	l_gt_104
-	cmplwi	%r11, 100
-	blt	l_lt_100
-	b	l_syscall_handler_done
-l_gt_104:
-l_lt_100:
-	mr	%r30, %r11
+	cmplwi	%r11, 102*8			// lock
+	beq	l_syscall_handler_done
+	cmplwi	%r11, 104*8			// unlock
+	beq	l_syscall_handler_done
+	cmplwi	%r11, 103*8			// trylock
+	beq	l_syscall_handler_done
+
 	li	%r31, 1
+
+	bl	store_regs
+	rldicl	%r11, %r11, 61, 3		// r11 is the sc_num*8
+	mr	%r30, %r11
 	li	%r12, 0
 	bl	send_trace
+	bl	load_regs
 
 l_syscall_handler_done:	
-	bl	load_regs
-	mtctr	%r13
-	bctrl
+	mtlr	%r13
+	blrl
 	
 	cmplwi	%r31, 0
 	beq	l_syscall_handler_return

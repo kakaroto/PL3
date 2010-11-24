@@ -33,15 +33,13 @@ load_regs:
 	ld	%r11, 0xB0(%r1)
 	ld	%r12, 0xB8(%r1)
 	blr
-	
-	
 
 send_trace:
 	mflr	%r0
 	stdu	%r1, -0x80(%r1)
 	std	%r0, 0x70(%r1)
 	std	%r31, 0x78(%r1)
-
+	
 	MEM_BASE (%r31)
 	LOAD_LABEL2 (%r31, %r31, buf)
 	std	%r3, 0x00(%r31)
@@ -64,11 +62,13 @@ send_trace:
 	ld	%r6, 0(%r6)
 	mtctr	%r6
 	bctrl
-
-l_send_trace_done:
+	
 	ld	%r31, 0x78(%r1)
 	ld	%r0, 0x70(%r1)
 	addi	%r1, %r1, 0x80
 	mtlr	%r0
 	blr
+buf:
+	.space 0x50
+
 
