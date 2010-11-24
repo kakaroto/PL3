@@ -452,6 +452,7 @@ static const char *get_syscall_name(int num)
         else if(num == 831) return "truncate";
         else if(num == 832) return "ftruncate";
         else if(num == 834) return "chmod";
+        else if(num == 837) return "mount";
         else if(num == 872) return "sys_ss_get_open_psid";
         else if(num == 873) return "sys_ss_get_cache_of_product_mode";
         else if(num == 880) return "sys_deci3_open";
