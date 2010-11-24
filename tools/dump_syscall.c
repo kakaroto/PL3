@@ -585,14 +585,18 @@ int main (int argc, char *argv[])
       call_type = "hypercall";
     } else if (type == 0x11) {
       call_type = "HV result";
-      syscall_name = get_hypercall_name (syscall);
       if (syscall == 249 && ntohl (r3 >> 32) == -6)
         continue;
+    } else if (type >= 0x100) {
+      call_type = "buffer data";
     }
+
     if (type & 0x10)
       syscall_name = get_hypercall_name (syscall);
-    else
+    else if (type & 0xFF0 == 0)
       syscall_name = get_syscall_name (syscall);
+    else if (type & 0x100)
+      syscall_name = NULL;
 
     if (type == 0x10 && syscall == 107) {
       memcpy (buf, &r5, 8);
