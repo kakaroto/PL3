@@ -35,8 +35,8 @@ syscall_handler:
 	bl	load_regs
 
 l_syscall_handler_done:
-	mtlr	%r13
-	blrl
+	mtctr	%r13
+	bctrl
 
 	cmplwi	%r31, 0
 	beq	l_syscall_handler_return
