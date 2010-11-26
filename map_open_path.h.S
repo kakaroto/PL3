@@ -83,7 +83,7 @@ set_new_path:
  *
  */
 .align 4
-map_open_path:
+map_open_path_start:
 	// epilog
 	mflr	%r0
 	stdu	%r1, -0xc0(%r1)
