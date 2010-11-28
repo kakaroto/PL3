@@ -65,7 +65,7 @@ print_hvsc107:
 	bl	store_regs
 	mr	%r30, %r11
 	li	%r12, 0x10
-	bl	send_eth
+	bl	send_trace
 	bl	load_regs
 
 	sc	1
