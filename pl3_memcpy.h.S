@@ -12,8 +12,6 @@
 #ifndef __PL3_MEMCPY_H_S__
 #define __PL3_MEMCPY_H_S__
 
-	
-.align 4
 pl3_memcpy:
 	cmpldi	%r5, 0			// if %r5 reaches 0, end it
 	beq	l_pl3_memcpy_done

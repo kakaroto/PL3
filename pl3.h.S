@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef __MACRO_H_S__
-#define __MACRO_H_S__
+#ifndef __PL3_H_S__
+#define __PL3_H_S__
 
 #include "config.h"
 
@@ -25,11 +25,10 @@
 #define PAYLOAD_OFFSET_IN_PAGE 	0x38
 #endif
 
-#define PAYLOAD_SIZE		ADDR_IN_PAGE(payload_end)
-#define RESIDENT_PAYLOAD_OFFSET	(overwritten_kernel_function)
-#define RESIDENT_PAYLOAD_SIZE   (payload_end - RESIDENT_PAYLOAD_OFFSET)
-#define ADDR_IN_PAGE(target) 	(PAYLOAD_OFFSET_IN_PAGE + (target) - payload_start)
-#define ADDR_IN_MEM2(target) 	((target) - RESIDENT_PAYLOAD_OFFSET)
+#define RESIDENT_AREA_OFFSET	(resident_area_start)
+#define RESIDENT_AREA_SIZE	(resident_area_end - resident_area_start)
+#define ADDR_IN_PAGE(target) 	(PAYLOAD_OFFSET_IN_PAGE + (target) - payload_entry)
+#define ADDR_IN_MEM2(target) 	((target) - RESIDENT_AREA_OFFSET)
 
 /* Addressing Macros */
 
@@ -118,7 +117,7 @@ function:							\
 				(function ## _end - function##_start));	\
 	LOAD_LABEL2 (%r6, %r30, function ##_ptr);			\
 	std	%r3, 0(%r6);
-	
+
 #define GET_CURRENT_PAGE(temp, dest)	\
 	bl	get_current_page;	\
 	b	got_current_page;	\
@@ -148,4 +147,28 @@ got_current_page:			\
 	bl	pl3_memcpy;				\
 	mr	%r3, %r7;
 
-#endif /* __MACRO_H_S */
+// Copy functions that need to stay resident in memory to MEM_BASE2
+#define COPY_RESIDENT_AREA(base, page)					\
+	LOAD_LABEL (MEM_BASE2, %r3, base, 0);				\
+	addi	%r4, page, ADDR_IN_PAGE(RESIDENT_AREA_OFFSET);		\
+	li	%r5, RESIDENT_AREA_SIZE;				\
+	bl	pl3_memcpy;						\
+
+#define RESIDENT_AREA_START()				\
+.align 4;						\
+resident_area_start:					\
+	li	%r3, 1;					\
+	blr;
+
+#define RESIDENT_AREA_END()				\
+resident_area_end:					\
+.org RESIDENT_AREA_OFFSET + RESIDENT_AREA_MAXSIZE \
+
+.org 0
+// Position 0x20 in the page
+payload_entry:
+	b	payload_main
+
+#include "pl3_memcpy.h.S"
+
+#endif /* __PL3_H_S__ */

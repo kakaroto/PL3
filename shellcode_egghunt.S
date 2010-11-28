@@ -13,14 +13,12 @@
  *
  */
 
-#include "macros.h.S"
+// If the egghunt is used so USE_JIG is defined and the payload offset is 0x20
+#define PAGE_SIZE 		0x1000
+#define PAYLOAD_OFFSET_IN_PAGE 	0x20
 
 .org 0
-/**
- * shellcode:
- *
- * 
- */
+
 /* JIG payload. Must not exceed 40 bytes */
 shellcode:
 	ld	%r4, -0x10(%r3)
