@@ -159,14 +159,10 @@ send_elfs:
 
 	mr	%r28, %r3
 	
-	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
-	ld	%r3, 0(%r3)
-	LOAD_LABEL2 (%r4, %r31, hash)
-	li	%r5, 64
-	LOAD_LABEL2 (%r6, %r31, eth_proc)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
+	LOAD_LABEL2 (%r3, %r31, hash)
+	li	%r4, 64
+	bl	send_eth
+
 	li	%r29, 0
 l_loop_copy:
 	ld	%r3, 0(%r27)
@@ -198,15 +194,11 @@ l_loop_memcpy:
 	cmpldi	%r5, 0			// if %r5 reaches 0, end it
 	bne	l_loop_memcpy
 	
-	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
-	ld	%r3, 0(%r3)
-	LOAD_LABEL2 (%r4, %r31, message_buf)
-	ld	%r4, 0(%r4)	
-	li	%r5, 1028
-	LOAD_LABEL2 (%r6, %r31, eth_proc)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
+	LOAD_LABEL2 (%r3, %r31, message_buf)
+	ld	%r3, 0(%r3)	
+	li	%r4, 1028
+	bl	send_eth
+
 	addi	%r29, %r29, 1024
 	cmpld	%r29, %r28
 	b	l_loop_copy
@@ -255,8 +247,10 @@ memory_patch_table_4:
 
 RESIDENT_AREA_END()
 
-
+// HACK: the patch_table won't include the bl memory_patching without this
+#define __MEMORY_PATCHING_H_S__
 #include "patch_table.h.S"
+
 payload_main:
 	// prolog
 	mflr	%r0
@@ -269,13 +263,13 @@ payload_main:
 	MEM_BASE (%r30)			// Load 0x8000000000000000 in %r30
 
 	COPY_RESIDENT_AREA(%r30, %r31)
-	APPLY_PATCHES(%r30, %r31)
 
 	ALLOCATE_BUFFER(%r30, message_buf, 0x404)
 
 	LOAD_FUNC_PTR(send_eth)
 	INIT_SEND_ETH(%r30)
 
+	APPLY_PATCHES(%r30, %r31)
 	// epilog
 	ld	%r30, 0x90(%r1)
 	ld	%r31, 0x98(%r1)
