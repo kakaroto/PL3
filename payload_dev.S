@@ -19,11 +19,14 @@
 
 #include "map_open_path.h.S"
 #include "memory_patching.h.S"
+#include "send_eth.h.S"
 
 RESIDENT_AREA_START()
 #include "dev_syscalls.h.S"
 #include "open_hook.h.S"
 #include "memory_patching_res.h.S"
+#include "send_eth_res.h.S"
+#include "print_debug.h.S"
 RESIDENT_AREA_END()
 
 // Include patch_table after all other includes so it picks up on what
@@ -46,7 +49,10 @@ payload_main:
 	// Allocate memory and copy PIC functions to it
 	LOAD_FUNC_PTR(memory_patching)
 	LOAD_FUNC_PTR(map_open_path)
+	LOAD_FUNC_PTR(send_eth)
+	INIT_SEND_ETH(%r30)
 
+	//ADD_SYSCALL (%r30, print_tty_desc, 403)
 	ADD_SYSCALL (%r30, syscall_peek_desc, 6)
 	ADD_SYSCALL (%r30, syscall_poke_desc, 7)
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)

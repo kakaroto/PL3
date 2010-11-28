@@ -49,6 +49,13 @@ patch_table:
 #ifdef __SYSCALL_HANDLER_H_S__
 	PATCH_BRANCH_MEM2 (patch_syscall_func, bl, syscall_handler)
 #endif
+#ifdef __PRINT_DEBUG_H_S__
+	//PATCH_BRANCH_MEM2(lv2_printf_null + 8, b, print_debug)
+	//PATCH_BRANCH_MEM2(lv2_printf_null, b, print_debug)
+	PATCH_BRANCH_MEM2(hvsc107_1, bl, print_hvsc107)
+	PATCH_BRANCH_MEM2(hvsc107_2, bl, print_hvsc107)
+	PATCH_BRANCH_MEM2(hvsc107_3, bl, print_hvsc107)
+#endif
 	.long	0
 
 

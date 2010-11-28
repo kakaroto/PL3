@@ -25,6 +25,8 @@
 #define pathdup_from_user	0x1b3b3c // FIXME: unsure of the name!
 #define copy_from_user		0xE26C
 #define copy_to_user		0xE050
+#define alloc_and_copy_from_user 0x1b3CFC
+#define strdup_from_user	0x1B8A60
 #define alloc 			0x62088
 #define free 			0x624c8
 #define USBRegisterDriver 	0xd22d8
@@ -56,6 +58,12 @@
 #define patch_data1		0x3ba890
 #define rtoc_entry_1		0xf08
 #define rtoc_entry_2		-0x6a00
+
+#define lv2_printf		0x28A654
+#define lv2_printf_null		0x28F050
+#define hvsc107_1		0xE5E8
+#define hvsc107_2		0xE67C
+#define hvsc107_3		0xE4B8
 
 // Payload bases
 #define MEM_BASE2 		(0x50B3C)
@@ -296,7 +304,7 @@
 #define pathdup_from_user	0x1b3d08 // FIXME: unsure of the name!
 #define copy_from_user		0xE300
 #define copy_to_user		0xE0FC
-#define alloc_and_copy_from_user 0x0x1b3EC8
+#define alloc_and_copy_from_user 0x1b3EC8
 #define strdup_from_user	0x1B8C38
 #define strlen_from_user	0x285BE4
 #define alloc			0x61cf0
@@ -331,6 +339,12 @@
 #define rtoc_entry_1		0xd58
 #define rtoc_entry_2		-0x6b08
 
+#define lv2_printf		0x28A11C
+#define lv2_printf_null		0x28EB78
+#define hvsc107_1		0xE534
+#define hvsc107_2		0xE664
+#define hvsc107_3		0xE6F8
+	
 // Payload bases
 #define MEM_BASE2 		(0x50608)
 
@@ -526,6 +540,23 @@
 #define elf3_data		0x001AA2C8
 #define elf4_data		0x000B6BC0
 
+#endif
+
+#ifndef lv2_printf
+#define lv2_printf		0
+#endif
+#ifndef lv2_printf_null
+#define lv2_printf_null		0
+#endif
+
+#ifndef hvsc107_1
+#define hvsc107_1		0
+#endif
+#ifndef hvsc107_2
+#define hvsc107_2		0
+#endif
+#ifndef hvsc107_3
+#define hvsc107_3		0
 #endif
 
 #endif /* __FIRMWARE_SYMBOLS_H_S__ */
