@@ -135,6 +135,13 @@ got_current_page:			\
         li      %r11, 255;		\
         sc      1;
 
+#define ALLOCATE_BUFFER(base, variable, size)	\
+	li      %r3, size;			\
+	li      %r4, 0x27;			\
+	BRANCH_ABSOLUTE(%r5, alloc);		\
+	LOAD_LABEL2 (%r4, base, variable);	\
+	std     %r3, 0(%r4);
+
 // Allocate new memory and copy a function to it. R3 to R11 will be lost
 // pl3_memcpy must be included!
 #define ALLOC_AND_COPY_PROC(base_reg, function, size)	\

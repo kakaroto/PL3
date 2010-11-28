@@ -9,13 +9,11 @@
  */
 
 
-#include "macros.h.S"
+#include "pl3.h.S"
 
-.org 0
-// Position 0x38 in the page
-payload_start:
+#include "send_eth.h.S"
 
-payload_entry:
+payload_main:
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
 	std	%r27, 0x78(%r1)
@@ -74,7 +72,8 @@ l_done:
 	addi	%r1, %r1, 0xa0
 	mtlr	%r0
 	blr
-
+send_eth:
+	b	send_eth_start
 panic:
 	PANIC()
 
@@ -83,8 +82,5 @@ message_offset:
 	.long	0
 message:
 	.space	1024
-
-#include "pl3_memcpy.h.S"
-#include "send_eth.h.S"
 
 payload_end:

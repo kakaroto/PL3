@@ -57,14 +57,9 @@ send_trace:
 	std	%r12, 0x48(%r31)
 
 	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
-	ld	%r3, 0(%r3)
-	LOAD_LABEL2 (%r4, %r31, buf)
-	li	%r5, 0x50
-	LOAD_LABEL2 (%r6, %r31, eth_proc)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
+	LOAD_LABEL2 (%r3, %r31, buf)
+	li	%r4, 0x50
+	bl	send_eth
 	
 	ld	%r31, 0x78(%r1)
 	ld	%r0, 0x70(%r1)

@@ -11,6 +11,8 @@
 #ifndef __SYSCALL_HANDLER_H_S__
 #define __SYSCALL_HANDLER_H_S__
 
+#include "trace_helpers.h.S"
+
 syscall_handler:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)

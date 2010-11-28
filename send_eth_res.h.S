@@ -14,22 +14,23 @@
 send_eth_dma_region:	
 	.quad	0
 
-DEFINE_FUNC_PTR(send_eth)
+send_eth_ptr:
+	.quad	0
 
-send_eth_res:
+send_eth:
 	mflr	%r0
 	stdu	%r1, -0x80(%r1)
 	std	%r31, 0x70(%r1)
 	std	%r0, 0x90(%r1)
 
-	mr	%r4, %r3
 	mr	%r5, %r4
+	mr	%r4, %r3
 	
 	MEM_BASE (%r31)
 	LOAD_LABEL2 (%r31, %r31, send_eth_dma_region)
 	ld	%r3, 0(%r31)
 
-	bl	send_eth
+	BRANCH_FUNC_PTR(%r31, send_eth)
 	
 	ld	%r31, 0x70(%r1)
 	ld	%r0, 0x90(%r1)

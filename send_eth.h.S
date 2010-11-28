@@ -13,7 +13,7 @@
 
 #define INIT_SEND_ETH(base)				\
 	bl	send_eth_init;				\
-	LOAD_LABEL2 (%r5, base, eth_dma_region);	\
+	LOAD_LABEL2 (%r5, base, send_eth_dma_region);	\
 	std	%r4, 0(%r5)
 
 send_eth_init:

@@ -11,6 +11,8 @@
 #ifndef __VUART_TRACER_H_S__
 #define __VUART_TRACER_H_S__
 
+#include "trace_helpers.h.S"
+
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
@@ -128,14 +130,9 @@ l_send_buffer_next:
         mtmsrd %r0, 0
 	
 	MEM_BASE (%r31)
-	LOAD_LABEL2 (%r3, %r31, eth_dma_region)
-	ld	%r3, 0(%r3)
-	LOAD_LABEL2 (%r4, %r31, buf)
-	li	%r5, 0x50
-	LOAD_LABEL2 (%r6, %r31, eth_proc)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
+	LOAD_LABEL2 (%r3, %r31, buf)
+	li	%r4, 0x50
+	bl	send_eth
 
 	addi	%r28, %r28, 1
 	addi	%r30, %r30, 0x40

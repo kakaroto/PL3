@@ -11,6 +11,7 @@
 #ifndef __HVSC_HANDLER_H_S__
 #define __HVSC_HANDLER_H_S__
 
+#include "trace_helpers.h.S"
 
 hvsc_hook:
 	mflr	%r0
