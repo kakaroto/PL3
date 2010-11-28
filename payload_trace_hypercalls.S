@@ -32,7 +32,7 @@ RESIDENT_AREA_END()
 
 
 payload_main:
-	// epilog
+	// prolog
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
 	std	%r30, 0x90(%r1)
@@ -56,7 +56,7 @@ payload_main:
 	// screwed
 	bl	hook_hvsc
 
-	// prolog
+	// epilog
 	ld	%r30, 0x90(%r1)
 	ld	%r31, 0x98(%r1)
 	ld	%r0, 0xb0(%r1)

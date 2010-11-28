@@ -41,7 +41,7 @@ DEFINE_FUNC_PTR(map_open_path)
  * @new_path or if @new_path is #NULL, it will remove the mapping
  */
 syscall_map_open:
-	// epilog
+	// prolog
 	mflr	%r0
 	stdu	%r1, -0xc0(%r1)
 	std	%r26, 0x70(%r1)

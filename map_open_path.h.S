@@ -87,7 +87,7 @@ set_new_path:
  */
 .align 4
 map_open_path_start:
-	// epilog
+	// prolog
 	mflr	%r0
 	stdu	%r1, -0xc0(%r1)
 	std	%r24, 0x70(%r1)
@@ -219,7 +219,7 @@ l_map_open_return_0:
 	li	%r3, 0			// return 0
 	b	l_map_open_return
 l_map_open_return:
-	// prolog
+	// epilog
 	ld	%r24, 0x70(%r1)
 	ld	%r25, 0x78(%r1)
 	ld	%r26, 0x80(%r1)
