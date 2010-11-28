@@ -11,10 +11,11 @@
 #ifndef __SEND_ETH_H_S__
 #define __SEND_ETH_H_S__
 
-#include "macros.h.S"
+#define INIT_SEND_ETH(base)				\
+	bl	send_eth_init;				\
+	LOAD_LABEL2 (%r5, base, eth_dma_region);	\
+	std	%r4, 0(%r5)
 
-	
-.align 4
 send_eth_init:
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
@@ -101,7 +102,7 @@ send_eth_init:
 	bne	l_send_eth_init_done
 	
 	mr	%r4, %r28
-	
+
 l_send_eth_init_done:
 	ld	%r27, 0x78(%r1)
 	ld	%r28, 0x80(%r1)
@@ -111,7 +112,7 @@ l_send_eth_init_done:
 	blr
 
 	
-send_eth:
+send_eth_start:
 	mflr	%r0
 	stdu	%r1, -0xa0(%r1)
 	std	%r27, 0x78(%r1)
@@ -233,6 +234,7 @@ l_send_eth_done:
 	addi	%r1, %r1, 0xa0
 	mtlr	%r0
 	blr
+send_eth_end:
 	
 	.set	gelic_buf_addr, 0x00
 	.set	gelic_buf_size, 0x04
