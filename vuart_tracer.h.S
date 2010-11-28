@@ -8,6 +8,9 @@
  *
  */
 
+#ifndef __VUART_TRACER_H_S__
+#define __VUART_TRACER_H_S__
+
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
@@ -148,3 +151,5 @@ l_send_buffer_next:
 	addi	%r1, %r1, 0xA0
 	mtlr	%r0
 	blr
+
+#endif /* __VUART_TRACER_H_S__ */

@@ -12,8 +12,6 @@
 #ifndef __PL3_MEMSET_H_S__
 #define __PL3_MEMSET_H_S__
 
-	
-.align 4
 /**
  * pl3_memset(void *ptr, uint_8 value, size_t size)
  */

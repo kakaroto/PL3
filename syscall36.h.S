@@ -11,6 +11,8 @@
  */
 
 
+#ifndef __SYSCALL36_H_S__
+#define __SYSCALL36_H_S__
 
 syscall_36_map_bdvd_desc:
 	QUAD_MEM2 (syscall_36_map_bdvd)
@@ -72,3 +74,4 @@ l_game_path_null:
 	addi	%r1, %r1, 0xd0
 	mtlr	%r0
 	blr
+#endif /* __SYSCALL36_H_S__ */

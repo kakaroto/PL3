@@ -8,6 +8,10 @@
  *
  */
 
+#ifndef __HVSC_HANDLER_H_S__
+#define __HVSC_HANDLER_H_S__
+
+
 hvsc_hook:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
@@ -58,3 +62,5 @@ l_hvsc_return:
 	addi	%r1, %r1, 0x100
 	mtlr	%r0
 	blr
+
+#endif /* __HVSC_HANDLER_H_S__ */

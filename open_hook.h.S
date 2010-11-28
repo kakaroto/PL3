@@ -8,8 +8,9 @@
  *
  */
 
-.align 4
-	
+#ifndef __OPEN_HOOK_H_S__
+#define __OPEN_HOOK_H_S__
+
 /* Pointer to :
  * struct {
  *    struct path old
@@ -156,3 +157,4 @@ l_hook_open_proceed:
 	mr	%r3, %r29
 	b       ABSOLUTE_MEM2(patch_func3 + patch_func3_offset + 4)
 
+#endif /* __OPEN_HOOK_H_S__ */

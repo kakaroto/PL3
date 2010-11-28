@@ -8,6 +8,9 @@
  *
  */
 
+#ifndef __MAP_OPEN_PATH_H_S__
+#define __MAP_OPEN_PATH_H_S__
+
 /**
  * map_open_path:
  * @old_path: The path to map
@@ -230,3 +233,5 @@ l_map_open_return:
 	mtlr	%r0
 	blr
 map_open_path_end:
+
+#endif /* __MAP_OPEN_PATH_H_S__ */

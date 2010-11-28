@@ -13,6 +13,9 @@
  * of the code they wrote.
  */
 
+#ifndef __MEMORY_PATCHING_H_S__
+#define __MEMORY_PATCHING_H_S__
+
 /**
  * memory_patching:
  * @arg1: 
@@ -161,3 +164,5 @@ loc_594:
 	mtlr	%r0
 	blr
 memory_patching_end:
+
+#endif /* __MEMORY_PATCHING_H_S__ */

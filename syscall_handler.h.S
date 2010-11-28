@@ -8,6 +8,9 @@
  *
  */
 
+#ifndef __SYSCALL_HANDLER_H_S__
+#define __SYSCALL_HANDLER_H_S__
+
 syscall_handler:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
@@ -54,3 +57,5 @@ l_syscall_handler_return:
 	addi	%r1, %r1, 0x100
 	mtlr	%r0
 	blr
+
+#endif /* __SYSCALL_HANDLER_H_S__ */

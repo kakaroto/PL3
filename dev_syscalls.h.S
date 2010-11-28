@@ -9,6 +9,8 @@
  * License ("GPL") version 3, as published by the Free Software Foundation.
  */
 
+#ifndef __DEV_SYSCALLS_H_S__
+#define __DEV_SYSCALLS_H_S__
 
 syscall_peek_desc:
 	QUAD_MEM2(syscall_peek)
@@ -24,3 +26,4 @@ syscall_poke:
 	std	%r4, 0x00(%r3)
 	blr	
 
+#endif /* __DEV_SYSCALLS_H_S__ */

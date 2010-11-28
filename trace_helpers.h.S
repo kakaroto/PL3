@@ -7,7 +7,10 @@
  * License ("GPL") version 3, as published by the Free Software Foundation.
  *
  */
-	
+
+#ifndef __TRACE_HELPERS_H_S__
+#define __TRACE_HELPERS_H_S__
+
 store_regs:
 	std	%r3, 0x70(%r1)
 	std	%r4, 0x78(%r1)
@@ -70,3 +73,5 @@ send_trace:
 	blr
 buf:
 	.space 0x50
+
+#endif /* __TRACE_HELPERS_H_S__ */
