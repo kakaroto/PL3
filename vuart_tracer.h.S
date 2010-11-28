@@ -49,7 +49,6 @@ l_hvsc_handler_continue:
 	bl	store_regs
 	mr	%r30, %r11
 	li	%r12, 0x10
-	cmplwi	%r11, 162
 	bl	send_trace
 	bl	load_regs
 	
