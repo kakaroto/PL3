@@ -13,7 +13,7 @@
 
 #include "trace_helpers.h.S"
 
-hvsc_hook:
+hvsc_handler:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
 	std	%r30, 0xC0(%r1)
@@ -48,7 +48,7 @@ hvsc_call:
 	sc	1
 
 	cmplwi	%r31, 0
-	beq	l_hvsc_return
+	beq	l_hvsc_handler_return
 	
 	bl	store_regs
 	mr	%r11, %r30
@@ -56,7 +56,7 @@ hvsc_call:
 	bl	send_trace
 	bl	load_regs
 
-l_hvsc_return:
+l_hvsc_handler_return:
 	ld	%r30, 0xC0(%r1)
 	ld	%r31, 0xC8(%r1)
 	ld	%r0, 0xF0(%r1)

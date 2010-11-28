@@ -13,7 +13,7 @@
 
 #include "trace_helpers.h.S"
 
-hvsc_hook:
+hvsc_handler:
 	mflr	%r0
 	stdu	%r1, -0x100(%r1)
 	std	%r29, 0xC0(%r1)
@@ -29,21 +29,21 @@ hvsc_hook:
 
 	
 	cmplwi	%r11, 162		// lv1_read_virtual_uart
-	beq	l_hvsc_hook_read_uart
+	beq	l_hvsc_handler_read_uart
 	cmplwi	%r11, 163		// lv1_write_virtual_uart
-	beq	l_hvsc_hook_write_uart
+	beq	l_hvsc_handler_write_uart
 	b	hvsc_call
 
-l_hvsc_hook_write_uart:
+l_hvsc_handler_write_uart:
 	bl	store_regs
 	mr	%r3, %r4
 	mr	%r4, %r5
 	bl	send_buffer
 	bl	load_regs
-	b	l_hvsc_hook_continue
-l_hvsc_hook_read_uart:
+	b	l_hvsc_handler_continue
+l_hvsc_handler_read_uart:
 	mr	%r29, %r4
-l_hvsc_hook_continue:
+l_hvsc_handler_continue:
 	li	%r31, 1
 
 	bl	store_regs
@@ -57,7 +57,7 @@ hvsc_call:
 	sc	1
 
 	cmplwi	%r31, 0
-	beq	l_hvsc_return
+	beq	l_hvsc_handler_return
 	
 	bl	store_regs
 	mr	%r11, %r30
@@ -66,14 +66,14 @@ hvsc_call:
 	bl	load_regs
 	
 	cmplwi	%r30, 162
-	bne	l_hvsc_return
+	bne	l_hvsc_handler_return
 	
 	bl	store_regs
 	mr	%r3, %r29
 	bl	send_buffer
 	bl	load_regs
 
-l_hvsc_return:
+l_hvsc_handler_return:
 	ld	%r29, 0xC0(%r1)
 	ld	%r30, 0xC8(%r1)
 	ld	%r31, 0xD0(%r1)
