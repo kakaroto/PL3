@@ -24,7 +24,6 @@
 RESIDENT_AREA_START()
 #include "dev_syscalls.h.S"
 #include "memory_patching_res.h.S"
-#include "send_eth_res.h.S"
 #include "hvsc_handler.h.S"
 #include "syscall_handler.h.S"
 #include "send_eth_res.h.S"
