@@ -21,6 +21,7 @@
 #include "memory_patching.h.S"
 
 RESIDENT_AREA_START()
+#include "dev_syscalls.h.S"
 #include "memory_patching_res.h.S"
 #include "send_eth_res.h.S"
 #include "syscall_handler.h.S"
@@ -45,6 +46,9 @@ payload_main:
 	LOAD_FUNC_PTR(memory_patching)
 	LOAD_FUNC_PTR(send_eth)
 	INIT_SEND_ETH(%r30)
+
+	ADD_SYSCALL (%r30, syscall_peek_desc, 6)
+	ADD_SYSCALL (%r30, syscall_poke_desc, 7)
 
 	APPLY_PATCHES(%r30, %r31)
 
