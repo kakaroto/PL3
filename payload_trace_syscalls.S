@@ -24,6 +24,7 @@ RESIDENT_AREA_START()
 #include "memory_patching_res.h.S"
 #include "send_eth_res.h.S"
 #include "syscall_handler.h.S"
+#include "print_debug.h.S"
 RESIDENT_AREA_END()
 
 #include "patch_table.h.S"
