@@ -30,69 +30,7 @@ syscall_map_open_desc:
 	QUAD_MEM2 (syscall_map_open)
 
 DEFINE_FUNC_PTR(map_open_path)
-
-
-/**
- * syscall_map_open:
- * @old_path: The path to map
- * @new_path: The new path to map it to (or NULL to remove the mapping)
- *
- * This new syscall will redirect all file access from @old_path to
- * @new_path or if @new_path is #NULL, it will remove the mapping
- */
-syscall_map_open:
-	// prolog
-	mflr	%r0
-	stdu	%r1, -0xc0(%r1)
-	std	%r26, 0x70(%r1)
-	std	%r0, 0xd0(%r1)
-	mr	%r26, %r4
-
-	cmpldi	%r3, 0
-	beq	l_syscall_map_open_error
-	addi	%r4, %r1, 0xa0			// old path
-	bl	ABSOLUTE_MEM2(pathdup_from_user) // strdup %r3 from userspace
-	mr	%r29, %r3
-
-	mr	%r3, %r26
-	cmpldi	%r3, 0
-	beq	l_syscall_map_open_unset
-	addi	%r4, %r1, 0xb0			// new path
-	bl	ABSOLUTE_MEM2(pathdup_from_user) // strdup %r4 from userspace
-	b	l_syscall_map_open_call
-l_syscall_map_open_unset:
-	std	%r3, 0xb0(%r1)
-l_syscall_map_open_call:
-	ld	%r3, 0xa0(%r1)			// old path
-	ld	%r4, 0xb0(%r1)			// new path
-	// Call map_open_path
-	MEM_BASE (%r6)
-	LOAD_LABEL2 (%r6, %r6, map_open_path_ptr)
-	ld	%r6, 0(%r6)
-	mtctr	%r6
-	bctrl
-	mr	%r26, %r3
-	ld	%r3, 0xa0(%r1)
-	li	%r4, 0x27
-	bl	ABSOLUTE_MEM2(free)
-	ld	%r3, 0xb0(%r1)
-	cmpldi	%r3, 0
-	beq	l_syscall_map_open_return
-	li	%r4, 0x27
-	bl	ABSOLUTE_MEM2(free)
-l_syscall_map_open_return:
-	mr	%r3, %r26			// return result of add_open_path_map
-l_syscall_map_open_return_r3:
-	// epilog
-	ld	%r26, 0x70(%r1)
-	ld	%r0, 0xd0(%r1)
-	addi	%r1, %r1, 0xc0
-	mtlr	%r0
-	blr
-l_syscall_map_open_error:
-	nor	%r3, %r3, %r3			// r3 is already 0 here, so make it -1
-	b	l_syscall_map_open_return_r3	
-
+DEFINE_FUNC_PTR(syscall_map_open)
 
 /**
  * hook_open:

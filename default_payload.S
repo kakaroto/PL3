@@ -57,6 +57,7 @@ payload_main:
 	// Allocate memory and copy PIC functions to it
 	LOAD_FUNC_PTR(memory_patching)
 	LOAD_FUNC_PTR(map_open_path)
+	LOAD_FUNC_PTR(syscall_map_open)
 
 	// Add system calls
 	ADD_SYSCALL (%r30, syscall_map_open_desc, 35)

@@ -49,6 +49,7 @@ payload_main:
 	// Allocate memory and copy PIC functions to it
 	LOAD_FUNC_PTR(memory_patching)
 	LOAD_FUNC_PTR(map_open_path)
+	LOAD_FUNC_PTR(syscall_map_open)
 	LOAD_FUNC_PTR(send_eth)
 	INIT_SEND_ETH(%r30)
 
