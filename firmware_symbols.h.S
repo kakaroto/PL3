@@ -480,6 +480,72 @@
 #define elf3_data		0x001EAE98
 #define elf4_data		0x000D1D00
 
+#elif defined(FIRMWARE_2_85)
+
+#define memcpy 			0x777F4
+#define memset 			0x4A5F0
+#define strcpy 			0x4A758
+#define strncmp	 		0x4A7AC
+#define strlen			0x4A780
+#define pathdup_from_user	0x1A918C
+#define alloc 			0x5DAF4
+#define free 			0x5DF34
+#define USBRegisterDriver 	0
+#define syscall_table		0x2CBEC0
+#define USBGetDeviceDescriptor	0
+#define USBOpenEndpoint		0
+#define USBControlTransfer	0
+#define memory_patch_func	0x4BC84
+
+#define patch_func1		0x46614
+#define patch_func1_offset	0x34
+#define patch_func2		0x4C4B8
+#define patch_func2_offset	0x2C
+#define patch_func3		0x28E410
+#define patch_func3_offset	0x24
+#define patch_func4		0x4C154
+#define patch_func4_offset	0
+#define patch_func5		0x4D890
+#define patch_func5_offset	0
+#define patch_func6		0x22D8C
+#define patch_func6_offset	0x80
+#define patch_func7		0xE6238
+#define patch_func7_offset	0x2C
+#define patch_func8		0x5425C
+#define patch_func8_offset1	0x68
+#define patch_func8_offset2	0x1CC
+#define patch_func9		0x4CC7C
+#define patch_func9_offset	0x3EC
+#define patch_data1		0x397C50
+#define patch_syscall_func	0x281B34
+#define rtoc_entry_1	0xB58
+#define rtoc_entry_2	-0x6B38
+
+#define MEM_BASE2 		(0x4DDFC)
+#define RESIDENT_AREA_MAXSIZE	(1296)
+
+#define HASH_TABLE_1	0xF3916626002B6192
+#define elf1_func1		0x59B0F4
+#define elf1_func1_offset	0
+#define elf1_func2		0x16323C
+#define elf1_func2_offset	0x14
+
+#define HASH_TABLE_2	0x6A48D7DE0001A195
+#define elf2_func1		0xC400
+#define elf2_func1_offset	0x378
+
+#define HASH_TABLE_3	0x538ECCEB000A8EC9
+#define elf3_data		0x1BAEF0
+
+#define HASH_TABLE_4	0xBF556EA300044C1E
+#define elf4_data		0xB7318
+
+#define lv2_printf		0x27C808
+#define lv2_printf_null 0x27C8A0
+#define hvsc107_1		0xE3E0
+#define hvsc107_2		0xE510
+#define hvsc107_3		0xE5A4
+
 #elif defined(FIRMWARE_2_76)
 
 #define memcpy 			0x0007395C
