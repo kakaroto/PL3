@@ -169,7 +169,7 @@ resident_area_start:					\
 
 #define RESIDENT_AREA_END()				\
 resident_area_end:					\
-.org RESIDENT_AREA_OFFSET + RESIDENT_AREA_MAXSIZE \
+.org RESIDENT_AREA_OFFSET + RESIDENT_AREA_MAXSIZE
 
 .org 0
 // Position 0x20 in the page
