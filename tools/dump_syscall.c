@@ -551,7 +551,7 @@ int main (int argc, char *argv[])
 
     if (type & 0x10)
       syscall_name = get_hypercall_name (syscall);
-    else if (type & 0xFF0 == 0)
+    else if ((type & 0xFF0) == 0)
       syscall_name = get_syscall_name (syscall);
     else if (type & 0x100)
       syscall_name = NULL;
