@@ -43,7 +43,7 @@
 	   total += ptr[4]
 	   if (ptr[16] << 24 >> 56) != 0xFF) {
 	     hash = 0
-	     for (i = 0, i < 0x400, i++)
+	     for (i = 0, i < 0x100, i++)
 	       hash ^= ptr2[0][i] // array of 4 bytes
 	     hash = (hash << 32) | total
 	     total = 0
