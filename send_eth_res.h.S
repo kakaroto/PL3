@@ -26,6 +26,7 @@ send_eth:
 	std	%r31, 0x78(%r1)
 	std	%r0, 0x90(%r1)
 	
+	MEM_BASE (%r31)
 	LOAD_LABEL2 (%r31, %r31, send_eth_mutex)
 	lwz     %r30, 0(%r31)
 	cmpwi   %r30, 0
