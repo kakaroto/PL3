@@ -85,8 +85,7 @@
 
 #define BRANCH_ABSOLUTE(dest, target) 	\
 	MEM_BASE (dest);		\
-	oris	dest, dest, target@h; 	\
-	ori	dest, dest, target@l; 	\
+	LOADI_ABS (dest, target);	\
 	mtctr	dest;			\
 	bctrl;
 
