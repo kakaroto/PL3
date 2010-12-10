@@ -40,4 +40,29 @@ l_print_backtrace_next:
 l_print_backtrace_done:
 	blr
 
+bt_buffer:
+	.space 0x50
+
+send_bt:
+	mflr	%r0
+	stdu	%r1, -0xA0(%r1)
+	std	%r0, 0x70(%r1)
+	std	%r31, 0x90(%r1)
+	
+
+	MEM_BASE (%r31)
+	LOAD_LABEL2 (%r3, %r31, bt_buffer)
+	li	%r4, 0x50
+	bl	print_backtrace
+	
+	LOAD_LABEL2 (%r3, %r31, bt_buffer)
+	li	%r4, 0x50
+	bl	send_eth
+	
+	ld	%r31, 0x90(%r1)
+	ld	%r0, 0x70(%r1)
+	addi	%r1, %r1, 0xA0
+	mtlr	%r0
+	blr
+
 #endif /* __PRINT_BT_H_S__ */
