@@ -5,6 +5,7 @@
  * Copyright (C) Youness Alaoui (KaKaRoTo)
  * Copyright (C) Aaron Lindsay (Aaron')
  * Copyright (C) (subdub)
+ * Copyright (C) Gennadiy Brich (G)
  *
  * This software is distributed under the terms of the GNU General Public
  * License ("GPL") version 3, as published by the Free Software Foundation.
@@ -554,6 +555,10 @@
 #define strncmp	 		0x00046A0C
 #define strlen			0x000469E0
 #define pathdup_from_user	0x001A2270
+#define copy_from_user		0x0000E3B4
+#define copy_to_user		0x0000E198
+#define alloc_and_copy_from_user 0x001A2430
+#define strdup_from_user	0x001A7570
 #define alloc 			0x00059D54
 #define free 			0x0005A194
 #define USBRegisterDriver 	0x000CC6A0
@@ -581,10 +586,16 @@
 #define patch_func8_offset2	0x1CC
 #define patch_func9		0x00048EDC // must upgrade patch
 #define patch_func9_offset	0x3EC
-#define patch_syscall_func	0
+#define patch_syscall_func	0x0027A2D0
 #define patch_data1		0x0038E3E0
 #define rtoc_entry_1		0x988
 #define rtoc_entry_2		-0x6C50
+
+#define lv2_printf		0x00016B30
+#define lv2_printf_null		0x002797EC
+#define hvsc107_1		0x0000E730
+#define hvsc107_2		0x0000E7C4
+#define hvsc107_3		0x0000E600
 
 // Payload bases
 #define MEM_BASE2 		(0x4A05C)
@@ -605,6 +616,77 @@
 
 #define elf3_data		0x001AA2C8
 #define elf4_data		0x000B6BC0
+
+#elif defined(FIRMWARE_2_70)
+
+/* Common Symbols */
+#define memcpy 			0x00073958
+#define memset 			0x0004684c
+#define strcpy 			0x000469b4
+#define strncmp	 		0x00046a08
+#define strlen			0x000469dc
+#define pathdup_from_user	0x001a2250
+#define copy_from_user		0x0000e3b0
+#define copy_to_user		0x0000e194
+#define alloc_and_copy_from_user 0x001a2410
+#define strdup_from_user	0x001a7550
+#define alloc 			0x00059d50
+#define free 			0x0005a190
+#define USBRegisterDriver 	0x000cc680
+#define syscall_table		0x002c4318
+#define USBGetDeviceDescriptor	0x000ccd0c
+#define USBOpenEndpoint		0x000ccd38
+#define USBControlTransfer	0x000ccca0
+#define memory_patch_func	0x00047ee0
+#define patch_func1		0x00043824
+#define patch_func1_offset	0x34
+#define patch_func2		0x00048714
+#define patch_func2_offset	0x2c
+#define patch_func3		0x00286bb8
+#define patch_func3_offset	0x24
+#define patch_func4		0x000483b0
+#define patch_func4_offset	0x0
+#define patch_func5		0x00049aec
+#define patch_func5_offset	0x0
+#define patch_func6		0x00022f5c
+#define patch_func6_offset	0x0
+#define patch_func7		0x000e1f10
+#define patch_func7_offset	0x0
+#define patch_func8		0x0005047c
+#define patch_func8_offset1	0xa4
+#define patch_func8_offset2	0x208
+#define patch_func9		0x00048ed8
+#define patch_func9_offset	0x3ec
+#define patch_syscall_func	0x0027a2ac
+#define patch_data1		0x0038e3e0
+#define rtoc_entry_1		0x990
+#define rtoc_entry_2		-0x6c50
+
+#define lv2_printf		0x00016b2c
+#define lv2_printf_null		0x002797c8
+#define hvsc107_1		0x0000e72c
+#define hvsc107_2		0x0000e7c0
+#define hvsc107_3		0x0000e5fc
+
+// Payload bases
+#define MEM_BASE2 		(0x4a058)
+	
+#define RESIDENT_AREA_MAXSIZE   (1296)
+
+#define HASH_TABLE_1            0xb35f005f002b539a
+#define HASH_TABLE_2            0xf662a7ed0001a3f8
+#define HASH_TABLE_3            0x78d617a6000a25aa
+#define HASH_TABLE_4            0x6cd46e1000044996
+
+#define elf1_func1              0x00599480
+#define elf1_func1_offset       0x00
+#define elf1_func2              0x00160d74
+#define elf1_func2_offset       0x14
+#define elf2_func1              0x0000c600
+#define elf2_func1_offset       0x378
+
+#define elf3_data               0x001aa2c8
+#define elf4_data               0x000b6bc0
 
 #endif
 
