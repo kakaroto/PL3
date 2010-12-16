@@ -688,6 +688,78 @@
 #define elf3_data               0x001aa2c8
 #define elf4_data               0x000b6bc0
 
+#elif defined(FIRMWARE_2_60)
+
+/* Common Symbols */
+#define memcpy			0x00072560
+#define memset			0x00046b78
+#define strcpy			0x00046ce0
+#define strncmp			0x00046d34
+#define strlen			0x00046d08
+#define pathdup_from_user	0x001954c8
+#define copy_from_user		0x0000e1e0
+#define copy_to_user		0x0000dfdc
+#define alloc_and_copy_from_user 0x00195688
+#define strdup_from_user	0x0019a754
+#define alloc 			0x00059040
+#define free 			0x0005944c
+#define USBRegisterDriver 	0x000c5a44
+#define syscall_table		0x002b67c0
+#define USBGetDeviceDescriptor	0x000c6384
+#define USBOpenEndpoint		0x000c63ec
+#define USBControlTransfer	0x000c6318
+#define memory_patch_func	0x000482a4
+#define patch_func1		0x00043ac4
+#define patch_func1_offset	0x34
+#define patch_func2		0x00048adc
+#define patch_func2_offset	0x2c
+#define patch_func3		0x00278510
+#define patch_func3_offset	0x24
+#define patch_func4		0x00048778
+#define patch_func4_offset	0x0
+#define patch_func5		0x00049eb0
+#define patch_func5_offset	0x0
+#define patch_func6		0x00022b40
+#define patch_func6_offset	0x0
+#define patch_func7		0x000d76b4
+#define patch_func7_offset	0x0
+#define patch_func8		0          // unable to find
+#define patch_func8_offset1	0
+#define patch_func8_offset2	0
+#define patch_func9		0x0004929c
+#define patch_func9_offset	0x3ec
+#define patch_syscall_func	0x0026d1dc
+#define patch_data1		0x0037f860
+#define rtoc_entry_1		0xc98
+#define rtoc_entry_2		-0x6b10
+
+#define lv2_printf		0x00016ae4
+#define lv2_printf_null		0x0026c6f4
+#define hvsc107_1		0x0000e544
+#define hvsc107_2		0x0000e5cc
+#define hvsc107_3		0x0000e414
+
+// Payload bases
+#define MEM_BASE2 		(0x4a43c)
+
+#define RESIDENT_AREA_MAXSIZE   (1296)
+
+#define HASH_TABLE_1            0xb357563800291327
+#define HASH_TABLE_2            0x94756b1000017561
+#define HASH_TABLE_3            0x5fd979ae0009ca92
+#define HASH_TABLE_4            0x7295d09d00042e6f
+
+#define elf1_func1              0x00543888
+#define elf1_func1_offset       0x00
+#define elf1_func2              0x00151d98
+#define elf1_func2_offset       0x10
+#define elf2_func1              0x00028088
+#define elf2_func1_offset       0x204
+
+
+#define elf3_data               0x00199338
+#define elf4_data               0x000b1cb0
+
 #endif
 
 #ifndef lv2_printf
