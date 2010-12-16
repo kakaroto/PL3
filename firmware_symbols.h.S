@@ -742,7 +742,7 @@
 // Payload bases
 #define MEM_BASE2 		(0x4a43c)
 
-#define RESIDENT_AREA_MAXSIZE   (1296)
+#define RESIDENT_AREA_MAXSIZE   (1304)
 
 #define HASH_TABLE_1            0xb357563800291327
 #define HASH_TABLE_2            0x94756b1000017561
@@ -759,6 +759,78 @@
 
 #define elf3_data               0x00199338
 #define elf4_data               0x000b1cb0
+
+#elif defined(FIRMWARE_2_53)
+
+/* Common Symbols */
+#define memcpy			0x0007255c
+#define memset			0x00046b7c
+#define strcpy			0x00046ce4
+#define strncmp			0x00046d38
+#define strlen			0x00046d0c
+#define pathdup_from_user	0x00194c24
+#define copy_from_user		0x0000e1e4
+#define copy_to_user		0x0000dfe0
+#define alloc_and_copy_from_user 0x00194de4
+#define strdup_from_user	0x00199eb0
+#define alloc 			0x0005903c
+#define free 			0x00059448
+#define USBRegisterDriver 	0x000c54ac
+#define syscall_table		0x002b5bb8
+#define USBGetDeviceDescriptor	0x000c5dec
+#define USBOpenEndpoint		0x000c5e54
+#define USBControlTransfer	0x000c5d80
+#define memory_patch_func	0x000482a8
+#define patch_func1		0x00043ac8
+#define patch_func1_offset	0x34
+#define patch_func2		0x00048ae0
+#define patch_func2_offset	0x2c
+#define patch_func3		0x00277b1c
+#define patch_func3_offset	0x24
+#define patch_func4		0x0004877c
+#define patch_func4_offset	0x0
+#define patch_func5		0x00049eb4
+#define patch_func5_offset	0x0
+#define patch_func6		0x00022b44
+#define patch_func6_offset	0x0
+#define patch_func7		0x000d70fc
+#define patch_func7_offset	0x0
+#define patch_func8		0          // unable to find
+#define patch_func8_offset1	0
+#define patch_func8_offset2	0
+#define patch_func9		0x000492a0
+#define patch_func9_offset	0x3ec
+#define patch_syscall_func	0x0026c7e8
+#define patch_data1		0x0037eb60
+#define rtoc_entry_1		0xc70
+#define rtoc_entry_2		-0x6b10
+
+#define lv2_printf		0x00016ae8
+#define lv2_printf_null		0x0026bd00
+#define hvsc107_1		0x0000e548
+#define hvsc107_2		0x0000e5d0
+#define hvsc107_3		0x0000e418
+
+// Payload bases
+#define MEM_BASE2 		(0x4a440)
+
+#define RESIDENT_AREA_MAXSIZE   (1304)
+
+#define HASH_TABLE_1            0xb353b25c002901ad
+#define HASH_TABLE_2            0x9474a50800017106
+#define HASH_TABLE_3            0x5fd893f60009a765
+#define HASH_TABLE_4            0x7295ea6100041f3e
+
+#define elf1_func1              0x00540260
+#define elf1_func1_offset       0x00
+#define elf1_func2              0x00150a68
+#define elf1_func2_offset       0x10
+#define elf2_func1              0x000277b0
+#define elf2_func1_offset       0x204
+
+
+#define elf3_data               0x00194ca0
+#define elf4_data               0x000afc40
 
 #endif
 
