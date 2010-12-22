@@ -6,6 +6,7 @@
  * Copyright (C) Aaron Lindsay (Aaron')
  * Copyright (C) (subdub)
  * Copyright (C) Gennadiy Brich (G)
+ * Copyright (C) (Zidane)
  *
  * This software is distributed under the terms of the GNU General Public
  * License ("GPL") version 3, as published by the Free Software Foundation.
@@ -891,18 +892,18 @@
 #define HASH_TABLE_1            0xb36f6c6700282260
 #define HASH_TABLE_2            0x9474a8b0000169d3
 #define HASH_TABLE_3            0x214aedb3000e9c43
-#define HASH_TABLE_4            0 // not found due to elf1_func2
+#define HASH_TABLE_4            0x3480af480005512f
 
 #define elf1_func1              0x0051e1f0
 #define elf1_func1_offset       0x00
-#define elf1_func2              0 // not found, unsigned elfs aren't working
-#define elf1_func2_offset       0
+#define elf1_func2              0x0013fbe0
+#define elf1_func2_offset       0x10
 #define elf2_func1              0x00026a50
 #define elf2_func1_offset       0x204
 
 
 #define elf3_data               0x002498f0
-#define elf4_data               0 // not found due to elf1_func2
+#define elf4_data               0x000d4638
 
 #endif
 
