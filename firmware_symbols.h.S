@@ -6,6 +6,7 @@
  * Copyright (C) Aaron Lindsay (Aaron')
  * Copyright (C) (subdub)
  * Copyright (C) Gennadiy Brich (G)
+ * Copyright (C) (Zidane)
  *
  * This software is distributed under the terms of the GNU General Public
  * License ("GPL") version 3, as published by the Free Software Foundation.
@@ -831,6 +832,78 @@
 
 #define elf3_data               0x00194ca0
 #define elf4_data               0x000afc40
+
+#elif defined(FIRMWARE_2_43)
+
+/* Common Symbols */
+#define memcpy			0x00079294
+#define memset			0x00058e88
+#define strcpy			0x00059008
+#define strncmp			0x00059068
+#define strlen			0x00059038
+#define pathdup_from_user	0x001a2550
+#define copy_from_user		0x0001e300
+#define copy_to_user		0x0001e0e0
+#define alloc_and_copy_from_user 0x001a2730
+#define strdup_from_user	0x001a27f8
+#define alloc 			0x0006c2e0
+#define free 			0x0006c708
+#define USBRegisterDriver 	0x000d2c38
+#define syscall_table		0x002d2b18
+#define USBGetDeviceDescriptor	0x000d3660
+#define USBOpenEndpoint		0x000d36a0
+#define USBControlTransfer	0x000d35f0
+#define memory_patch_func	0x0005a708
+#define patch_func1		0x00055a20
+#define patch_func1_offset	0x38
+#define patch_func2		0x0005afc8
+#define patch_func2_offset	0x2c
+#define patch_func3		0x002925d0
+#define patch_func3_offset	0x24
+#define patch_func4		0x0005ac38
+#define patch_func4_offset	0x0
+#define patch_func5		0x0005c460
+#define patch_func5_offset	0x0
+#define patch_func6		0x00033f60
+#define patch_func6_offset	0x0
+#define patch_func7		0x000e565c
+#define patch_func7_offset	0x0
+#define patch_func8		0          // unable to find
+#define patch_func8_offset1	0
+#define patch_func8_offset2	0
+#define patch_func9		0x0005b7f8
+#define patch_func9_offset	0x40c
+#define patch_syscall_func	0x0028a75c
+#define patch_data1		0x0039b6e0
+#define rtoc_entry_1		0xa78
+#define rtoc_entry_2		-0x6630
+
+#define lv2_printf		0x000276b0
+#define lv2_printf_null		0x00289c68
+#define hvsc107_1		0x0001e68c
+#define hvsc107_2		0x0001e718
+#define hvsc107_3		0x0001e550
+
+// Payload bases
+#define MEM_BASE2 		(0x5ca20)
+
+#define RESIDENT_AREA_MAXSIZE   (1352)
+
+#define HASH_TABLE_1            0xb36f6c6700282260
+#define HASH_TABLE_2            0x9474a8b0000169d3
+#define HASH_TABLE_3            0x214aedb3000e9c43
+#define HASH_TABLE_4            0x3480af480005512f
+
+#define elf1_func1              0x0051e1f0
+#define elf1_func1_offset       0x00
+#define elf1_func2              0x0013fbe0
+#define elf1_func2_offset       0x10
+#define elf2_func1              0x00026a50
+#define elf2_func1_offset       0x204
+
+
+#define elf3_data               0x002498f0
+#define elf4_data               0x000d4638
 
 #endif
 
