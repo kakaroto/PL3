@@ -19,10 +19,14 @@
 	
 #define PAGE_SIZE 		0x1000
 
-#ifdef USE_JIG
-#define PAYLOAD_OFFSET_IN_PAGE 	0x20
+#ifdef STANDALONE
+#  define PAYLOAD_OFFSET_IN_PAGE 	0
 #else
-#define PAYLOAD_OFFSET_IN_PAGE 	0x38
+#  ifdef USE_JIG
+#    define PAYLOAD_OFFSET_IN_PAGE 	0x20
+#  else
+#    define PAYLOAD_OFFSET_IN_PAGE 	0x38
+#  endif
 #endif
 
 #define RESIDENT_AREA_OFFSET	(resident_area_start)

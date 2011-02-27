@@ -17,7 +17,8 @@
 #define __MEMORY_PATCHING_RES_H_S__
 
 DEFINE_FUNC_PTR(memory_patching)
-	
+
+#ifndef STANDALONE
 counter:
 	.long	0
 
@@ -51,5 +52,7 @@ memory_patch_table_4:
 	PATCH_DATA(elf4_data + 8, 0x6d6c2372)
 	PATCH_DATA(elf4_data + 12, 0x6f6f7400)
 	.long 0
+
+#endif /* !STANDALONE */
 
 #endif /* __MEMORY_PATCHING_RES_H_S__ */

@@ -23,17 +23,31 @@ FW_PAYLOADS = \
 	payload_trace_all_sc_calls.bin \
 	payload_trace_vuart.bin
 
+STANDALONE_FIRMWARES = 3.55
+STANDALONE_PAYLOADS = \
+	default_payload.bin \
+	payload_no_unauth_syscall.bin
+
 FIRMWARES_2=$(SUPPORTED_FIRMWARES:2.%=2_%)
 FIRMWARES=$(FIRMWARES_2:3.%=3_%)
 FW_PAYLOADS_EXT = $(foreach fw,$(FIRMWARES), \
 	$(foreach pl,$(FW_PAYLOADS),$(pl:%.bin=%_$(fw).bin)))
-ALL_PAYLOADS = $(PAYLOADS) $(FW_PAYLOADS_EXT)
+
+ST_FIRMWARES=$(STANDALONE_FIRMWARES:3.%=3_%)
+STANDALONE_PAYLOADS_EXT = $(foreach fw,$(ST_FIRMWARES), \
+	$(foreach pl,$(STANDALONE_PAYLOADS),$(pl:%.bin=%_$(fw).bin)))
+
+SIZE_LIMITED_PAYLOADS = $(PAYLOADS) $(FW_PAYLOADS_EXT)
+ALL_PAYLOADS = $(SIZE_LIMITED_PAYLOADS) $(STANDALONE_PAYLOADS_EXT)
 
 HEADERS = $(ALL_PAYLOADS:%.bin=%.h)
 
 MAX_PAYLOAD_SIZE=4064
 
 all: tools $(ALL_PAYLOADS) $(HEADERS) check_sizes
+	echo "PAYLOADS: $(ALL_PAYLOADS)"
+	echo "ST_PAYLOADS: $(STANDALONE_PAYLOADS_EXT)"
+	echo "HEADERS: $(HEADERS)"
 
 tools:
 	$(MAKE) -C tools
@@ -41,7 +55,7 @@ tools:
 $(B2HTARGET): tools
 	@true
 
-check_sizes: $(ALL_PAYLOADS)
+check_sizes: $(SIZE_LIMITED_PAYLOADS)
 	@error=0; \
 	 for f in $+; do \
 		size=`ls -l $$f | awk '{print $$5}'`; \
@@ -101,7 +115,10 @@ $(ALL_PAYLOADS): *.h.S config.h
 	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_41 -c $< -o $@
 
 %_3_41_kiosk.o : %.S
-	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_41 -DKIOSK -c $< -o $@
+	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_41 -DKIOSK  -c $< -o $@
+
+%_3_55.o : %.S
+	$(PPU_CC) $(PPU_CFLAGS) -DFIRMWARE_3_55 -DSTANDALONE -c $< -o $@
 
 %.o : %.S
 	$(PPU_CC) $(PPU_CFLAGS) -c $< -o $@

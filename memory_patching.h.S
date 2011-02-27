@@ -106,6 +106,7 @@ loc_4d4:
 	mr	%r3, %r29
 	mr	%r4, %r30
 	BRANCH_ABSOLUTE(%r6, memory_patch_func)
+#ifndef STANDALONE
 	mr	%r29, %r31
 	LOADI_LABEL2(%r29, counter)
 	lwz	%r3, 0(%r29)
@@ -152,6 +153,7 @@ loc_574:
 	stw	%r4, 0(%r3)
 	addi	%r5, %r5, 8
 	b	loc_574
+#endif
 loc_594:
 	li	%r3, 0
 	ld	%r27, 0x78(%r1)
