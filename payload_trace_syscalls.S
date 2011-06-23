@@ -25,7 +25,6 @@ RESIDENT_AREA_START()
 #include "open_hook.h.S"
 #include "memory_patching_res.h.S"
 #include "send_eth_res.h.S"
-#include "print_debug.h.S"
 #include "syscall_handler.h.S"
 RESIDENT_AREA_END()
 

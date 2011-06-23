@@ -74,9 +74,6 @@
 
 #define RESIDENT_AREA_MAXSIZE   1452
 
-// Standalone payload, does not need file patching
-#define STANDALONE
-
 #elif defined(FIRMWARE_3_41)
 
 /* Common Symbols */
